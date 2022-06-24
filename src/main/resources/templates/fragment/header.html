@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Locale</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/header.css}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/fragment/header.js}"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/home}">BookshopApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+
+                <li class="nav-item search-bar">
+                        <div class="search">
+                            <input type="text" class="searchTerm" placeholder="What are you looking for?">
+                            <button type="submit" class="searchButton">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                </li>
+
+                <li class="nav-item home">
+                    <a class="nav-link active" aria-current="page"
+                       th:text="#{home}"
+                       th:href="@{/home}"></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#"
+                       role="button"
+                       th:text="#{books}"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item login" sec:authorize="isAnonymous()">
+                    <a class="nav-link active" aria-current="page"
+                       th:text="#{login}"
+                       th:href="@{/login}"></a>
+                </li>
+
+                <li class="nav-item locale" sec:authorize="isAnonymous()">
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle drop-down-btn shadow-none locale-btn"
+                                style="font-size: 20px; font-weight: 600"
+                                type="button" id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                th:text="#{language}">
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li class="dropdown-item">
+                                <img
+                                        src="../static/images/Flag_of_Russia.png"
+                                        class="flag-image"
+                                        th:src="@{/images/Flag_of_russia.png}">
+                                <a th:href="@{'?locale=ru'}" th:text="#{russian}"></a>
+                            </li>
+                            <li class="dropdown-item">
+                                <img
+                                        src="../static/images/Flag_of_Russia.png"
+                                        class="flag-image"
+                                        th:src="@{/images/flag_of_uk.png}">
+                                <a th:href="@{'?locale=en'}" th:text="#{english}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown image" sec:authorize="isAuthenticated()">
+                    <img class="nav-link dropdown-toggle user-image"
+                         id="navbarScrollingDropdown"
+                         src=""
+                         role="button"
+                         data-bs-toggle="dropdown" aria-expanded="false">
+                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                        <h1 class="h1-user-name"
+                            id="user-name-h1"
+                            sec:authentication="name"></h1>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a sec:authorize="hasAuthority('ADMIN')" class="dropdown-item"
+                               th:text="#{admin_cabinet}"
+                               th:href="@{/admin/cabinet}"></a></li>
+                        <li><a class="dropdown-item"
+                               th:text="#{account_settings}"
+                               th:href="@{/user/account_settings}"></a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item"
+                               th:text="#{logout}"
+                               th:href="@{/logout}"></a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+</body>
+</html>

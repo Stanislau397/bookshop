@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{authors}"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/add_author.css}"/>
+    <script type="text/javascript" th:src="@{/js/admin/all_authors.js}"></script>
+</head>
+<body style="background-color: #e5e4e2">
+<div th:replace="fragment/side_bar"></div>
+
+<div class="modal fade" id="deleteAuthorModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="deleteAuthorModalLabel"
+                    th:text="#{delete_author}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"
+                 th:text="#{delete_author_question}">
+            </div>
+            <input type="hidden" id="author_id_input" value="">
+            <input type="hidden" id="edit-btn-name" th:value="#{edit}">
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        th:text="#{close}">
+
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        id="delete_author_btn"
+                        onclick="deleteAuthor()"
+                        th:text="#{delete}">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="addAuthorModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAuthorLabel" th:text="#{add_author}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="image-container">
+                    <label for="file-input">
+                        <img class="author-image" id="author_image"
+                             src="http://localhost:8090/image/author/default-author.jpg"/>
+                    </label>
+                    <input id="file-input"
+                           onchange="document.getElementById('author_image').src = window.URL.createObjectURL(this.files[0])"
+                           type="file"/>
+                </div>
+                <div class="info-container">
+                    <form id="author_form">
+                        <div class="form-group">
+                            <label for="first_name" class="col-sm-2 col-form-label" th:text="#{first_name}"></label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control shadow-none" id="first_name">
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-1">
+                            <label for="last_name"
+                                   class="col-sm-2 col-form-label"
+                                   th:text="#{last_name}"></label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control shadow-none" id="last_name">
+                            </div>
+                        </div>
+
+                        <label for="year"
+                               style="width: 200px"
+                               class="col-sm-2 col-form-label"
+                               th:text="#{birth_date}"></label>
+                        <div class="form-group row mt-1">
+                            <select class="form-select w-25 shadow-none"
+                                    style="margin-left: 11px"
+                                    aria-label="Default select example"
+                                    id="day">
+                                <option selected th:text="#{day}"></option>
+                            </select>
+                            <select class="form-select w-25 shadow-none"
+                                    style="margin-left: 11px"
+                                    aria-label="Default select example"
+                                    id="month">
+                                <option selected th:text="#{month}"></option>
+                            </select>
+                            <select class="form-select w-25 shadow-none"
+                                    style="margin-left: 11px"
+                                    aria-label="Default select example"
+                                    id="year">
+                                <option selected th:text="#{year}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-1">
+                            <label for="biography" th:text="#{biography}"></label>
+                            <textarea class="form-control shadow-none mt-1" id="biography" rows="8"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="addAuthor()"
+                        th:text="#{save}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container w-75">
+    <div class="input-group rounded w-50">
+        <input type="search"
+               id="keyword"
+               class="form-control rounded shadow-none users-search"
+               th:placeholder="#{search}" aria-label="Search"
+               aria-describedby="search-addon"
+               onkeyup="getAuthorsByKeyword()"/>
+    </div>
+
+    <table class="table users-table align-middle mb-0 bg-white w-90">
+        <thead class="bg-light">
+        <tr>
+            <th th:text="#{image}"></th>
+            <th th:text="#{first_name}"></th>
+            <th th:text="#{last_name}"></th>
+            <th th:text="#{birth_date}"></th>
+            <th th:text="#{actions}"></th>
+        </tr>
+        </thead>
+
+        <tbody id="tableData">
+
+        </tbody>
+    </table>
+    <div class="error-message" id="error-message"></div>
+
+    <nav aria-label="Users navigation">
+        <ul class="pagination" id="authors-pagination">
+
+        </ul>
+    </nav>
+
+</div>
+
+<button type="button" class="btn btn-primary shadow-none add-btn"
+        th:text="#{add_author}"
+        data-bs-toggle="modal"
+        data-bs-target="#addAuthorModal">
+</button>
+</body>
+</html>

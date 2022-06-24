@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}"/>
+</head>
+<body style="background-color: #e5e4e2">
+<div th:replace="fragment/header"></div>
+
+<div th:if="${param.error != null}"
+     th:text="${session[SPRING_SECURITY_LAST_EXCEPTION].message}" class="alert alert-danger">
+</div>
+
+<div class="registration-container">
+    <div class="row">
+        <div class="mt-5 border p-4 bg-light shadow">
+            <div class="d-flex justify-content-center h-15">
+                <h5 th:text="#{authentication}"></h5>
+            </div>
+            <form name="f" th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <input type="text" name="username" class="form-control shadow-none" th:placeholder="#{user_name}">
+                </div>
+
+                <div class="mb-3">
+                    <input type="password" name="password" class="form-control shadow-none"
+                           th:placeholder="#{password}">
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-danger register-btn" th:text="#{login}"></button>
+                </div>
+            </form>
+            <div class="mb-3">
+                <p><span>Если у вас нет аккаунта: <a th:href="@{/registration}" th:text="#{registration}"></a></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

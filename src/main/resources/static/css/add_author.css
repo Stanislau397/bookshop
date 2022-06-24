@@ -1,0 +1,22 @@
+
+.image-container {
+    float: left;
+    width: 30%;
+}
+
+.info-container {
+    float: left;
+    margin-left: 5%;
+    width: 65%;
+}
+
+.image-container>input {
+    display: none;
+}
+
+.author-image {
+    width: 250px;
+    height: 325px;
+    cursor: pointer;
+    object-fit: cover;
+}

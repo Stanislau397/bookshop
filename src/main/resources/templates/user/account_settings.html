@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{account_settings}"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/account_settings.css}"/>
+    <script type="text/javascript" th:src="@{/js/user/account_settings.js}"></script>
+    <script type="text/javascript" th:src="@{/js/user_validation.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/header"></div>
+
+<div class="modal fade" id="image-success-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    th:text="#{image_updated}"
+                    id="responseModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="password-success-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    th:text="#{password_updated}"
+                    id="passwordModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exception-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog"
+         style="width: 400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="exceptionModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="change-avatar-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog"
+         style="width: 400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    th:text="#{change_avatar}"
+                    id="avatarModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="image-upload">
+                    <label for="file-input">
+                        <img class="avatar-to-change" id="avatar-to-change" src=""/>
+                    </label>
+                    <input id="file-input"
+                           onchange="document.getElementById('avatar-to-change').src = window.URL.createObjectURL(this.files[0])"
+                           type="file"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        th:text="#{close}"
+                        data-bs-dismiss="modal"></button>
+                <button type="button"
+                        th:text="#{change}"
+                        class="btn btn-primary"
+                        onclick="changeUserAvatar()"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="settings-container">
+    <div class="title">
+        <h1 th:text="#{account_settings}"></h1>
+    </div>
+    <div class="profile-image">
+        <div class="title">
+            <h2 th:text="#{avatar}"></h2>
+        </div>
+        <div class="avatar-container">
+            <button type="button"
+                    onclick="setUserAvatarInModal()"
+                    class="btn shadow-none"
+                    data-bs-toggle="modal"
+                    data-bs-target="#change-avatar-modal">
+                <img class="user-avatar"
+                     id="user-avatar"
+                     src="">
+            </button>
+        </div>
+    </div>
+    <div class="change-password-container">
+        <div class="password-title">
+            <h2 th:text="#{password}"></h2>
+        </div>
+        <div class="password-form">
+            <div class="input-group input-group-sm mb-3 password-input">
+                <input type="password"
+                       id="old_password"
+                       class="form-control shadow-none"
+                       aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+            </div>
+            <div class="input-group input-group-sm mb-3">
+                <input type="password"
+                       id="password"
+                       class="form-control shadow-none"
+                       aria-label="Sizing example input"
+                       onchange="checkIfPasswordMatchesRegex()"
+                       aria-describedby="inputGroup-sizing-sm">
+            </div>
+            <div class="alert alert-warning" id="password_regex_alert" role="alert">
+                <p th:text="#{password_regex_error_msg}"></p>
+            </div>
+            <div class="input-group input-group-sm mb-3">
+                <input type="password"
+                       id="confirm-password"
+                       class="form-control shadow-none"
+                       aria-label="Sizing example input"
+                       onchange="checkIfPasswordMatchesConfirmPassword()"
+                       aria-describedby="inputGroup-sizing-sm">
+            </div>
+            <div class="alert alert-warning" id="passwords_not_equal_alert" role="alert">
+                <p th:text="#{passwords_not_equal}"></p>
+            </div>
+        </div>
+        <div class="change-password-btn-container">
+            <button type="button"
+                    th:text="#{change}"
+                    onclick="changeUserPassword()"
+                    class="btn btn-secondary shadow-none change-password-btn">
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

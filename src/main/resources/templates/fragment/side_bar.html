@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Side bar</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/side_bar.css}"/>
+    <script type="text/javascript" th:src="@{/js/fragment/side_bar.js}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<div th:replace="fragment/svg_icons"></div>
+<div class="side-bar-wrapper">
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light side-bar" style="width: 250px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+            <span class="fs-4">Sidebar</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li>
+                <a th:href="@{/home}" class="nav-link link-dark">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                    <p th:text="#{home}"></p>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/cabinet/all_users?page=1}" class="nav-link link-dark">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    <p th:text="#{users}"></p>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/cabinet/all_authors?page=1}" class="nav-link link-dark">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    <p th:text="#{authors}"></p>
+                </a>
+            </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src=""
+                     id="user-avatar"
+                     width="50"
+                     height="50"
+                     style="object-fit: cover"
+                     class="rounded-circle me-2">
+                <strong id="authenticated-user-name"
+                        sec:authentication="name"></strong>
+            </a>
+            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                <li><a class="dropdown-item"
+                       th:text="#{account_settings}"
+                       th:href="@{/user/account_settings}">Settings</a></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item"
+                       th:text="#{logout}"
+                       th:href="@{/logout}"></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

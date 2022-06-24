@@ -1,0 +1,56 @@
+.edit-container {
+    float: left;
+    margin-top: 4.4%;
+    margin-left: 5%;
+    border: 2px solid silver;
+    border-radius: 5px;
+    width: 75%;
+    overflow: hidden;
+}
+
+.image-container {
+    float: left;
+    width: 30%;
+}
+
+.info-container {
+    float: left;
+    width: 65%;
+}
+
+.footer {
+    float: left;
+    width: 100%;
+    height: 70px;
+}
+
+.footer .edit-btn {
+    margin-top: 1%;
+    margin-right: 5%;
+    float: right;
+}
+
+.image-container>input {
+    display: none;
+}
+
+.image {
+    object-fit: cover;
+    border: 2px solid silver;
+    border-radius: 5px;
+    width: 250px;
+    height: 325px;
+    margin-left: 15%;
+    margin-top: 14%;
+    cursor: pointer;
+}
+
+.alert {
+    margin-top: 5px;
+    width: 500px;
+}
+
+.image-alert {
+    margin-left: 11%;
+    width: 250px;
+}

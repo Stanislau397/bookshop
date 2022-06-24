@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<div th:replace="fragment/header"></div>
+<div sec:authorize="hasAuthority('ADMIN')">
+    Админ контент
+</div>
+<div sec:authorize="hasAuthority('ADMIN')">
+    <p sec:authentication="name"></p>
+    <p sec:authentication="principal.authorities"></p>
+</div>
+
+</body>
+</html>

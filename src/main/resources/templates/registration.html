@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}"/>
+    <script type="text/javascript" th:src="@{/js/user_validation.js}"></script>
+</head>
+<body style="background-color: #e5e4e2">
+
+<div th:replace="fragment/header"></div>
+
+<div class="registration-container">
+    <div class="row">
+        <div class="mt-5 border p-4 bg-light shadow">
+            <div class="d-flex justify-content-center h-15">
+                <h5 th:text="#{create_account}"></h5>
+            </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control shadow-none"
+                           id="user_name"
+                           th:placeholder="#{user_name}"
+                           onchange="validateUsername()">
+                </div>
+                <div class="alert alert-warning" id="user_name_alert" role="alert">
+                    <p th:text="#{username_taken_error_msg}"></p>
+                </div>
+                <div class="alert alert-warning" id="username_regex_alert" role="alert">
+                    <p th:text="#{username_regex_error_msg}"></p>
+                </div>
+
+                <div class="mb-3">
+                    <input type="email" class="form-control shadow-none"
+                           id="email"
+                           th:placeholder="#{email}"
+                           onchange="validateEmail()">
+                </div>
+                <div class="alert alert-warning" id="email_alert" role="alert">
+                    <p th:text="#{email_taken_error_msg}"></p>
+                </div>
+                <div class="alert alert-warning" id="email_regex_alert" role="alert">
+                    <p th:text="#{email_regex_error_msg}"></p>
+                </div>
+
+                <div class="mb-3">
+                    <input type="password" class="form-control shadow-none"
+                           id="password"
+                           th:placeholder="#{password}"
+                           onchange="checkIfPasswordMatchesRegex()">
+                </div>
+                <div class="alert alert-warning" id="password_regex_alert" role="alert">
+                    <p th:text="#{password_regex_error_msg}"></p>
+                </div>
+
+                <div class="mb-3">
+                    <input type="password" class="form-control shadow-none"
+                           id="confirm-password"
+                           onchange="checkIfPasswordMatchesConfirmPassword()"
+                           th:placeholder="#{confirm_password}">
+                </div>
+                <div class="alert alert-warning" id="passwords_not_equal_alert" role="alert">
+                    <p th:text="#{passwords_not_equal}"></p>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-danger register-btn"
+                            onclick="registerUser()"
+                            th:text="#{create}"></button>
+                </div>
+            <div class="mb-3">
+                <p><span>Если у вас есть аккаунт: <a th:href="@{/login}" th:text="#{login}"></a></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

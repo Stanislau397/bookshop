@@ -1,0 +1,110 @@
+
+.settings-container {
+    margin: auto;
+    margin-top: 2%;
+    min-height: 320px;
+    overflow: auto;
+    width: 50%;
+    border-bottom: 1px solid silver;
+}
+
+.settings-container .title {
+    width: 100%;
+    border-bottom: 1px solid silver;
+}
+
+.settings-container .title h1 {
+    font-size: 23px;
+    font-family: 'Oswald',"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.settings-container .profile-image {
+    width: 100%;
+    height: 130px;
+    border-bottom: 1px solid silver;
+}
+
+.settings-container .profile-image .title {
+    float: left;
+    width: 12%;
+    border: none;
+}
+
+.settings-container .profile-image .title h2 {
+    margin-top: 13%;
+    font-size: 20px;
+    font-family: 'Oswald',"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.settings-container .profile-image .avatar-container {
+    width: 100px;
+    height: 100%;
+    float: left;
+}
+
+.settings-container .profile-image .avatar-container .btn {
+    width: 100px;
+    height: 100px;
+}
+
+.settings-container .profile-image .avatar-container .user-avatar {
+    width: 100px;
+    margin-left: -19%;
+    height: 100px;
+    border: 4px solid cadetblue;
+    object-fit: cover;
+}
+
+.avatar-to-change {
+    margin-left: 55%;
+    width: 180px;
+    height: 180px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid black;
+    object-fit: cover;
+}
+
+.image-upload>input {
+    display: none;
+}
+
+.change-password-container {
+
+}
+
+.password-title {
+    float: left;
+}
+
+.password-title h2{
+    margin-top: 13%;
+    font-size: 20px;
+    font-family: 'Oswald',"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.change-password-container .password-form {
+    margin-top: 1%;
+    margin-left: 2.5%;
+    float: left;
+}
+
+.change-password-btn-container {
+    float: right;
+    margin-top: 1.5%;
+}
+
+.change-password-btn-container .change-password-btn {
+    margin-top: 100%;
+}
+
+
+
+.password-form .password-input {
+    width: 300px;
+}
+
+.alert {
+    width: 300px;
+    display: none;
+}

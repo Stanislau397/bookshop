@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{users}"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
+    <script type="text/javascript" th:src="@{/js/admin/all_users.js}"></script>
+</head>
+<body style="background-color: #e5e4e2">
+<div th:replace="fragment/side_bar"></div>
+
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="statusModalLabel"
+                    th:text="#{change_status}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"
+                 th:text="#{change_status_question}">
+            </div>
+            <input type="hidden" id="user_name_input" value="">
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        th:text="#{close}">
+
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="changeUserStatusByUsername()"
+                        th:text="#{change}">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <input type="hidden" id="user_id_input" value="">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="roleModalModalLabel"
+                    th:text="#{change_role}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <select class="form-select shadow-none"
+                    id="roles"
+                    aria-label="Default select example">
+
+            </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        th:text="#{close}">
+
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="changeUserRole()"
+                        th:text="#{change}">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container w-75">
+    <div class="input-group rounded w-50">
+        <input type="search"
+               id="keyword"
+               class="form-control rounded shadow-none users-search"
+               th:placeholder="#{search}" aria-label="Search"
+               aria-describedby="search-addon"
+               onkeyup="getUsersByKeyword()"/>
+    </div>
+
+    <table class="table users-table align-middle mb-0 bg-white w-90">
+        <thead class="bg-light">
+        <tr>
+            <th th:text="#{user_name}"></th>
+            <th th:text="#{role}"></th>
+            <th th:text="#{status}"></th>
+            <th th:text="#{actions}"></th>
+        </tr>
+        </thead>
+
+        <tbody id="tableData">
+
+        </tbody>
+    </table>
+    <div class="error-message" id="error-message"></div>
+
+    <nav aria-label="Users navigation">
+        <ul class="pagination" id="users-pagination">
+
+        </ul>
+    </nav>
+
+</div>
+</body>
+</html>
