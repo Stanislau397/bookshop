@@ -5,6 +5,7 @@ import edu.epam.bookshop.exception.EntityNotFoundException;
 import edu.epam.bookshop.exception.InvalidInputException;
 import edu.epam.bookshop.exception.NothingFoundException;
 import edu.epam.bookshop.repository.AuthorRepository;
+import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.service.impl.BookServiceImpl;
 import edu.epam.bookshop.validator.AuthorValidator;
@@ -49,12 +50,19 @@ class BookServiceTest {
     private ImageValidator imageValidator;
     @Mock
     private PublisherValidator publisherValidator;
+    @Mock
+    private GenreRepository genreRepository;
 
     private BookService bookService;
 
     @BeforeEach
     void setUp() {
-        bookService = new BookServiceImpl(authorRepository, publisherRepository, publisherValidator, authorValidator, imageValidator);
+        bookService = new BookServiceImpl(authorRepository,
+                publisherRepository,
+                genreRepository,
+                publisherValidator,
+                authorValidator,
+                imageValidator);
     }
 
 //    @Test

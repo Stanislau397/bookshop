@@ -32,5 +32,15 @@ public class TableColumn {
     public static final String DESCRIPTION = "description";
     public static final String PUBLISHER_ID_FK = "publisher_id_fk";
 
+    public static final String GENRE_ID = "genre_id";
+    public static final String GENRE_ID_FK = "genre_id_fk";
+
+    public static final String BOOK_ID = "book_id";
     public static final String BOOK_ID_FK = "book_id_fk";
+    public static final String TITLE = "title";
+    public static final String PRICE = "price";
+    public static final String PUBLISH_DATE = "publish_date";
+    public static final String ISBN = "isbn";
+    public static final String PAGES = "pages";
+    public static final String COVER_TYPE = "cover_type";
 }

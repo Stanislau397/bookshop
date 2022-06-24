@@ -15,4 +15,9 @@ public class TableName {
 
     public static final String PUBLISHERS = "publishers";
     public static final String PUBLISHER_BOOKS = "publisher_books";
+
+    public static final String GENRES = "genres";
+    public static final String BOOK_GENRES = "book_genres";
+
+    public static final String BOOKS = "books";
 }

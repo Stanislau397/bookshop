@@ -49,7 +49,7 @@ public class Author {
     @Column(name = BIRTH_DATE)
     private LocalDate birthDate;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = AUTHOR_BOOKS,
             joinColumns = @JoinColumn(name = AUTHOR_ID_FK),
             inverseJoinColumns = @JoinColumn(name = BOOK_ID_FK))

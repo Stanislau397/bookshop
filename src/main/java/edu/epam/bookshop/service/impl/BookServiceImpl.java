@@ -1,12 +1,14 @@
 package edu.epam.bookshop.service.impl;
 
 import edu.epam.bookshop.entity.Author;
+import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.exception.EntityAlreadyExistsException;
 import edu.epam.bookshop.exception.EntityNotFoundException;
 import edu.epam.bookshop.exception.InvalidInputException;
 import edu.epam.bookshop.exception.NothingFoundException;
 import edu.epam.bookshop.repository.AuthorRepository;
+import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.service.BookService;
 import edu.epam.bookshop.util.ImageUploaderUtil;
@@ -55,6 +57,7 @@ public class BookServiceImpl implements BookService {
     private static final int PUBLISHERS_PER_PAGE = 6;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
+    private final GenreRepository genreRepository;
 
     private PublisherValidator publisherValidator;
     private AuthorValidator authorValidator;
@@ -62,7 +65,44 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public void addPublisher(Publisher publisher, MultipartFile image) {
+    public void addGenre(Genre genre) {
+        if (genreRepository.existsByTitle(genre.getTitle())) {
+
+        }
+    }
+
+    @Override
+    public void deleteGenreById(Long genreId) {
+
+    }
+
+    @Override
+    public void updateGenreById(Long genreId) {
+
+    }
+
+    @Override
+    public boolean genreExistsByTitle(String genreTitle) {
+        return false;
+    }
+
+    @Override
+    public Page<Genre> findGenresByPage(int page) {
+        return null;
+    }
+
+    @Override
+    public List<Genre> findGenresByKeyword(String keyWord) {
+        return null;
+    }
+
+    @Override
+    public List<Genre> findAllGenres() {
+        return null;
+    }
+
+    @Override
+    public void addPublisher(Publisher publisher, MultipartFile image) { //todo test
         if (publisherRepository.existsByName(publisher.getName())) {
             throw new EntityAlreadyExistsException(
                     String.format(PUBLISHER_WITH_GIVEN_NAME_ALREADY_EXISTS, publisher.getName())
@@ -93,12 +133,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updatePublisherInfo(Publisher publisher, MultipartFile image) {
+    public void updatePublisherInfo(Publisher publisher, MultipartFile image) { //todo method
 
     }
 
     @Override
-    public void deletePublisherById(Long publisherId) {
+    public void deletePublisherById(Long publisherId) { //todo test
         if (!publisherRepository.existsById(publisherId)) {
             throw new EntityNotFoundException(
                     String.format(PUBLISHER_WITH_GIVEN_ID_NOT_FOUND, publisherId)
@@ -108,7 +148,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public boolean publisherExistsByName(String publisherName) {
+    public boolean publisherExistsByName(String publisherName) { //todo test
         boolean publisherExistsByName = publisherRepository.existsByName(publisherName);
         if (publisherExistsByName) {
             log.info(
@@ -119,7 +159,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Publisher findPublisherInfoByName(String publisherName) {
+    public Publisher findPublisherInfoByName(String publisherName) { //todo test
         return publisherRepository.findByName(publisherName)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(PUBLISHER_WITH_GIVEN_NAME_NOT_FOUND, publisherName)
@@ -127,7 +167,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Publisher> findPublishersByKeyword(String keyWord) {
+    public List<Publisher> findPublishersByKeyword(String keyWord) { //todo test
         List<Publisher> publishersByKeyword = publisherRepository.findAll()
                 .stream()
                 .filter(o -> o.getName().toLowerCase().contains(keyWord.toLowerCase()))
@@ -140,7 +180,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Publisher> findPublishersByPage(int page) {
+    public Page<Publisher> findPublishersByPage(int page) { //todo test
         Pageable pageWithPublishers = PageRequest.of(page - 1, PUBLISHERS_PER_PAGE);
         Page<Publisher> publishersByPage = publisherRepository.findAll(pageWithPublishers);
         if (publishersByPage.isEmpty()) {
