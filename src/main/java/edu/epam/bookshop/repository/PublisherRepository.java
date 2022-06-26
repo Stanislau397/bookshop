@@ -4,12 +4,14 @@ import edu.epam.bookshop.entity.Publisher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_PUBLISHER_INFO_BY_ID;
 
+@Repository
 public interface PublisherRepository extends JpaRepository<Publisher, Long> {
 
     @Transactional

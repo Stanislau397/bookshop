@@ -15,9 +15,9 @@ public interface BookService {
 
     void deleteGenreById(Long genreId);
 
-    void updateGenreById(Long genreId);
+    void updateGenreTitle(Genre genre);
 
-    boolean genreExistsByTitle(String genreTitle);
+    boolean isGenreExistsByTitle(String genreTitle);
 
     Page<Genre> findGenresByPage(int page);
 
@@ -31,13 +31,15 @@ public interface BookService {
 
     void deletePublisherById(Long publisherId);
 
-    boolean publisherExistsByName(String publisherName);
+    boolean isPublisherExistsByName(String publisherName);
 
     Publisher findPublisherInfoByName(String publisherName);
 
     List<Publisher> findPublishersByKeyword(String keyWord);
 
     Page<Publisher> findPublishersByPage(int page);
+
+    List<Publisher> findAllPublishers();
 
     void addAuthor(Author author, MultipartFile image);
 

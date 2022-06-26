@@ -13,6 +13,7 @@ import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.service.BookService;
 import edu.epam.bookshop.util.ImageUploaderUtil;
 import edu.epam.bookshop.validator.AuthorValidator;
+import edu.epam.bookshop.validator.GenreValidator;
 import edu.epam.bookshop.validator.ImageValidator;
 import edu.epam.bookshop.validator.PublisherValidator;
 import lombok.AllArgsConstructor;
@@ -40,6 +41,11 @@ import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_WITH_GIVEN_N
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_DESCRIPTION_IS_INVALID;
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_NAME_IS_INVALID;
 
+import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_TITLE_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_WITH_GIVEN_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_WITH_GIVEN_TITLE_EXISTS;
+import static edu.epam.bookshop.constant.ExceptionMessage.GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND;
+
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_LOCALHOST_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AUTHOR_IMAGE_PATH;
@@ -53,52 +59,116 @@ import static edu.epam.bookshop.constant.ImageStoragePath.PUBLISHERS_DIRECTORY_P
 @Service
 public class BookServiceImpl implements BookService {
 
-    private static final int AUTHORS_PER_PAGE = 6;
-    private static final int PUBLISHERS_PER_PAGE = 6;
+    private static final int ELEMENTS_PER_PAGE = 6;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final GenreRepository genreRepository;
 
+    private GenreValidator genreValidator;
     private PublisherValidator publisherValidator;
     private AuthorValidator authorValidator;
     private ImageValidator imageValidator;
 
 
     @Override
-    public void addGenre(Genre genre) {
-        if (genreRepository.existsByTitle(genre.getTitle())) {
-
+    public void addGenre(Genre genre) { //todo test
+        String genreTitle = genre.getTitle();
+        if (!genreValidator.isTitleValid(genreTitle)) {
+            log.info(GENRE_TITLE_IS_NOT_VALID);
+            throw new InvalidInputException(GENRE_TITLE_IS_NOT_VALID);
         }
+        if (genreRepository.existsByTitle(genreTitle)) {
+            log.info(
+                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
+
+            throw new EntityAlreadyExistsException(
+                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
+        }
+        genreRepository.save(genre);
     }
 
     @Override
-    public void deleteGenreById(Long genreId) {
-
+    public void deleteGenreById(Long genreId) { //todo test
+        if (!genreRepository.existsById(genreId)) {
+            log.info(
+                    String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
+            );
+            throw new EntityNotFoundException(
+                    String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
+            );
+        }
+        genreRepository.deleteById(genreId);
     }
 
     @Override
-    public void updateGenreById(Long genreId) {
+    public void updateGenreTitle(Genre genre) { //todo test
+        long genreId = genre.getGenreId();
+        String updatedGenreTitle = genre.getTitle();
 
+        if (!genreRepository.existsById(genreId)) {
+            log.info(
+                    String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
+            );
+            throw new EntityNotFoundException(
+                    String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
+            );
+        }
+        if (!genreValidator.isTitleValid(updatedGenreTitle)) {
+            log.info(GENRE_TITLE_IS_NOT_VALID);
+            throw new InvalidInputException(GENRE_TITLE_IS_NOT_VALID);
+        }
+
+        genreRepository.updateGenreTitleById(updatedGenreTitle, genreId);
     }
 
     @Override
-    public boolean genreExistsByTitle(String genreTitle) {
-        return false;
+    public boolean isGenreExistsByTitle(String genreTitle) { //todo test
+        boolean genreExists = genreRepository.existsByTitle(genreTitle);
+        if (genreExists) {
+            log.info(
+                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle)
+            );
+        }
+        return genreExists;
     }
 
     @Override
-    public Page<Genre> findGenresByPage(int page) {
-        return null;
+    public Page<Genre> findGenresByPage(int page) { //todo test
+        Pageable pageWithGenres = PageRequest.of(page - 1, ELEMENTS_PER_PAGE);
+        Page<Genre> genresByPage = genreRepository.findAll(pageWithGenres);
+        if (genresByPage.isEmpty()) {
+            log.info(NOTHING_WAS_FOUND_MSG);
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return genresByPage;
     }
 
     @Override
-    public List<Genre> findGenresByKeyword(String keyWord) {
-        return null;
+    public List<Genre> findGenresByKeyword(String keyWord) { //todo test
+        List<Genre> genresByKeyword = genreRepository.findAll()
+                .stream()
+                .filter(o -> o.getTitle().toLowerCase()
+                        .contains(keyWord.toLowerCase()))
+                .limit(ELEMENTS_PER_PAGE)
+                .toList();
+
+        if (genresByKeyword.isEmpty()) {
+            log.info(
+                    String.format(GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord));
+            throw new NothingFoundException(
+                    String.format(GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord));
+        }
+        return genresByKeyword;
     }
 
     @Override
-    public List<Genre> findAllGenres() {
-        return null;
+    public List<Genre> findAllGenres() { //todo test
+        List<Genre> allGenres = genreRepository.findAll();
+        if (allGenres.isEmpty()) {
+            log.info(NOTHING_WAS_FOUND_MSG);
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return allGenres;
     }
 
     @Override
@@ -134,7 +204,31 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void updatePublisherInfo(Publisher publisher, MultipartFile image) { //todo method
+        String updatedPublisherName = publisher.getName();
+        String updatedPublisherDescription = publisher.getDescription();
+        String imagePath = publisher.getImagePath();
 
+        if (!publisherValidator.isNameValid(updatedPublisherName)) {
+            throw new InvalidInputException(PUBLISHER_NAME_IS_INVALID);
+        }
+        if (!publisherValidator.isDescriptionValid(updatedPublisherDescription)) {
+            throw new InvalidInputException(PUBLISHER_DESCRIPTION_IS_INVALID);
+        }
+        if (image != null) {
+            String imageName = image.getOriginalFilename();
+            if (!imageValidator.isImageValid(imageName)) {
+                throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
+            }
+            imagePath = PUBLISHER_LOCALHOST_PATH
+                    .concat(ImageUploaderUtil.save(image, PUBLISHERS_DIRECTORY_PATH));
+        }
+
+        publisherRepository.updateInfoById(
+                updatedPublisherName,
+                updatedPublisherDescription,
+                imagePath,
+                publisher.getPublisherId()
+        );
     }
 
     @Override
@@ -148,7 +242,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public boolean publisherExistsByName(String publisherName) { //todo test
+    public boolean isPublisherExistsByName(String publisherName) { //todo test
         boolean publisherExistsByName = publisherRepository.existsByName(publisherName);
         if (publisherExistsByName) {
             log.info(
@@ -171,7 +265,7 @@ public class BookServiceImpl implements BookService {
         List<Publisher> publishersByKeyword = publisherRepository.findAll()
                 .stream()
                 .filter(o -> o.getName().toLowerCase().contains(keyWord.toLowerCase()))
-                .limit(PUBLISHERS_PER_PAGE)
+                .limit(ELEMENTS_PER_PAGE)
                 .toList();
         if (publishersByKeyword.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
@@ -181,12 +275,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<Publisher> findPublishersByPage(int page) { //todo test
-        Pageable pageWithPublishers = PageRequest.of(page - 1, PUBLISHERS_PER_PAGE);
+        Pageable pageWithPublishers = PageRequest.of(page - 1, ELEMENTS_PER_PAGE);
         Page<Publisher> publishersByPage = publisherRepository.findAll(pageWithPublishers);
         if (publishersByPage.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
         return publishersByPage;
+    }
+
+    @Override
+    public List<Publisher> findAllPublishers() { //todo test
+        List<Publisher> allPublishers = publisherRepository.findAll();
+        if (allPublishers.isEmpty()) {
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return allPublishers;
     }
 
     @Override
@@ -271,7 +374,7 @@ public class BookServiceImpl implements BookService {
                 .stream()
                 .filter(o -> o.getFirstName().toLowerCase().contains(keyWord.toLowerCase())
                         || o.getLastName().toLowerCase().contains(keyWord.toLowerCase()))
-                .limit(AUTHORS_PER_PAGE)
+                .limit(ELEMENTS_PER_PAGE)
                 .toList();
         if (authorsByKeyword.isEmpty()) {
             throw new NothingFoundException(
@@ -283,7 +386,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<Author> findAuthorsByPage(int page) {
-        Pageable pageWithAuthors = PageRequest.of(page - 1, AUTHORS_PER_PAGE);
+        Pageable pageWithAuthors = PageRequest.of(page - 1, ELEMENTS_PER_PAGE);
         Page<Author> authorsByPage = authorRepository.findAll(pageWithAuthors);
         if (authorsByPage.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);

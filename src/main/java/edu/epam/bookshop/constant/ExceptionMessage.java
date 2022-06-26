@@ -76,4 +76,17 @@ public class ExceptionMessage {
 
     public static final String PUBLISHER_DESCRIPTION_IS_INVALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("publisher_description_is_invalid");
+
+    //genre
+    public static final String GENRE_WITH_GIVEN_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genre_with_given_id_not_found");
+
+    public static final String GENRE_WITH_GIVEN_TITLE_EXISTS = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genre_with_given_title_exists");
+
+    public static final String GENRE_TITLE_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genre_title_is_invalid");
+
+    public static final String GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genre_with_given_keyword_not_found");
 }

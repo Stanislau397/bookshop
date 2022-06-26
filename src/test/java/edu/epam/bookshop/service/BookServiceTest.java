@@ -9,6 +9,7 @@ import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.service.impl.BookServiceImpl;
 import edu.epam.bookshop.validator.AuthorValidator;
+import edu.epam.bookshop.validator.GenreValidator;
 import edu.epam.bookshop.validator.ImageValidator;
 import edu.epam.bookshop.validator.PublisherValidator;
 import lombok.ToString;
@@ -42,14 +43,22 @@ class BookServiceTest {
 
     @Mock
     private AuthorRepository authorRepository;
+
     @Mock
     private PublisherRepository publisherRepository;
+
     @Mock
     private AuthorValidator authorValidator;
+
     @Mock
     private ImageValidator imageValidator;
+
+    @Mock
+    private GenreValidator genreValidator;
+
     @Mock
     private PublisherValidator publisherValidator;
+
     @Mock
     private GenreRepository genreRepository;
 
@@ -60,6 +69,7 @@ class BookServiceTest {
         bookService = new BookServiceImpl(authorRepository,
                 publisherRepository,
                 genreRepository,
+                genreValidator,
                 publisherValidator,
                 authorValidator,
                 imageValidator);

@@ -2,17 +2,7 @@ package edu.epam.bookshop.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.ManyToMany;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
+import javax.persistence.*;
 
 import java.util.List;
 
@@ -53,7 +43,7 @@ public class Publisher {
     @Column(name = IMAGE_PATH)
     private String imagePath;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = PUBLISHER_BOOKS,
             joinColumns = @JoinColumn(name = PUBLISHER_ID_FK),
             inverseJoinColumns = @JoinColumn(name = BOOK_ID_FK))

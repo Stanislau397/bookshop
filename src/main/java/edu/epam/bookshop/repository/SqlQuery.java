@@ -38,4 +38,9 @@ public class SqlQuery {
             "p.description = ?2, " +
             "p.imagePath = ?3 " +
             "WHERE p.publisherId = ?4";
+
+    //genre
+    public static final String UPDATE_GENRE_TITLE_BY_ID = "UPDATE genre g " +
+            "SET g.title = ?1 " +
+            "WHERE g.genreId = ?2";
 }
