@@ -23,6 +23,8 @@ import static edu.epam.bookshop.entity.constant.TableColumn.IMAGE_PATH;
 @Builder
 @Setter
 @Getter
+@EqualsAndHashCode
+@ToString
 public class Publisher {
 
     @Id

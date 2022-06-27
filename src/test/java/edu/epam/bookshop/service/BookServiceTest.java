@@ -36,8 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.*;
-import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_LOCALHOST_PATH;
-import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AUTHOR_IMAGE_PATH;
+import static edu.epam.bookshop.constant.ImageStoragePath.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -314,6 +313,135 @@ class BookServiceTest {
         assertThatThrownBy(() -> bookService.findAllGenres())
                 .isInstanceOf(NothingFoundException.class)
                 .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
+    }
+
+    @Test
+    void willAddPublisherWithDefaultImage() {
+        //given
+        String publisherName = "Harvest";
+        Publisher publisherToAdd = Publisher
+                .builder()
+                .name(publisherName)
+                .description(anyString())
+                .imagePath(DEFAULT_PUBLISHER_IMAGE_PATH)
+                .build();
+        //when
+        when(publisherRepository.existsByName(publisherName)).thenReturn(false);
+        when(publisherValidator.isNameValid(publisherName)).thenReturn(true);
+        when(publisherValidator.isDescriptionValid(anyString())).thenReturn(true);
+        bookService.addPublisher(publisherToAdd, null);
+        //then
+        verify(publisherRepository, times(1)).save(publisherToAdd);
+    }
+
+    @SneakyThrows(IOException.class)
+    @Test
+    void willAddPublisherWithProvidedImage() {
+        //given
+        MultipartFile publisherImageToSave = mock(MultipartFile.class);
+        byte[] data = new byte[]{1, 2, 3, 4};
+        String publisherName = "Harvest";
+        String imageName = "123.jpg";
+        Publisher publisherToAdd = Publisher
+                .builder()
+                .name(publisherName)
+                .description(anyString())
+                .imagePath(PUBLISHER_LOCALHOST_PATH.concat(imageName))
+                .build();
+        //when
+        when(publisherRepository.existsByName(publisherName))
+                .thenReturn(false);
+        when(publisherValidator.isNameValid(publisherName))
+                .thenReturn(true);
+        when(publisherValidator.isDescriptionValid(anyString()))
+                .thenReturn(true);
+        when(publisherImageToSave.getInputStream())
+                .thenReturn(new ByteArrayInputStream(data));
+        when(publisherImageToSave.getOriginalFilename())
+                .thenReturn(imageName);
+        when(imageValidator.isImageValid(imageName))
+                .thenReturn(true);
+        bookService.addPublisher(publisherToAdd, publisherImageToSave);
+        //then
+        verify(publisherRepository, times(1)).save(publisherToAdd);
+    }
+
+    @Test
+    void addPublisherWillThrowExceptionWhenNameAlreadyTaken() {
+        //given
+        String publisherName = "Harvest";
+        Publisher existingPublisher = Publisher
+                .builder()
+                .name(publisherName)
+                .build();
+        //when
+        when(publisherRepository.existsByName(publisherName)).thenReturn(true);
+        //then
+        assertThatThrownBy(() -> bookService.addPublisher(existingPublisher, null))
+                .isInstanceOf(EntityAlreadyExistsException.class)
+                .hasMessageContaining(
+                        String.format(PUBLISHER_WITH_GIVEN_NAME_ALREADY_EXISTS, publisherName)
+                );
+    }
+
+    @Test
+    void addPublisherWillThrowExceptionWhenGivenNameIsNotValid() {
+        //given
+        String publisherName = "Harvest";
+        Publisher publisherToAdd = Publisher
+                .builder()
+                .name(publisherName)
+                .build();
+        //when
+        when(publisherRepository.existsByName(publisherName)).thenReturn(false);
+        when(publisherValidator.isNameValid(publisherName)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addPublisher(publisherToAdd, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(PUBLISHER_NAME_IS_INVALID);
+    }
+
+    @Test
+    void addPublisherWillThrowExceptionWhenGivenDescriptionIsNotValid() {
+        //given
+        String publisherName = "Harvest";
+        Publisher publisherToAdd = Publisher
+                .builder()
+                .name(publisherName)
+                .description(anyString())
+                .build();
+        //when
+        when(publisherRepository.existsByName(publisherName)).thenReturn(false);
+        when(publisherValidator.isNameValid(publisherName)).thenReturn(true);
+        when(publisherValidator.isDescriptionValid(anyString())).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addPublisher(publisherToAdd, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(PUBLISHER_DESCRIPTION_IS_INVALID);
+    }
+
+    @Test
+    void addPublisherWillThrowExceptionWhenGivenImageIsNotValid() {
+        //given
+        MultipartFile imageToSave = mock(MultipartFile.class);
+        String publisherName = "Harvest";
+        String imageName = "123.xml";
+        Publisher existingPublisher = Publisher
+                .builder()
+                .name(publisherName)
+                .description(anyString())
+                .imagePath(imageName)
+                .build();
+        //when
+        when(publisherRepository.existsByName(publisherName)).thenReturn(false);
+        when(publisherValidator.isNameValid(publisherName)).thenReturn(true);
+        when(publisherValidator.isDescriptionValid(anyString())).thenReturn(true);
+        when(imageToSave.getOriginalFilename()).thenReturn(imageName);
+        when(imageValidator.isImageValid(imageName)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addPublisher(existingPublisher, imageToSave))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(IMAGE_IS_NOT_VALID_MSG);
     }
 
     @Test
