@@ -7,15 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
-import static edu.epam.bookshop.entity.constant.TableColumn.AUTHOR_ID;
-import static edu.epam.bookshop.entity.constant.TableColumn.FIRST_NAME;
-import static edu.epam.bookshop.entity.constant.TableColumn.LAST_NAME;
-import static edu.epam.bookshop.entity.constant.TableColumn.BIRTH_DATE;
-import static edu.epam.bookshop.entity.constant.TableColumn.IMAGE_PATH;
-import static edu.epam.bookshop.entity.constant.TableColumn.BIOGRAPHY;
-import static edu.epam.bookshop.entity.constant.TableColumn.AUTHOR_ID_FK;
-import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
-
+import static edu.epam.bookshop.entity.constant.TableColumn.*;
 import static edu.epam.bookshop.entity.constant.TableName.AUTHORS;
 import static edu.epam.bookshop.entity.constant.TableName.AUTHOR_BOOKS;
 
@@ -26,6 +18,8 @@ import static edu.epam.bookshop.entity.constant.TableName.AUTHOR_BOOKS;
 @Builder
 @Setter
 @Getter
+@EqualsAndHashCode
+@ToString
 public class Author {
 
     @Id

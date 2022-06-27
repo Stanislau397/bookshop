@@ -15,6 +15,7 @@ import edu.epam.bookshop.validator.AuthorValidator;
 import edu.epam.bookshop.validator.GenreValidator;
 import edu.epam.bookshop.validator.ImageValidator;
 import edu.epam.bookshop.validator.PublisherValidator;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,12 +28,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.*;
+import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_LOCALHOST_PATH;
+import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AUTHOR_IMAGE_PATH;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -249,9 +254,9 @@ class BookServiceTest {
         //when
         when(genreRepository.findAll(pageWithGenres)).thenReturn(genresByPage);
         //then
-       assertThatThrownBy(() -> bookService.findGenresByPage(1))
-               .isInstanceOf(NothingFoundException.class)
-               .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
+        assertThatThrownBy(() -> bookService.findGenresByPage(1))
+                .isInstanceOf(NothingFoundException.class)
+                .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
     }
 
     @Test
@@ -321,6 +326,7 @@ class BookServiceTest {
         //then
         verify(publisherRepository, times(1)).deleteById(publisherId);
     }
+
     @Test
     void deletePublisherByIdWillThrowExceptionWhenPublisherWithGivenIdNotFound() {
         //given
@@ -450,7 +456,6 @@ class BookServiceTest {
     void findPublishersByPageWillThrowExceptionWhenNothingWasFound() {
         //given
         Pageable pageWithPublishers = PageRequest.of(0, 6);
-        Publisher publisher = Publisher.builder().build();
         List<Publisher> publishers = new ArrayList<>();
         Page<Publisher> publishersByPage = new PageImpl<>(publishers);
         //when
@@ -487,31 +492,77 @@ class BookServiceTest {
     }
 
 
-//    @Test
-//    void willAddAuthorWithDefaultImage() {
-//        //given
-//        String firstName = "Stanislau";
-//        String lastname = "Kachan";
-//        MultipartFile mockFile = null;
-//        Author author = Author.builder()
-//                .firstName(firstName)
-//                .lastName(lastname)
-//                .birthDate(LocalDate.of(1995, 11, 12))
-//                .imagePath(DEFAULT_AUTHOR_IMAGE_PATH)
-//                .biography("asd")
-//                .build();
-//        //when
-//        when(authorValidator.isFirstnameValid(firstName)).thenReturn(true);
-//        when(authorValidator.isLastnameValid(lastname)).thenReturn(true);
-//        bookService.addAuthor(author, mockFile);
-//        //then
-//        ArgumentCaptor<Author> authorArgumentCaptor =
-//                ArgumentCaptor.forClass(Author.class);
-//        verify(authorRepository).save(authorArgumentCaptor.capture());
-//
-//        Author capturedUser = authorArgumentCaptor.getValue();
-//        assertThat(capturedUser).isEqualTo(author);
-//    }
+    @SneakyThrows(IOException.class)
+    @Test
+    void willAddAuthorWithNewImage() {
+        //given
+        MultipartFile imageToSave = mock(MultipartFile.class);
+        String firstName = "Stanislau";
+        String lastname = "Kachan";
+        String imageName = "123.jpg";
+        byte[] data = new byte[]{1, 2, 3, 4};
+        Author author = Author.builder()
+                .firstName(firstName)
+                .lastName(lastname)
+                .birthDate(LocalDate.of(1995, 11, 12))
+                .imagePath(AUTHORS_LOCALHOST_PATH.concat(imageName))
+                .biography("asd")
+                .build();
+        //when
+        when(authorValidator.isFirstnameValid(firstName)).thenReturn(true);
+        when(authorValidator.isLastnameValid(lastname)).thenReturn(true);
+        when(imageToSave.getInputStream()).thenReturn(new ByteArrayInputStream(data));
+        when(imageToSave.getOriginalFilename()).thenReturn(imageName);
+        when(imageValidator.isImageValid(imageName)).thenReturn(true);
+        bookService.addAuthor(author, imageToSave);
+        //then
+        verify(authorRepository, times(1)).save(author);
+    }
+
+    @Test
+    void willAddAuthorWithDefaultImage() {
+        //given
+        String firstName = "Stanislau";
+        String lastname = "Kachan";
+        Author author = Author.builder()
+                .firstName(firstName)
+                .lastName(lastname)
+                .birthDate(LocalDate.of(1995, 11, 12))
+                .imagePath(DEFAULT_AUTHOR_IMAGE_PATH)
+                .biography("asd")
+                .build();
+        //when
+        when(authorValidator.isFirstnameValid(firstName)).thenReturn(true);
+        when(authorValidator.isLastnameValid(lastname)).thenReturn(true);
+        bookService.addAuthor(author, null);
+        //then
+        verify(authorRepository, times(1)).save(author);
+    }
+
+    @Test
+    void addAuthorWillThrowExceptionWhenImageIsNotValid() {
+        //given
+        MultipartFile imageToSave = mock(MultipartFile.class);
+        String firstName = "Stanislau";
+        String lastname = "Kachan";
+        String imageName = "123.xml";
+        Author author = Author.builder()
+                .firstName(firstName)
+                .lastName(lastname)
+                .birthDate(LocalDate.of(1995, 11, 12))
+                .imagePath(AUTHORS_LOCALHOST_PATH.concat(imageName))
+                .biography("asd")
+                .build();
+        //when
+        when(authorValidator.isFirstnameValid(firstName)).thenReturn(true);
+        when(authorValidator.isLastnameValid(lastname)).thenReturn(true);
+        when(imageToSave.getOriginalFilename()).thenReturn(imageName);
+        when(imageValidator.isImageValid(imageName)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addAuthor(author, imageToSave))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(IMAGE_IS_NOT_VALID_MSG);
+    }
 
     @Test
     void addAuthorWillThrowExceptionWhenFirstNameIsNotValid() {
@@ -551,7 +602,7 @@ class BookServiceTest {
     }
 
     @Test
-    void willUpdateActorInfo() {
+    void willUpdateActorInfoWithOldImage() {
         //given
         String firstName = "Stanislau";
         String lastName = "Kachan";
@@ -576,6 +627,47 @@ class BookServiceTest {
                 .updateInfoByAuthorFieldsAndId(
                         firstName,
                         lastName,
+                        author.getBiography(),
+                        author.getBirthDate(),
+                        author.getImagePath(),
+                        author.getAuthorId());
+    }
+
+    @SneakyThrows(IOException.class)
+    @Test
+    void willUpdateActorInfoWithNewImage() {
+        //given
+        MultipartFile imageToSave = mock(MultipartFile.class);
+        String firstName = "Stanislau";
+        String lastname = "Kachan";
+        String imageName = "123.jpg";
+        byte[] data = new byte[]{1, 2, 3, 4};
+        Author author = Author.builder()
+                .firstName(firstName)
+                .lastName(lastname)
+                .birthDate(LocalDate.of(1995, 11, 12))
+                .imagePath(AUTHORS_LOCALHOST_PATH.concat(imageName))
+                .biography("asd")
+                .build();
+        //when
+        when(authorRepository.existsById(author.getAuthorId()))
+                .thenReturn(true);
+        when(authorValidator.isFirstnameValid(firstName))
+                .thenReturn(true);
+        when(authorValidator.isLastnameValid(lastname))
+                .thenReturn(true);
+        when(imageToSave.getInputStream())
+                .thenReturn(new ByteArrayInputStream(data));
+        when(imageToSave.getOriginalFilename())
+                .thenReturn(imageName);
+        when(imageValidator.isImageValid(imageName))
+                .thenReturn(true);
+        bookService.updateAuthorInfo(author, imageToSave);
+        //then
+        verify(authorRepository, times(1))
+                .updateInfoByAuthorFieldsAndId(
+                        firstName,
+                        lastname,
                         author.getBiography(),
                         author.getBirthDate(),
                         author.getImagePath(),

@@ -219,7 +219,6 @@ public class BookServiceImpl implements BookService {
             imagePath = PUBLISHER_LOCALHOST_PATH
                     .concat(ImageUploaderUtil.save(image, PUBLISHERS_DIRECTORY_PATH));
         }
-
         publisherRepository.updateInfoById(
                 updatedPublisherName,
                 updatedPublisherDescription,
@@ -290,7 +289,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addAuthor(Author author, MultipartFile image) { //todo test when image is not null
+    public void addAuthor(Author author, MultipartFile image) {
         if (!authorValidator.isFirstnameValid(author.getFirstName())) {
             throw new InvalidInputException(FIRST_NAME_IS_NOT_VALID_MSG);
         }
@@ -317,7 +316,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateAuthorInfo(Author author, MultipartFile image) { //todo test when image is not null
+    public void updateAuthorInfo(Author author, MultipartFile image) {
         if (!authorRepository.existsById(author.getAuthorId())) {
             throw new EntityNotFoundException(
                     String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, author.getAuthorId())
