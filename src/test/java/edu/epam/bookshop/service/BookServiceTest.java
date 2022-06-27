@@ -1,6 +1,9 @@
 package edu.epam.bookshop.service;
 
 import edu.epam.bookshop.entity.Author;
+import edu.epam.bookshop.entity.Genre;
+import edu.epam.bookshop.entity.Publisher;
+import edu.epam.bookshop.exception.EntityAlreadyExistsException;
 import edu.epam.bookshop.exception.EntityNotFoundException;
 import edu.epam.bookshop.exception.InvalidInputException;
 import edu.epam.bookshop.exception.NothingFoundException;
@@ -12,12 +15,10 @@ import edu.epam.bookshop.validator.AuthorValidator;
 import edu.epam.bookshop.validator.GenreValidator;
 import edu.epam.bookshop.validator.ImageValidator;
 import edu.epam.bookshop.validator.PublisherValidator;
-import lombok.ToString;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,6 @@ import static edu.epam.bookshop.constant.ExceptionMessage.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
-import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AUTHOR_IMAGE_PATH;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -74,6 +73,419 @@ class BookServiceTest {
                 authorValidator,
                 imageValidator);
     }
+
+    @Test
+    void willAddGenre() {
+        //given
+        String genreTitle = "Sci-Fi";
+        Genre genre = Genre.builder()
+                .title(genreTitle)
+                .build();
+        //when
+        when(genreValidator.isTitleValid(genreTitle)).thenReturn(true);
+        when(genreRepository.existsByTitle(genreTitle)).thenReturn(false);
+        bookService.addGenre(genre);
+        //then
+        verify(genreRepository, times(1)).save(genre);
+    }
+
+    @Test
+    void addGenreWillThrowExceptionWhenTitleIsNotValid() {
+        //given
+        String invalidGenreTitle = "1Sci-Fi";
+        Genre genre = Genre.builder()
+                .title(invalidGenreTitle)
+                .build();
+        //when
+        when(genreValidator.isTitleValid(invalidGenreTitle)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addGenre(genre))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(GENRE_TITLE_IS_NOT_VALID);
+    }
+
+    @Test
+    void addGenreWillThrowExceptionWhenGenreWithGivenTitleExists() {
+        //given
+        String existingGenreTitle = "Sci-Fi";
+        Genre genre = Genre.builder()
+                .title(existingGenreTitle)
+                .build();
+        //when
+        when(genreValidator.isTitleValid(existingGenreTitle)).thenReturn(true);
+        when(genreRepository.existsByTitle(existingGenreTitle)).thenReturn(true);
+        //then
+        assertThatThrownBy(() -> bookService.addGenre(genre))
+                .isInstanceOf(EntityAlreadyExistsException.class)
+                .hasMessageContaining(
+                        String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, existingGenreTitle)
+                );
+    }
+
+    @Test
+    void willDeleteGenreById() {
+        //given
+        Long genreId = 1L;
+        //when
+        when(genreRepository.existsById(genreId)).thenReturn(true);
+        bookService.deleteGenreById(genreId);
+        //then
+        verify(genreRepository, times(1)).deleteById(genreId);
+    }
+
+    @Test
+    void deleteGenreByIdWillThrowExceptionWhenGenreWithGivenIdNotFound() {
+        //given
+        Long notExistingGenreId = 1L;
+        //when
+        when(genreRepository.existsById(notExistingGenreId)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.deleteGenreById(notExistingGenreId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, notExistingGenreId)
+                );
+    }
+
+    @Test
+    void willUpdateGenreTitle() {
+        //given
+        Long genreId = 1L;
+        String genreTitle = "Adventure";
+        Genre genreToUpdate = Genre
+                .builder()
+                .genreId(genreId)
+                .title(genreTitle)
+                .build();
+        //when
+        when(genreRepository.existsById(genreId)).thenReturn(true);
+        when(genreValidator.isTitleValid(genreTitle)).thenReturn(true);
+        bookService.updateGenreTitle(genreToUpdate);
+        //then
+        verify(genreRepository, times(1)).updateGenreTitleById(genreTitle, genreId);
+    }
+
+    @Test
+    void updateGenreTitleWillThrowExceptionWhenGenreWithGivenIdNotFound() {
+        //given
+        Long genreId = 1L;
+        String genreTitle = "Adventure";
+        Genre genreToUpdate = Genre
+                .builder()
+                .genreId(genreId)
+                .title(genreTitle)
+                .build();
+        //when
+        when(genreRepository.existsById(genreId)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.updateGenreTitle(genreToUpdate))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
+                );
+    }
+
+    @Test
+    void updateGenreTitleWillThrowExceptionWhenGivenTitleNotValid() {
+        //given
+        Long genreId = 1L;
+        String genreTitle = "Adventure";
+        Genre genreToUpdate = Genre
+                .builder()
+                .genreId(genreId)
+                .title(genreTitle)
+                .build();
+        //when
+        when(genreRepository.existsById(genreId)).thenReturn(true);
+        when(genreValidator.isTitleValid(genreTitle)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.updateGenreTitle(genreToUpdate))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(GENRE_TITLE_IS_NOT_VALID);
+    }
+
+    @Test
+    void isGenreExistsByTitleWillReturnTrue() {
+        //given
+        String genreTitle = "Sci-fi";
+        //when
+        when(genreRepository.existsByTitle(genreTitle)).thenReturn(true);
+        boolean condition = bookService.isGenreExistsByTitle(genreTitle);
+        //then
+        assertThat(condition).isTrue();
+    }
+
+    @Test
+    void isGenreExistsByTitleWillReturnFalse() {
+        //given
+        String genreTitle = "Sci-fi";
+        //when
+        when(genreRepository.existsByTitle(genreTitle)).thenReturn(false);
+        boolean condition = bookService.isGenreExistsByTitle(genreTitle);
+        //then
+        assertThat(condition).isFalse();
+    }
+
+    @Test
+    void willReturnGenresByPage() {
+        //given
+        Pageable pageWithGenres = PageRequest.of(0, 6);
+        Genre genre = Genre.builder().build();
+        Page<Genre> genresByPage = new PageImpl<>(List.of(genre));
+        //when
+        when(genreRepository.findAll(pageWithGenres)).thenReturn(genresByPage);
+        Page<Genre> expectedGenresByPage = bookService.findGenresByPage(1);
+        //then
+        assertThat(expectedGenresByPage.getTotalPages()).isEqualTo(1);
+        assertThat(expectedGenresByPage.getSize()).isEqualTo(1);
+        assertThat(expectedGenresByPage).isEqualTo(genresByPage);
+    }
+
+    @Test
+    void findGenresByPageWillThorExceptionWhenNothingWasFound() {
+        //given
+        Pageable pageWithGenres = PageRequest.of(0, 6);
+        Page<Genre> genresByPage = new PageImpl<>(new ArrayList<>());
+        //when
+        when(genreRepository.findAll(pageWithGenres)).thenReturn(genresByPage);
+        //then
+       assertThatThrownBy(() -> bookService.findGenresByPage(1))
+               .isInstanceOf(NothingFoundException.class)
+               .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
+    }
+
+    @Test
+    void willFindGenresByKeyWord() {
+        //given
+        String keyWord = "Sci";
+        Genre firstGenre = Genre.builder().title("Sci-fi").build();
+        Genre secondGenre = Genre.builder().title("Sci").build();
+        List<Genre> genres = List.of(firstGenre, secondGenre);
+        //when
+        when(genreRepository.findAll()).thenReturn(genres);
+        List<Genre> expectedGenresByKeyWord = bookService.findGenresByKeyword(keyWord);
+        //then
+        assertThat(expectedGenresByKeyWord).isNotNull();
+        assertThat(expectedGenresByKeyWord.size()).isEqualTo(2);
+        assertThat(expectedGenresByKeyWord).isEqualTo(genres);
+    }
+
+    @Test
+    void findGenresByKeyWordWillThrowExceptionWhenNothingWasFound() {
+        //given
+        String keyWord = "Sci";
+        List<Genre> genres = new ArrayList<>();
+        //when
+        when(genreRepository.findAll()).thenReturn(genres);
+        //then
+        assertThatThrownBy(() -> bookService.findGenresByKeyword(keyWord))
+                .isInstanceOf(NothingFoundException.class)
+                .hasMessageContaining(
+                        String.format(GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord)
+                );
+    }
+
+    @Test
+    void willFindAllGenres() {
+        //given
+        Genre genre = Genre.builder().build();
+        List<Genre> genres = List.of(genre);
+        //when
+        when(genreRepository.findAll()).thenReturn(genres);
+        List<Genre> expectedGenres = bookService.findAllGenres();
+        //then
+        assertThat(expectedGenres).isNotNull();
+        assertThat(expectedGenres.size()).isEqualTo(1);
+        assertThat(expectedGenres).isEqualTo(genres);
+    }
+
+    @Test
+    void findAllGenresWillThrowExceptionWhenNothingFound() {
+        //given
+        List<Genre> emptyGenres = new ArrayList<>();
+        //when
+        when(genreRepository.findAll()).thenReturn(emptyGenres);
+        //then
+        assertThatThrownBy(() -> bookService.findAllGenres())
+                .isInstanceOf(NothingFoundException.class)
+                .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
+    }
+
+    @Test
+    void willDeletePublisherById() {
+        //given
+        Long publisherId = 1L;
+        //when
+        when(publisherRepository.existsById(publisherId)).thenReturn(true);
+        bookService.deletePublisherById(publisherId);
+        //then
+        verify(publisherRepository, times(1)).deleteById(publisherId);
+    }
+    @Test
+    void deletePublisherByIdWillThrowExceptionWhenPublisherWithGivenIdNotFound() {
+        //given
+        Long publisherId = 1L;
+        //when
+        when(publisherRepository.existsById(publisherId)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.deletePublisherById(publisherId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(PUBLISHER_WITH_GIVEN_ID_NOT_FOUND, publisherId)
+                );
+    }
+
+    @Test
+    void isPublisherExistsByNameWillReturnTrue() {
+        //given
+        String publisherName = "Harvest";
+        //when
+        when(publisherRepository.existsByName(publisherName)).thenReturn(true);
+        boolean publisherExists = bookService.isPublisherExistsByName(publisherName);
+        //then
+        assertThat(publisherExists).isTrue();
+    }
+
+    @Test
+    void isPublisherExistsByNameWillReturnFalse() {
+        //given
+        String publisherName = "Harvest";
+        //when
+        when(publisherRepository.existsByName(publisherName)).thenReturn(false);
+        boolean publisherExists = bookService.isPublisherExistsByName(publisherName);
+        //then
+        assertThat(publisherExists).isFalse();
+    }
+
+    @Test
+    void willFindPublisherInfoByName() {
+        //given
+        String publisherName = "Harvest";
+        Publisher givenPublisher = Publisher
+                .builder()
+                .name(publisherName)
+                .build();
+        //when
+        when(publisherRepository.findByName(publisherName)).thenReturn(Optional.of(givenPublisher));
+        Publisher expectedPublisher = bookService.findPublisherInfoByName(publisherName);
+        //then
+        assertThat(expectedPublisher).isNotNull();
+        assertThat(expectedPublisher.getName()).isEqualTo(publisherName);
+    }
+
+    @Test
+    void findPublisherInfoByNameWillThrowExceptionWhenGivenNameNotFound() {
+        //given
+        String publisherName = "Harvest";
+        //when
+        when(publisherRepository.findByName(publisherName))
+                .thenReturn(Optional.empty());
+        //then
+        assertThatThrownBy(() -> bookService.findPublisherInfoByName(publisherName))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(PUBLISHER_WITH_GIVEN_NAME_NOT_FOUND, publisherName)
+                );
+    }
+
+    @Test
+    void willFindPublishersByKeyWord() {
+        //given
+        String keyWord = "Harv";
+        Publisher firstPublisher = Publisher
+                .builder()
+                .name("Harvest")
+                .build();
+        Publisher secondPublisher = Publisher
+                .builder()
+                .name("Harv")
+                .build();
+        //when
+        when(publisherRepository.findAll())
+                .thenReturn(List.of(firstPublisher, secondPublisher));
+        List<Publisher> expectedPublishersByKeyWord = bookService.findPublishersByKeyword(keyWord);
+        //then
+        assertThat(expectedPublishersByKeyWord).isNotNull();
+        assertThat(expectedPublishersByKeyWord.size()).isEqualTo(2);
+    }
+
+    @Test
+    void findPublishersByKeyWordWillThrowExceptionWhenNothingWasFound() {
+        //given
+        String keyWord = "Stat";
+        Publisher firstPublisher = Publisher
+                .builder()
+                .name("Harvest")
+                .build();
+        Publisher secondPublisher = Publisher
+                .builder()
+                .name("Harv")
+                .build();
+        //when
+        when(publisherRepository.findAll())
+                .thenReturn(List.of(firstPublisher, secondPublisher));
+        //then
+        assertThatThrownBy(() -> bookService.findPublishersByKeyword(keyWord))
+                .isInstanceOf(NothingFoundException.class)
+                .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
+    }
+
+    @Test
+    void willFindPublishersByPage() {
+        //given
+        Pageable pageWithPublishers = PageRequest.of(0, 6);
+        Publisher publisher = Publisher.builder().build();
+        List<Publisher> publishers = List.of(publisher);
+        Page<Publisher> publishersByPage = new PageImpl<>(publishers);
+        //when
+        when(publisherRepository.findAll(pageWithPublishers)).thenReturn(publishersByPage);
+        Page<Publisher> expectedPublishersByPage = bookService.findPublishersByPage(1);
+        //then
+        assertThat(expectedPublishersByPage).isNotNull();
+        assertThat(expectedPublishersByPage.getSize()).isEqualTo(1);
+        assertThat(expectedPublishersByPage.getTotalPages()).isEqualTo(1);
+    }
+
+    @Test
+    void findPublishersByPageWillThrowExceptionWhenNothingWasFound() {
+        //given
+        Pageable pageWithPublishers = PageRequest.of(0, 6);
+        Publisher publisher = Publisher.builder().build();
+        List<Publisher> publishers = new ArrayList<>();
+        Page<Publisher> publishersByPage = new PageImpl<>(publishers);
+        //when
+        when(publisherRepository.findAll(pageWithPublishers)).thenReturn(publishersByPage);
+        //then
+        assertThatThrownBy(() -> bookService.findPublishersByPage(1))
+                .isInstanceOf(NothingFoundException.class)
+                .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
+    }
+
+    @Test
+    void willFindAllPublishers() {
+        //given
+        Publisher publisher = Publisher.builder().build();
+        List<Publisher> publishers = List.of(publisher);
+        //when
+        when(publisherRepository.findAll()).thenReturn(publishers);
+        List<Publisher> expectedPublishers = bookService.findAllPublishers();
+        //then
+        assertThat(expectedPublishers).isNotNull();
+        assertThat(expectedPublishers).isEqualTo(publishers);
+    }
+
+    @Test
+    void findAllPublishersWillThrowExceptionWhenNothingWasFound() {
+        //given
+        List<Publisher> publishers = new ArrayList<>();
+        //when
+        when(publisherRepository.findAll()).thenReturn(publishers);
+        //then
+        assertThatThrownBy(() -> bookService.findAllPublishers())
+                .isInstanceOf(NothingFoundException.class)
+                .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
+    }
+
 
 //    @Test
 //    void willAddAuthorWithDefaultImage() {
@@ -139,7 +551,7 @@ class BookServiceTest {
     }
 
     @Test
-    void willUpdateActorInfo() throws IOException {
+    void willUpdateActorInfo() {
         //given
         String firstName = "Stanislau";
         String lastName = "Kachan";
@@ -388,6 +800,9 @@ class BookServiceTest {
     @AfterEach
     void tearDown() {
         authorRepository.deleteAll();
+        publisherRepository.deleteAll();
+        publisherValidator = null;
+        genreValidator = null;
         authorValidator = null;
         imageValidator = null;
         bookService = null;

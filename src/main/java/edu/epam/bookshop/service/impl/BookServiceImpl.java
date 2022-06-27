@@ -71,7 +71,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public void addGenre(Genre genre) { //todo test
+    public void addGenre(Genre genre) {
         String genreTitle = genre.getTitle();
         if (!genreValidator.isTitleValid(genreTitle)) {
             log.info(GENRE_TITLE_IS_NOT_VALID);
@@ -80,7 +80,6 @@ public class BookServiceImpl implements BookService {
         if (genreRepository.existsByTitle(genreTitle)) {
             log.info(
                     String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
-
             throw new EntityAlreadyExistsException(
                     String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
         }
@@ -88,7 +87,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteGenreById(Long genreId) { //todo test
+    public void deleteGenreById(Long genreId) {
         if (!genreRepository.existsById(genreId)) {
             log.info(
                     String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
@@ -101,7 +100,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateGenreTitle(Genre genre) { //todo test
+    public void updateGenreTitle(Genre genre) {
         long genreId = genre.getGenreId();
         String updatedGenreTitle = genre.getTitle();
 
@@ -117,23 +116,21 @@ public class BookServiceImpl implements BookService {
             log.info(GENRE_TITLE_IS_NOT_VALID);
             throw new InvalidInputException(GENRE_TITLE_IS_NOT_VALID);
         }
-
         genreRepository.updateGenreTitleById(updatedGenreTitle, genreId);
     }
 
     @Override
-    public boolean isGenreExistsByTitle(String genreTitle) { //todo test
+    public boolean isGenreExistsByTitle(String genreTitle) {
         boolean genreExists = genreRepository.existsByTitle(genreTitle);
         if (genreExists) {
             log.info(
-                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle)
-            );
+                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
         }
         return genreExists;
     }
 
     @Override
-    public Page<Genre> findGenresByPage(int page) { //todo test
+    public Page<Genre> findGenresByPage(int page) {
         Pageable pageWithGenres = PageRequest.of(page - 1, ELEMENTS_PER_PAGE);
         Page<Genre> genresByPage = genreRepository.findAll(pageWithGenres);
         if (genresByPage.isEmpty()) {
@@ -144,7 +141,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Genre> findGenresByKeyword(String keyWord) { //todo test
+    public List<Genre> findGenresByKeyword(String keyWord) {
         List<Genre> genresByKeyword = genreRepository.findAll()
                 .stream()
                 .filter(o -> o.getTitle().toLowerCase()
@@ -162,7 +159,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Genre> findAllGenres() { //todo test
+    public List<Genre> findAllGenres() {
         List<Genre> allGenres = genreRepository.findAll();
         if (allGenres.isEmpty()) {
             log.info(NOTHING_WAS_FOUND_MSG);
@@ -186,7 +183,7 @@ public class BookServiceImpl implements BookService {
         }
 
         String imagePath = DEFAULT_PUBLISHER_IMAGE_PATH;
-        if (image != null) {
+        if (image != null && image.getOriginalFilename() != null) {
             String imageName = image.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
@@ -214,7 +211,7 @@ public class BookServiceImpl implements BookService {
         if (!publisherValidator.isDescriptionValid(updatedPublisherDescription)) {
             throw new InvalidInputException(PUBLISHER_DESCRIPTION_IS_INVALID);
         }
-        if (image != null) {
+        if (image != null && image.getOriginalFilename() != null) {
             String imageName = image.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
@@ -232,7 +229,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deletePublisherById(Long publisherId) { //todo test
+    public void deletePublisherById(Long publisherId) {
         if (!publisherRepository.existsById(publisherId)) {
             throw new EntityNotFoundException(
                     String.format(PUBLISHER_WITH_GIVEN_ID_NOT_FOUND, publisherId)
@@ -242,7 +239,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public boolean isPublisherExistsByName(String publisherName) { //todo test
+    public boolean isPublisherExistsByName(String publisherName) {
         boolean publisherExistsByName = publisherRepository.existsByName(publisherName);
         if (publisherExistsByName) {
             log.info(
@@ -253,7 +250,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Publisher findPublisherInfoByName(String publisherName) { //todo test
+    public Publisher findPublisherInfoByName(String publisherName) {
         return publisherRepository.findByName(publisherName)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(PUBLISHER_WITH_GIVEN_NAME_NOT_FOUND, publisherName)
@@ -261,7 +258,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Publisher> findPublishersByKeyword(String keyWord) { //todo test
+    public List<Publisher> findPublishersByKeyword(String keyWord) {
         List<Publisher> publishersByKeyword = publisherRepository.findAll()
                 .stream()
                 .filter(o -> o.getName().toLowerCase().contains(keyWord.toLowerCase()))
@@ -274,7 +271,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Publisher> findPublishersByPage(int page) { //todo test
+    public Page<Publisher> findPublishersByPage(int page) {
         Pageable pageWithPublishers = PageRequest.of(page - 1, ELEMENTS_PER_PAGE);
         Page<Publisher> publishersByPage = publisherRepository.findAll(pageWithPublishers);
         if (publishersByPage.isEmpty()) {
@@ -284,7 +281,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Publisher> findAllPublishers() { //todo test
+    public List<Publisher> findAllPublishers() {
         List<Publisher> allPublishers = publisherRepository.findAll();
         if (allPublishers.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
@@ -301,7 +298,7 @@ public class BookServiceImpl implements BookService {
             throw new InvalidInputException(LAST_NAME_IS_NOT_VALID_MSG);
         }
         String imagePath = DEFAULT_AUTHOR_IMAGE_PATH;
-        if (image != null) {
+        if (image != null && image.getOriginalFilename() != null) {
             String imageName = image.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
@@ -333,7 +330,7 @@ public class BookServiceImpl implements BookService {
             throw new InvalidInputException(LAST_NAME_IS_NOT_VALID_MSG);
         }
         String imagePath = author.getImagePath();
-        if (image != null) {
+        if (image != null && image.getOriginalFilename() != null) {
             String imageName = image.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
