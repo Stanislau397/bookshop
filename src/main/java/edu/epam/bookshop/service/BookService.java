@@ -1,6 +1,7 @@
 package edu.epam.bookshop.service;
 
 import edu.epam.bookshop.entity.Author;
+import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public interface BookService {
 
+    void addBook(Book book, MultipartFile bookImage);
 
     void addGenre(Genre genre);
 

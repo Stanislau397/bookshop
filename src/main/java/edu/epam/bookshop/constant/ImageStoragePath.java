@@ -15,7 +15,11 @@ public class ImageStoragePath {
     public static final String DEFAULT_PUBLISHER_IMAGE_PATH = "http://localhost:8090/image/publisher/default.png";
     public static final String PUBLISHERS_DIRECTORY_PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\image\\publisher";
 
+    public static final String DEFAULT_BOOK_IMAGE_PATH = "http://localhost:8090/image/book/default.png";
+    public static final String BOOK_DIRECTORY_PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\image\\book";
+
     public static final String AVATARS_LOCALHOST_PATH = "http://localhost:8090/image/avatar/";
     public static final String AUTHORS_LOCALHOST_PATH = "http://localhost:8090/image/author/";
     public static final String PUBLISHER_LOCALHOST_PATH = "http://localhost:8090/image/publisher/";
+    public static final String BOOK_LOCALHOST_PATH = "http://localhost:8090/image/book/";
 }

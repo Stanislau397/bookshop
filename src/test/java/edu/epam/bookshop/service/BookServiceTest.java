@@ -8,13 +8,11 @@ import edu.epam.bookshop.exception.EntityNotFoundException;
 import edu.epam.bookshop.exception.InvalidInputException;
 import edu.epam.bookshop.exception.NothingFoundException;
 import edu.epam.bookshop.repository.AuthorRepository;
+import edu.epam.bookshop.repository.BookRepository;
 import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.service.impl.BookServiceImpl;
-import edu.epam.bookshop.validator.AuthorValidator;
-import edu.epam.bookshop.validator.GenreValidator;
-import edu.epam.bookshop.validator.ImageValidator;
-import edu.epam.bookshop.validator.PublisherValidator;
+import edu.epam.bookshop.validator.*;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +49,9 @@ class BookServiceTest {
     private PublisherRepository publisherRepository;
 
     @Mock
+    private BookValidator bookValidator;
+
+    @Mock
     private AuthorValidator authorValidator;
 
     @Mock
@@ -63,15 +64,21 @@ class BookServiceTest {
     private PublisherValidator publisherValidator;
 
     @Mock
+    private BookRepository bookRepository;
+
+    @Mock
     private GenreRepository genreRepository;
 
     private BookService bookService;
 
     @BeforeEach
     void setUp() {
-        bookService = new BookServiceImpl(authorRepository,
+        bookService = new BookServiceImpl(
+                bookRepository,
+                authorRepository,
                 publisherRepository,
                 genreRepository,
+                bookValidator,
                 genreValidator,
                 publisherValidator,
                 authorValidator,
@@ -442,6 +449,119 @@ class BookServiceTest {
         assertThatThrownBy(() -> bookService.addPublisher(existingPublisher, imageToSave))
                 .isInstanceOf(InvalidInputException.class)
                 .hasMessageContaining(IMAGE_IS_NOT_VALID_MSG);
+    }
+
+    @Test
+    void willUpdatePublisherInfoWithOldImage() {
+        Long publisherId = 1L;
+        String publisherName = "Harvest";
+        String description = "asd";
+        String imagePath = "123.jpg";
+        Publisher givenPublisher = Publisher.builder()
+                .publisherId(publisherId)
+                .name(publisherName)
+                .description(description)
+                .imagePath(imagePath)
+                .build();
+        //when
+        when(publisherValidator.isNameValid(publisherName)).thenReturn(true);
+        when(publisherValidator.isDescriptionValid(description)).thenReturn(true);
+        bookService.updatePublisherInfo(givenPublisher, null);
+        //then
+        verify(publisherRepository, times(1))
+                .updateInfoById(
+                        publisherName,
+                        description,
+                        imagePath,
+                        publisherId);
+    }
+
+    @SneakyThrows(IOException.class)
+    @Test
+    void willUpdatePublisherInfoWithNewImage() {
+        MultipartFile newPublisherImage = mock(MultipartFile.class);
+        byte[] data = new byte[]{1, 2, 3, 4};
+        Long publisherId = 1L;
+        String publisherName = "Harvest";
+        String description = "asd";
+        String imageName = "123.jpg";
+        Publisher givenPublisher = Publisher.builder()
+                .publisherId(publisherId)
+                .name(publisherName)
+                .description(description)
+                .imagePath(PUBLISHER_LOCALHOST_PATH.concat(imageName))
+                .build();
+        //when
+        when(publisherValidator.isNameValid(publisherName)).thenReturn(true);
+        when(publisherValidator.isDescriptionValid(description)).thenReturn(true);
+        when(newPublisherImage.getInputStream()).thenReturn(new ByteArrayInputStream(data));
+        when(newPublisherImage.getOriginalFilename()).thenReturn(imageName);
+        when(imageValidator.isImageValid(imageName)).thenReturn(true);
+        bookService.updatePublisherInfo(givenPublisher, newPublisherImage);
+        //then
+        verify(publisherRepository, times(1))
+                .updateInfoById(
+                        givenPublisher.getName(),
+                        givenPublisher.getDescription(),
+                        givenPublisher.getImagePath(),
+                        givenPublisher.getPublisherId());
+    }
+
+    @Test
+    void updatePublisherInfoWillThrowExceptionWhenImageIsNotValid() {
+        MultipartFile newPublisherImage = mock(MultipartFile.class);
+        Long publisherId = 1L;
+        String publisherName = "Harvest";
+        String description = "asd";
+        String imageName = "123.jpg";
+        Publisher givenPublisher = Publisher.builder()
+                .publisherId(publisherId)
+                .name(publisherName)
+                .description(description)
+                .imagePath(PUBLISHER_LOCALHOST_PATH.concat(imageName))
+                .build();
+        //when
+        when(publisherValidator.isNameValid(publisherName)).thenReturn(true);
+        when(publisherValidator.isDescriptionValid(description)).thenReturn(true);
+        when(newPublisherImage.getOriginalFilename()).thenReturn(imageName);
+        when(imageValidator.isImageValid(imageName)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.updatePublisherInfo(givenPublisher, newPublisherImage))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(IMAGE_IS_NOT_VALID_MSG);
+    }
+
+    @Test
+    void updatePublisherInfoWillThrowExceptionWhenNameIsNotValid() {
+        //given
+        String invalidPublisherName = "!Harvest";
+        Publisher givenPublisher = Publisher.builder()
+                .name(invalidPublisherName)
+                .build();
+        //when
+        when(publisherValidator.isNameValid(invalidPublisherName)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.updatePublisherInfo(givenPublisher, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(PUBLISHER_NAME_IS_INVALID);
+    }
+
+    @Test
+    void updatePublisherInfoWillThrowExceptionWhenDescriptionIsNotValid() {
+        //given
+        String publisherName = "Harvest";
+        String invalidDescription = "asd";
+        Publisher givenPublisher = Publisher.builder()
+                .name(publisherName)
+                .description(invalidDescription)
+                .build();
+        //when
+        when(publisherValidator.isNameValid(publisherName)).thenReturn(true);
+        when(publisherValidator.isDescriptionValid(invalidDescription)).thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.updatePublisherInfo(givenPublisher, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(PUBLISHER_DESCRIPTION_IS_INVALID);
     }
 
     @Test

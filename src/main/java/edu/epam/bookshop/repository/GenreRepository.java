@@ -15,8 +15,7 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = UPDATE_GENRE_TITLE_BY_ID,
-            nativeQuery = true)
+    @Query(value = UPDATE_GENRE_TITLE_BY_ID)
     void updateGenreTitleById(String genreTitle, Long genreId);
 
     boolean existsByTitle(String genreTitle);

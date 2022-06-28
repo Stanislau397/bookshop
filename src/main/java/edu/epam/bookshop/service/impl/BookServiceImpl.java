@@ -1,6 +1,7 @@
 package edu.epam.bookshop.service.impl;
 
 import edu.epam.bookshop.entity.Author;
+import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.exception.EntityAlreadyExistsException;
@@ -8,14 +9,12 @@ import edu.epam.bookshop.exception.EntityNotFoundException;
 import edu.epam.bookshop.exception.InvalidInputException;
 import edu.epam.bookshop.exception.NothingFoundException;
 import edu.epam.bookshop.repository.AuthorRepository;
+import edu.epam.bookshop.repository.BookRepository;
 import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.service.BookService;
 import edu.epam.bookshop.util.ImageUploaderUtil;
-import edu.epam.bookshop.validator.AuthorValidator;
-import edu.epam.bookshop.validator.GenreValidator;
-import edu.epam.bookshop.validator.ImageValidator;
-import edu.epam.bookshop.validator.PublisherValidator;
+import edu.epam.bookshop.validator.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.IMAGE_IS_NOT_VALID_MSG;
 import static edu.epam.bookshop.constant.ExceptionMessage.NOTHING_WAS_FOUND_MSG;
-
 
 import static edu.epam.bookshop.constant.ExceptionMessage.FIRST_NAME_IS_NOT_VALID_MSG;
 import static edu.epam.bookshop.constant.ExceptionMessage.LAST_NAME_IS_NOT_VALID_MSG;
@@ -46,6 +44,12 @@ import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_WITH_GIVEN_ID_NO
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_WITH_GIVEN_TITLE_EXISTS;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND;
 
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_TITLE_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DESCRIPTION_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PAGES_FIELD_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PRICE_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_ISBN_IS_NOT_VALID;
+
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_LOCALHOST_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AUTHOR_IMAGE_PATH;
@@ -54,21 +58,75 @@ import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_PUBLISHER_IMAG
 import static edu.epam.bookshop.constant.ImageStoragePath.PUBLISHER_LOCALHOST_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.PUBLISHERS_DIRECTORY_PATH;
 
+import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_BOOK_IMAGE_PATH;
+import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_DIRECTORY_PATH;
+import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_LOCALHOST_PATH;
+
 @Slf4j
 @AllArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
 
     private static final int ELEMENTS_PER_PAGE = 6;
+    private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final GenreRepository genreRepository;
 
+    private BookValidator bookValidator;
     private GenreValidator genreValidator;
     private PublisherValidator publisherValidator;
     private AuthorValidator authorValidator;
     private ImageValidator imageValidator;
 
+
+    @Override
+    public void addBook(Book book, MultipartFile bookImage) {
+        if (!bookValidator.isBookTitleValid(book.getTitle())) {
+            log.info(BOOK_TITLE_IS_NOT_VALID);
+            throw new InvalidInputException(BOOK_TITLE_IS_NOT_VALID);
+        }
+        if (!bookValidator.isDescriptionValid(book.getDescription())) {
+            log.info(BOOK_DESCRIPTION_IS_NOT_VALID);
+            throw new InvalidInputException(BOOK_DESCRIPTION_IS_NOT_VALID);
+        }
+        if (!bookValidator.isIsbnValid(book.getIsbn())) {
+            log.info(BOOK_ISBN_IS_NOT_VALID);
+            throw new InvalidInputException(BOOK_ISBN_IS_NOT_VALID);
+        }
+        if (!bookValidator.isPagesValid(String.valueOf(book.getPages()))) {
+            log.info(BOOK_PAGES_FIELD_IS_NOT_VALID);
+            throw new InvalidInputException(BOOK_PAGES_FIELD_IS_NOT_VALID);
+
+        }
+        if (!bookValidator.isPriceValid(String.valueOf(book.getPrice()))) {
+            log.info(BOOK_PRICE_IS_NOT_VALID);
+            throw new InvalidInputException(BOOK_PRICE_IS_NOT_VALID);
+        }
+        String imagePathForBook = DEFAULT_BOOK_IMAGE_PATH;
+        if (bookImage != null && bookImage.getOriginalFilename() != null) {
+            String imageName = bookImage.getOriginalFilename();
+            if (!imageValidator.isImageValid(imageName)) {
+                throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
+            }
+            imagePathForBook = BOOK_LOCALHOST_PATH
+                    .concat(ImageUploaderUtil.save(bookImage, BOOK_DIRECTORY_PATH));
+        }
+
+        Book bookToSave = Book.builder()
+                .title(book.getTitle())
+                .description(book.getDescription())
+                .publishDate(book.getPublishDate())
+                .coverType(book.getCoverType())
+                .isbn(book.getIsbn())
+                .imagePath(imagePathForBook)
+                .pages(book.getPages())
+                .price(book.getPrice())
+                .author(book.getAuthor())
+                .genres(book.getGenres())
+                .build();
+        bookRepository.save(bookToSave);
+    }
 
     @Override
     public void addGenre(Genre genre) {
@@ -169,7 +227,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addPublisher(Publisher publisher, MultipartFile image) { //todo test
+    public void addPublisher(Publisher publisher, MultipartFile image) {
         if (publisherRepository.existsByName(publisher.getName())) {
             throw new EntityAlreadyExistsException(
                     String.format(PUBLISHER_WITH_GIVEN_NAME_ALREADY_EXISTS, publisher.getName())
@@ -200,7 +258,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updatePublisherInfo(Publisher publisher, MultipartFile image) { //todo method
+    public void updatePublisherInfo(Publisher publisher, MultipartFile image) {
         String updatedPublisherName = publisher.getName();
         String updatedPublisherDescription = publisher.getDescription();
         String imagePath = publisher.getImagePath();

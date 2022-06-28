@@ -89,4 +89,26 @@ public class ExceptionMessage {
 
     public static final String GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("genre_with_given_keyword_not_found");
+
+    //book
+    public static final String BOOK_TITLE_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("book_title_is_invalid");
+
+    public static final String BOOK_WITH_GIVEN_TITLE_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("book_with_given_title_not_found");
+
+    public static final String BOOK_WITH_GIVEN_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("book_with_given_id_not_found");
+
+    public static final String BOOK_DESCRIPTION_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("book_description_is_invalid");
+
+    public static final String BOOK_PRICE_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("book_price_is_invalid");
+
+    public static final String BOOK_PAGES_FIELD_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("book_pages_is_invalid");
+
+    public static final String BOOK_ISBN_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("bool_isbn_is_invalid");
 }
