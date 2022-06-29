@@ -26,4 +26,7 @@ public class PostMappingURN {
     public static final String ADD_PUBLISHER_URN = "/addPublisher";
     public static final String UPDATE_PUBLISHER_INFO_URN = "/updatePublisherInfo";
     public static final String DELETE_PUBLISHER_BY_ID = "/deletePublisherById";
+
+    //book
+    public static final String ADD_BOOK_URN = "/addBook";
 }

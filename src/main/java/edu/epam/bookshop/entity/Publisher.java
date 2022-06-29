@@ -1,19 +1,29 @@
 package edu.epam.bookshop.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.List;
 
-import static edu.epam.bookshop.entity.constant.TableName.PUBLISHER_BOOKS;
 import static edu.epam.bookshop.entity.constant.TableName.PUBLISHERS;
 
 import static edu.epam.bookshop.entity.constant.TableColumn.PUBLISHER_ID;
-import static edu.epam.bookshop.entity.constant.TableColumn.PUBLISHER_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableColumn.DESCRIPTION;
 import static edu.epam.bookshop.entity.constant.TableColumn.NAME;
-import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableColumn.IMAGE_PATH;
 
 @Entity
@@ -45,9 +55,10 @@ public class Publisher {
     @Column(name = IMAGE_PATH)
     private String imagePath;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = PUBLISHER_BOOKS,
-            joinColumns = @JoinColumn(name = PUBLISHER_ID_FK),
-            inverseJoinColumns = @JoinColumn(name = BOOK_ID_FK))
+    @ManyToMany(
+            mappedBy = "publishers",
+            targetEntity = Book.class,
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.MERGE)
     private List<Book> publishedBooks;
 }

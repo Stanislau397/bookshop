@@ -1,9 +1,22 @@
 package edu.epam.bookshop.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,11 +26,8 @@ import static edu.epam.bookshop.entity.constant.TableColumn.FIRST_NAME;
 import static edu.epam.bookshop.entity.constant.TableColumn.LAST_NAME;
 import static edu.epam.bookshop.entity.constant.TableColumn.BIOGRAPHY;
 import static edu.epam.bookshop.entity.constant.TableColumn.BIRTH_DATE;
-import static edu.epam.bookshop.entity.constant.TableColumn.AUTHOR_ID_FK;
-import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
 
 import static edu.epam.bookshop.entity.constant.TableName.AUTHORS;
-import static edu.epam.bookshop.entity.constant.TableName.AUTHOR_BOOKS;
 
 @Entity
 @Table(name = AUTHORS)
@@ -50,9 +60,10 @@ public class Author {
     @Column(name = BIRTH_DATE)
     private LocalDate birthDate;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = AUTHOR_BOOKS,
-            joinColumns = @JoinColumn(name = AUTHOR_ID_FK),
-            inverseJoinColumns = @JoinColumn(name = BOOK_ID_FK))
+    @ManyToMany(
+            mappedBy = "authors",
+            targetEntity = Book.class,
+            cascade = CascadeType.MERGE,
+            fetch = FetchType.EAGER)
     private List<Book> books;
 }

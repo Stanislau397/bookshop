@@ -122,8 +122,8 @@ public class BookServiceImpl implements BookService {
                 .imagePath(imagePathForBook)
                 .pages(book.getPages())
                 .price(book.getPrice())
-                .author(book.getAuthor())
                 .genres(book.getGenres())
+                .authors(book.getAuthors())
                 .build();
         bookRepository.save(bookToSave);
     }
