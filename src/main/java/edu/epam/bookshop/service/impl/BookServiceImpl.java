@@ -123,6 +123,7 @@ public class BookServiceImpl implements BookService {
                 .pages(book.getPages())
                 .price(book.getPrice())
                 .genres(book.getGenres())
+                .publishers(book.getPublishers())
                 .authors(book.getAuthors())
                 .build();
         bookRepository.save(bookToSave);
