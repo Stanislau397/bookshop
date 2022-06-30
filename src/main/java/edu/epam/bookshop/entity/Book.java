@@ -22,9 +22,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import static edu.epam.bookshop.entity.constant.PropertyId.BOOK_ID_PROPERTY;
@@ -112,4 +114,7 @@ public class Book {
             joinColumns = @JoinColumn(name = BOOK_ID_FK),
             inverseJoinColumns = @JoinColumn(name = AUTHOR_ID_FK))
     private Set<Author> authors;
+
+    @OneToMany(mappedBy = "reviewedBook")
+    private List<BookReview> bookReviews;
 }

@@ -43,4 +43,8 @@ public class TableColumn {
     public static final String ISBN = "isbn";
     public static final String PAGES = "pages";
     public static final String COVER_TYPE = "cover_type";
+
+    public static final String BOOK_REVIEW_ID = "book_review_id";
+    public static final String REVIEW_TEXT = "review_text";
+    public static final String SCORE = "score";
 }

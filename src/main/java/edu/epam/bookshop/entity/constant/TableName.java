@@ -19,4 +19,6 @@ public class TableName {
     public static final String BOOK_GENRES = "book_genres";
 
     public static final String BOOKS = "books";
+
+    public static final String BOOK_REVIEWS = "book_reviews";
 }

@@ -1,7 +1,10 @@
 package edu.epam.bookshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,8 +17,10 @@ import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
 import javax.persistence.GenerationType;
 
+import java.util.List;
 import java.util.Set;
 
+import static edu.epam.bookshop.entity.constant.PropertyId.USER_ID_PROPERTY;
 import static edu.epam.bookshop.entity.constant.TableColumn.USER_NAME;
 import static edu.epam.bookshop.entity.constant.TableColumn.EMAIL;
 import static edu.epam.bookshop.entity.constant.TableColumn.PASSWORD;
@@ -37,6 +42,9 @@ import static edu.epam.bookshop.entity.constant.TableName.USERS_ROLES;
 @Getter
 @EqualsAndHashCode
 @ToString
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = USER_ID_PROPERTY)
 public class User {
 
     @Id
@@ -73,4 +81,7 @@ public class User {
             joinColumns = @JoinColumn(name = USER_ID_FK),
             inverseJoinColumns = @JoinColumn(name = ROLE_ID_FK))
     private Set<Role> roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookReview> bookReviews;
 }
