@@ -1,8 +1,10 @@
 package edu.epam.bookshop.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,20 +15,23 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
+import static edu.epam.bookshop.entity.constant.PropertyId.BOOK_ID_PROPERTY;
+
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID;
+import static edu.epam.bookshop.entity.constant.TableColumn.PUBLISHER_ID;
 import static edu.epam.bookshop.entity.constant.TableColumn.PUBLISHER_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableColumn.TITLE;
 import static edu.epam.bookshop.entity.constant.TableColumn.DESCRIPTION;
@@ -42,7 +47,6 @@ import static edu.epam.bookshop.entity.constant.TableColumn.GENRE_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableName.BOOKS;
 import static edu.epam.bookshop.entity.constant.TableName.AUTHOR_BOOKS;
 import static edu.epam.bookshop.entity.constant.TableName.BOOK_GENRES;
-import static edu.epam.bookshop.entity.constant.TableName.PUBLISHER_BOOKS;
 
 @Entity
 @Table(name = BOOKS)
@@ -51,6 +55,10 @@ import static edu.epam.bookshop.entity.constant.TableName.PUBLISHER_BOOKS;
 @Builder
 @Setter
 @Getter
+@EqualsAndHashCode
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = BOOK_ID_PROPERTY)
 public class Book {
 
     @Id
@@ -87,20 +95,18 @@ public class Book {
     @Column(name = COVER_TYPE)
     private CoverType coverType;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = BOOK_GENRES,
             joinColumns = @JoinColumn(name = BOOK_ID_FK),
             inverseJoinColumns = @JoinColumn(name = GENRE_ID_FK))
     private Set<Genre> genres;
 
-    @JsonBackReference
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = PUBLISHER_BOOKS,
-            joinColumns = @JoinColumn(name = BOOK_ID_FK),
-            inverseJoinColumns = @JoinColumn(name = PUBLISHER_ID_FK))
-    private Set<Publisher> publishers;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(
+            name = PUBLISHER_ID_FK,
+            referencedColumnName = PUBLISHER_ID)
+    private Publisher publisher;
 
-    @JsonBackReference
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = AUTHOR_BOOKS,
             joinColumns = @JoinColumn(name = BOOK_ID_FK),

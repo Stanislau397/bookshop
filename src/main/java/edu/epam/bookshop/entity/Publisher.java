@@ -1,24 +1,24 @@
 package edu.epam.bookshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
+import static edu.epam.bookshop.entity.constant.PropertyId.PUBLISHER_ID_PROPERTY;
 import static edu.epam.bookshop.entity.constant.TableName.PUBLISHERS;
 
 import static edu.epam.bookshop.entity.constant.TableColumn.PUBLISHER_ID;
@@ -26,15 +26,17 @@ import static edu.epam.bookshop.entity.constant.TableColumn.DESCRIPTION;
 import static edu.epam.bookshop.entity.constant.TableColumn.NAME;
 import static edu.epam.bookshop.entity.constant.TableColumn.IMAGE_PATH;
 
-@Entity
-@Table(name = PUBLISHERS)
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
-@ToString
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = PUBLISHER_ID_PROPERTY)
+@Table(name = PUBLISHERS)
+@Entity
 public class Publisher {
 
     @Id
@@ -55,10 +57,6 @@ public class Publisher {
     @Column(name = IMAGE_PATH)
     private String imagePath;
 
-    @ManyToMany(
-            mappedBy = "publishers",
-            targetEntity = Book.class,
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "publisher")
     private List<Book> publishedBooks;
 }

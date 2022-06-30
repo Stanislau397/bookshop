@@ -25,6 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_TITLE_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.IMAGE_IS_NOT_VALID_MSG;
 import static edu.epam.bookshop.constant.ExceptionMessage.NOTHING_WAS_FOUND_MSG;
 
@@ -68,6 +72,7 @@ import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_LOCALHOST_PATH;
 public class BookServiceImpl implements BookService {
 
     private static final int ELEMENTS_PER_PAGE = 6;
+    private static final int BOOKS_PER_PAGE = 20;
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
@@ -81,7 +86,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public void addBook(Book book, MultipartFile bookImage) {
+    public void addBook(Book book, MultipartFile bookImage) { //todo test
         if (!bookValidator.isBookTitleValid(book.getTitle())) {
             log.info(BOOK_TITLE_IS_NOT_VALID);
             throw new InvalidInputException(BOOK_TITLE_IS_NOT_VALID);
@@ -123,10 +128,68 @@ public class BookServiceImpl implements BookService {
                 .pages(book.getPages())
                 .price(book.getPrice())
                 .genres(book.getGenres())
-                .publishers(book.getPublishers())
+                .publisher(book.getPublisher())
                 .authors(book.getAuthors())
                 .build();
         bookRepository.save(bookToSave);
+    }
+
+    @Override
+    public void updateBookInfo(Book book, MultipartFile newBookImage) {
+
+    }
+
+    @Override
+    public void addBookToAuthorByBookIdAndAuthorId(Long bookId, Long authorId) { //todo test
+        if (!bookRepository.existsById(bookId)) {
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+        if (!authorRepository.existsById(authorId)) {
+            throw new EntityNotFoundException(
+                    String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId)
+            );
+        }
+        if (authorRepository.bookExistsForAuthor(authorId, bookId)) {
+            throw new EntityAlreadyExistsException(
+                    AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK
+            );
+        }
+        bookRepository.insertBookToAuthorByBookIdAndAuthorId(bookId, authorId);
+    }
+
+    @Override
+    public Book findBookDetailsByTitle(String bookTitle) {
+        return bookRepository.findByTitle(bookTitle)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(BOOK_WITH_GIVEN_TITLE_NOT_FOUND, bookTitle)
+                ));
+    }
+
+    @Override
+    public List<Book> findBooksByKeyWord(String keyWord) {
+        List<Book> booksByKeyWord = bookRepository.findAll()
+                .stream()
+                .filter(o -> o.getTitle().toLowerCase().contains(keyWord.toLowerCase()))
+                .limit(BOOKS_PER_PAGE)
+                .toList();
+        if (booksByKeyWord.isEmpty()) {
+            throw new NothingFoundException(
+                    String.format(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord)
+            );
+        }
+        return booksByKeyWord;
+    }
+
+    @Override
+    public Page<Book> findBooksByPage(int page) {
+        Pageable pageWithBooks = PageRequest.of(page - 1, BOOKS_PER_PAGE);
+        Page<Book> booksByPage = bookRepository.findAll(pageWithBooks);
+        if (booksByPage.isEmpty()) {
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return booksByPage;
     }
 
     @Override
@@ -143,6 +206,11 @@ public class BookServiceImpl implements BookService {
                     String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
         }
         genreRepository.save(genre);
+    }
+
+    @Override
+    public void addGenreToBookByGenreIdAndBookId(Long genreId, Long bookId) {
+
     }
 
     @Override
@@ -372,6 +440,11 @@ public class BookServiceImpl implements BookService {
                 .imagePath(imagePath)
                 .build();
         authorRepository.save(authorToSave);
+    }
+
+    @Override
+    public void addAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId) {
+
     }
 
     @Override

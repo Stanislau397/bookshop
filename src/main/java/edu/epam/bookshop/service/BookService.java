@@ -13,7 +13,19 @@ public interface BookService {
 
     void addBook(Book book, MultipartFile bookImage);
 
+    void updateBookInfo(Book book, MultipartFile newBookImage);
+
+    void addBookToAuthorByBookIdAndAuthorId(Long bookId, Long authorId);
+
+    Book findBookDetailsByTitle(String bookTitle);
+
+    List<Book> findBooksByKeyWord(String keyWord);
+
+    Page<Book> findBooksByPage(int page);
+
     void addGenre(Genre genre);
+
+    void addGenreToBookByGenreIdAndBookId(Long genreId, Long bookId);
 
     void deleteGenreById(Long genreId);
 
@@ -44,6 +56,8 @@ public interface BookService {
     List<Publisher> findAllPublishers();
 
     void addAuthor(Author author, MultipartFile image);
+
+    void addAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId);
 
     void updateAuthorInfo(Author author, MultipartFile image);
 
