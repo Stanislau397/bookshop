@@ -60,4 +60,7 @@ public class SqlQuery {
     public static final String INSERT_BOOK_TO_AUTHOR =
             "INSERT INTO author_books (book_id_fk, author_id_fk) " +
                     "VALUES (?1,?2)";
+    public static final String DELETE_BOOK_FROM_AUTHOR =
+            "DELETE FROM author_books " +
+                    "WHERE author_id_fk = 1? AND book_id_fk = 2?";
 }

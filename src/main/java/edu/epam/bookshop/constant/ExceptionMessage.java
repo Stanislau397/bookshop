@@ -118,4 +118,7 @@ public class ExceptionMessage {
 
     public static final String BOOK_ISBN_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("bool_isbn_is_invalid");
+
+    public static final String BOOK_DOES_NOT_EXIST_FOR_AUTHOR = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("book_does_not_exist_for_author");
 }

@@ -15,7 +15,9 @@ public interface BookService {
 
     void updateBookInfo(Book book, MultipartFile newBookImage);
 
-    void addBookToAuthorByBookIdAndAuthorId(Long bookId, Long authorId);
+    void addBookForAuthorByBookIdAndAuthorId(Long bookId, Long authorId);
+
+    void removeBookForAuthorByAuthorIdAndBookId(Long authorId, Long bookId);
 
     Book findBookDetailsByTitle(String bookTitle);
 
