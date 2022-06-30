@@ -29,6 +29,8 @@ public interface BookService {
 
     void addGenreToBookByGenreIdAndBookId(Long genreId, Long bookId);
 
+    void removeGenreFromBookByGenreIdAndBookId(Long genreId, Long bookId);
+
     void deleteGenreById(Long genreId);
 
     void updateGenreTitle(Genre genre);
@@ -60,6 +62,8 @@ public interface BookService {
     void addAuthor(Author author, MultipartFile image);
 
     void addAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId);
+
+    void removeAuthorFromBookByAuthorIdAndBookId(Long authorId, Long bookId);
 
     void updateAuthorInfo(Author author, MultipartFile image);
 

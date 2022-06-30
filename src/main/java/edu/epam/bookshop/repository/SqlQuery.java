@@ -55,12 +55,30 @@ public class SqlQuery {
             "UPDATE Genre g " +
                     "SET g.title = ?1 " +
                     "WHERE g.genreId = ?2";
+    public static final String INSERT_GENRE_TO_BOOK =
+            "INSERT INTO book_genres " +
+                    "VALUES (genre_id_fk, book_id_fk) " +
+                    "WHERE genre_id_fk = 1? AND book_id_fk = 2?";
+    public static final String DELETE_GENRE_FROM_BOOK =
+            "DELETE FROM book_genres " +
+                    "WHERE genre_id_fk = 1? AND book_id_fk = 2?";
+    public static final String CHECK_IF_GENRE_EXISTS_FOR_BOOK =
+            "SELECT CASE WHEN COUNT(genre_id_fk) > 0 " +
+                    "THEN TRUE ELSE FALSE END " +
+                    "FROM book_genres " +
+                    "WHERE genre_id_fk = 1? AND book_id_fk = 2?";
 
     //book
     public static final String INSERT_BOOK_TO_AUTHOR =
             "INSERT INTO author_books (book_id_fk, author_id_fk) " +
-                    "VALUES (?1,?2)";
+                    "VALUES (1?,2?)";
     public static final String DELETE_BOOK_FROM_AUTHOR =
             "DELETE FROM author_books " +
                     "WHERE author_id_fk = 1? AND book_id_fk = 2?";
+    public static final String INSERT_AUTHOR_TO_BOOK =
+            "INSERT INTO author_books (author_id_fk, book_id_fk) " +
+                    "VALUES (1?,2?)";
+    public static final String DELETE_AUTHOR_FROM_BOOK =
+            "DELETE FROM author_books " +
+                    "WHERE author_id_fk = 1?, book_id_fk = 2?";
 }

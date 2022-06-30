@@ -40,4 +40,10 @@ public class GetMappingURN {
     public static final String ACCOUNT_SETTINGS_URN = "/user/account_settings";
     public static final String ALL_AUTHORS_URN = "/admin/cabinet/all_authors";
     public static final String EDIT_AUTHOR_URN = "/admin/cabinet/edit_author";
+
+    //book
+    public static final String FIND_BOOKS_BY_KEYWORD = "/findBooksByKeyword";
+    public static final String FIND_BOOKS_BY_PAGE = "/findBooksByPage";
+    public static final String FIND_BOOK_DETAILS = "/findBookDetails";
+
 }

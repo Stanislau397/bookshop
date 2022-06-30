@@ -29,4 +29,11 @@ public class PostMappingURN {
 
     //book
     public static final String ADD_BOOK_URN = "/addBook";
+    public static final String UPDATE_BOOK_INFO_URN = "/updateBookInfo";
+    public static final String ADD_BOOK_TO_AUTHOR_URN = "/addBookToAuthor";
+    public static final String REMOVE_BOOK_FROM_AUTHOR_URN = "/removeBookFromAuthor";
+    public static final String ADD_GENRE_TO_BOOK_URN = "/addGenreToBook";
+    public static final String REMOVE_GENRE_FROM_BOOK_URN = "/removeGenreFromBook";
+    public static final String ADD_AUTHOR_TO_BOOK_URN = "/addAuthorToBook";
+    public static final String REMOVE_AUTHOR_FROM_BOOK = "/removeAuthorFromBook";
 }

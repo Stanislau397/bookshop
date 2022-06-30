@@ -94,6 +94,12 @@ public class ExceptionMessage {
     public static final String GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("genre_with_given_keyword_not_found");
 
+    public static final String GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genre_already_exists_for_book");
+
+    public static final String GENRE_NOT_FOUND_FOR_GIVEN_BOOK = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genre_not_found_for_book");
+
     //book
     public static final String BOOK_TITLE_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_title_is_invalid");

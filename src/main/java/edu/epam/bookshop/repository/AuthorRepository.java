@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
-import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_FOR_AUTHOR;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_AUTHOR_INFO_BY_ID;
 
 import java.time.LocalDate;
@@ -26,10 +25,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
                                        LocalDate birthDate,
                                        String imagePath,
                                        Long authorId);
-    @Transactional
-    @Modifying
-    @Query(CHECK_IF_BOOK_EXISTS_FOR_AUTHOR)
-    boolean bookExistsForAuthor(Long authorId, Long bookId);
 
     Optional<Author> findByAuthorId(Long authorId);
 }
