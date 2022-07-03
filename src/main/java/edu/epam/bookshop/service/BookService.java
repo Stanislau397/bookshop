@@ -2,8 +2,10 @@ package edu.epam.bookshop.service;
 
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
+import edu.epam.bookshop.entity.BookReview;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
+import edu.epam.bookshop.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,4 +76,10 @@ public interface BookService {
     List<Author> findAuthorsByKeyword(String keyWord);
 
     Page<Author> findAuthorsByPage(int page);
+
+    void addReviewToBook(BookReview bookReview);
+
+    void changeReviewText(BookReview bookReview, User user);
+
+    void removeReviewFromBook(BookReview bookReview, User user);
 }

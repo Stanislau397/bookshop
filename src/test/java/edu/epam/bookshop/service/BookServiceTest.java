@@ -1,6 +1,7 @@
 package edu.epam.bookshop.service;
 
 import edu.epam.bookshop.entity.Author;
+import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.exception.EntityAlreadyExistsException;
@@ -9,8 +10,10 @@ import edu.epam.bookshop.exception.InvalidInputException;
 import edu.epam.bookshop.exception.NothingFoundException;
 import edu.epam.bookshop.repository.AuthorRepository;
 import edu.epam.bookshop.repository.BookRepository;
+import edu.epam.bookshop.repository.BookReviewRepository;
 import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
+import edu.epam.bookshop.repository.UserRepository;
 import edu.epam.bookshop.service.impl.BookServiceImpl;
 import edu.epam.bookshop.validator.*;
 import lombok.SneakyThrows;
@@ -28,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,20 +73,377 @@ class BookServiceTest {
     @Mock
     private GenreRepository genreRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private BookReviewRepository reviewRepository;
+
     private BookService bookService;
 
     @BeforeEach
     void setUp() {
         bookService = new BookServiceImpl(
                 bookRepository,
+                reviewRepository,
                 authorRepository,
                 publisherRepository,
                 genreRepository,
+                userRepository,
                 bookValidator,
                 genreValidator,
                 publisherValidator,
                 authorValidator,
                 imageValidator);
+    }
+
+    @Test
+    void willAddBookWithDefaultImage() {
+        //given
+        String title = "book";
+        String description = "add";
+        int pages = 123;
+        String isbn = "123-123";
+        Book book = Book.builder()
+                .title(title)
+                .description(description)
+                .pages(pages)
+                .isbn(isbn)
+                .imagePath(DEFAULT_BOOK_IMAGE_PATH)
+                .price(new BigDecimal("12.1"))
+                .build();
+        //when
+        when(bookValidator.isBookTitleValid(title))
+                .thenReturn(true);
+        when(bookValidator.isDescriptionValid(description))
+                .thenReturn(true);
+        when(bookValidator.isPagesValid(String.valueOf(pages)))
+                .thenReturn(true);
+        when(bookValidator.isIsbnValid(isbn))
+                .thenReturn(true);
+        when(bookValidator.isPriceValid(String.valueOf(new BigDecimal("12.1"))))
+                .thenReturn(true);
+        bookService.addBook(book, null);
+        //then
+        verify(bookRepository, times(1)).save(book);
+    }
+
+
+    @Test
+    void addBookWillThrowExceptionWhenTitleIsNotValid() {
+        //given
+        String title = "!book";
+        Book book = Book.builder()
+                .title(title)
+                .build();
+        //when
+        when(bookValidator.isBookTitleValid(title))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addBook(book, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(BOOK_TITLE_IS_NOT_VALID);
+    }
+
+    @Test
+    void addBookWillThrowExceptionWhenDescriptionIsNotValid() {
+        //given
+        String title = "book";
+        String description = "add";
+        Book book = Book.builder()
+                .title(title)
+                .description(description)
+                .build();
+        //when
+        when(bookValidator.isBookTitleValid(title))
+                .thenReturn(true);
+        when(bookValidator.isDescriptionValid(description))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addBook(book, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(BOOK_DESCRIPTION_IS_NOT_VALID);
+    }
+
+    @Test
+    void addBookWillThrowExceptionWhenPagesIsNotValid() {
+        //given
+        String title = "book";
+        String description = "add";
+        Book book = Book.builder()
+                .title(title)
+                .description(description)
+                .build();
+        //when
+        when(bookValidator.isBookTitleValid(title))
+                .thenReturn(true);
+        when(bookValidator.isDescriptionValid(description))
+                .thenReturn(true);
+        when(bookValidator.isPagesValid(anyString()))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addBook(book, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(BOOK_PAGES_FIELD_IS_NOT_VALID);
+    }
+
+    @Test
+    void addBookWillThrowExceptionWhenIsbnIsNotValid() {
+        //given
+        String title = "book";
+        String description = "add";
+        int pages = 123;
+        String isbn = "123-123";
+        Book book = Book.builder()
+                .title(title)
+                .description(description)
+                .pages(pages)
+                .isbn(isbn)
+                .build();
+        //when
+        when(bookValidator.isBookTitleValid(title))
+                .thenReturn(true);
+        when(bookValidator.isDescriptionValid(description))
+                .thenReturn(true);
+        when(bookValidator.isPagesValid(String.valueOf(pages)))
+                .thenReturn(true);
+        when(bookValidator.isIsbnValid(isbn))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addBook(book, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(BOOK_ISBN_IS_NOT_VALID);
+    }
+
+    @Test
+    void addBookWillThrowExceptionWhenPriceIsNotValid() {
+        //given
+        String title = "book";
+        String description = "add";
+        int pages = 123;
+        String isbn = "123-123";
+        Book book = Book.builder()
+                .title(title)
+                .description(description)
+                .pages(pages)
+                .isbn(isbn)
+                .build();
+        //when
+        when(bookValidator.isBookTitleValid(title))
+                .thenReturn(true);
+        when(bookValidator.isDescriptionValid(description))
+                .thenReturn(true);
+        when(bookValidator.isPagesValid(String.valueOf(pages)))
+                .thenReturn(true);
+        when(bookValidator.isIsbnValid(isbn))
+                .thenReturn(true);
+        when(bookValidator.isPriceValid(anyString()))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addBook(book, null))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageContaining(BOOK_PRICE_IS_NOT_VALID);
+    }
+
+    @Test
+    void willAddBookForAuthor() {
+        //given
+        long bookId = 1;
+        long authorId = 1;
+        //when
+        when(bookRepository.existsById(bookId))
+                .thenReturn(true);
+        when(authorRepository.existsById(authorId))
+                .thenReturn(true);
+        when(bookRepository.bookExistsForAuthor(authorId, bookId))
+                .thenReturn(false);
+        bookService.addBookForAuthorByBookIdAndAuthorId(bookId, authorId);
+        //then
+        verify(bookRepository, times(1))
+                .insertBookToAuthorByBookIdAndAuthorId(bookId, authorId);
+    }
+
+    @Test
+    void addBookForAuthorWillThrowExceptionWhenBookIdIsInvalid() {
+        //given
+        long bookId = 1;
+        //when
+        when(bookRepository.existsById(bookId))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addBookForAuthorByBookIdAndAuthorId(bookId, 1L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+                );
+    }
+
+    @Test
+    void addBookForAuthorWillThrowExceptionWhenAuthorIdIsInvalid() {
+        //given
+        long bookId = 1;
+        long authorId = 1;
+        //when
+        when(bookRepository.existsById(bookId))
+                .thenReturn(true);
+        when(authorRepository.existsById(authorId))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addBookForAuthorByBookIdAndAuthorId(bookId, authorId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId)
+                );
+    }
+
+    @Test
+    void addBookForAuthorWillThrowExceptionWhenBookAlreadyExistsForAuthor() {
+        //given
+        long bookId = 1;
+        long authorId = 1;
+        //when
+        when(bookRepository.existsById(bookId))
+                .thenReturn(true);
+        when(authorRepository.existsById(authorId))
+                .thenReturn(true);
+        when(bookRepository.bookExistsForAuthor(authorId, bookId))
+                .thenReturn(true);
+        //then
+        assertThatThrownBy(() -> bookService.addBookForAuthorByBookIdAndAuthorId(bookId, authorId))
+                .isInstanceOf(EntityAlreadyExistsException.class)
+                .hasMessageContaining(AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK);
+    }
+
+    @Test
+    void willRemoveBookFromAuthor() {
+        //given
+        long authorId = 1;
+        long bookId = 1;
+        //when
+        when(bookRepository.bookExistsForAuthor(authorId, bookId))
+                .thenReturn(true);
+        bookService.removeBookForAuthorByAuthorIdAndBookId(authorId, bookId);
+        //then
+        verify(bookRepository, times(1))
+                .deleteBookFromAuthorByAuthorIdAndBookId(authorId, bookId);
+    }
+
+    @Test
+    void removeBookFromAuthorWillThrowExceptionWhenAuthorDoesNotExistForBook() {
+        //given
+        long authorId = 1;
+        long bookId = 1;
+        //when
+        when(bookRepository.bookExistsForAuthor(authorId, bookId))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.removeBookForAuthorByAuthorIdAndBookId(authorId, bookId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(BOOK_DOES_NOT_EXIST_FOR_AUTHOR, bookId, authorId)
+                );
+    }
+
+    @Test
+    void willFindBookDetails() {
+        //given
+        String bookTitle = "Harry";
+        Book book = Book.builder()
+                .title(bookTitle)
+                .build();
+        //when
+        when(bookRepository.findByTitle(bookTitle))
+                .thenReturn(Optional.of(book));
+        Book expectedBook = bookService.findBookDetailsByTitle(bookTitle);
+        //then
+        assertThat(book).isEqualTo(expectedBook);
+    }
+
+    @Test
+    void findBookDetailsWillThrowExceptionWhenNothingFound() {
+        //given
+        String bookTitle = "Harry";
+        //when
+        when(bookRepository.findByTitle(bookTitle))
+                .thenReturn(Optional.empty());
+        //then
+        assertThatThrownBy(() -> bookService.findBookDetailsByTitle(bookTitle))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(BOOK_WITH_GIVEN_TITLE_NOT_FOUND, bookTitle)
+                );
+    }
+
+    @Test
+    void willFindBooksByKeyWord() {
+        //given
+        String keyWordForBooks = "Harry";
+        Book firstBook = Book.builder()
+                .title("Harry 1")
+                .build();
+        Book secondBook = Book.builder()
+                .title("Harry 2")
+                .build();
+        List<Book> books = List.of(firstBook, secondBook);
+        //when
+        when(bookRepository.findAll())
+                .thenReturn(books);
+        List<Book> expectedBooks = bookService.findBooksByKeyWord(keyWordForBooks);
+        //then
+        assertThat(expectedBooks).isNotNull();
+        assertThat(expectedBooks.size()).isEqualTo(2);
+    }
+
+    @Test
+    void findBooksByKeyWordWillThrowExceptionWhenNothingFound() {
+        //given
+        String keyWordForBooks = "Fantasy";
+        Book firstBook = Book.builder()
+                .title("Harry 1")
+                .build();
+        Book secondBook = Book.builder()
+                .title("Harry 2")
+                .build();
+        List<Book> books = List.of(firstBook, secondBook);
+        //when
+        when(bookRepository.findAll())
+                .thenReturn(books);
+        //then
+        assertThatThrownBy(() -> bookService.findBooksByKeyWord(keyWordForBooks))
+                .isInstanceOf(NothingFoundException.class)
+                .hasMessageContaining(
+                        String.format(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWordForBooks)
+                );
+    }
+
+    @Test
+    void willFindBooksByPage() {
+        //given
+        Pageable pageWithBooks = PageRequest.of(0, 20);
+        Book book = Book.builder()
+                .build();
+        List<Book> books = List.of(book);
+        Page<Book> booksByPage = new PageImpl<>(books);
+        //when
+        when(bookRepository.findAll(pageWithBooks))
+                .thenReturn(booksByPage);
+        Page<Book> expectedBooksByPage = bookService.findBooksByPage(1);
+        //then
+        assertThat(booksByPage).isEqualTo(expectedBooksByPage);
+    }
+
+    @Test
+    void findBooksByPageWillThrowExceptionWhenNothingFound() {
+        //given
+        Pageable pageWithBooks = PageRequest.of(0, 20);
+        Page<Book> booksByPage = new PageImpl<>(new ArrayList<>());
+        //when
+        when(bookRepository.findAll(pageWithBooks))
+                .thenReturn(booksByPage);
+        //then
+        assertThatThrownBy(() -> bookService.findBooksByPage(1))
+                .isInstanceOf(NothingFoundException.class)
+                .hasMessageContaining(NOTHING_WAS_FOUND_MSG);
     }
 
     @Test
@@ -130,6 +491,87 @@ class BookServiceTest {
                 .isInstanceOf(EntityAlreadyExistsException.class)
                 .hasMessageContaining(
                         String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, existingGenreTitle)
+                );
+    }
+
+    @Test
+    void willAddGenreToBook() {
+        //given
+        long genreId = 1;
+        long bookId = 1;
+        //when
+        when(genreRepository.existsById(genreId))
+                .thenReturn(true);
+        when(bookRepository.existsById(bookId))
+                .thenReturn(true);
+        bookService.addGenreToBookByGenreIdAndBookId(genreId, bookId);
+        //then
+        verify(bookRepository, times(1))
+                .insertGenreToBookByGenreIdAndBookId(genreId, bookId);
+    }
+
+    @Test
+    void addGenreToBookWillThrowExceptionWhenGenreIdIsInvalid() {
+        //given
+        long genreId = 1;
+        long bookId = 1;
+        //when
+        when(genreRepository.existsById(genreId))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addGenreToBookByGenreIdAndBookId(genreId, bookId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
+                );
+    }
+
+    @Test
+    void addGenreToBookWillThrowExceptionWhenBookIdIsInvalid() {
+        //given
+        long genreId = 1;
+        long bookId = 1;
+        //when
+        when(genreRepository.existsById(genreId))
+                .thenReturn(true);
+        when(bookRepository.existsById(bookId))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.addGenreToBookByGenreIdAndBookId(genreId, bookId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, genreId)
+                );
+    }
+
+    @Test
+    void willRemoveGenreFormBook() {
+        //given
+        long genreId = 1;
+        long bookId = 1;
+        //when
+        when(bookRepository.genreExistsForBook(genreId, bookId))
+                .thenReturn(true);
+        bookService.removeGenreFromBookByGenreIdAndBookId(genreId, bookId);
+        //then
+        verify(bookRepository, times(1))
+                .deleteGenreFromBookByGenreIdAndBookId(genreId, bookId);
+
+    }
+
+    @Test
+    void removeGenreFromBookWillThrowExceptionWhenGenreNotFoundForBook() {
+        //given
+        long genreId = 1;
+        long bookId = 1;
+        //when
+        when(bookRepository.genreExistsForBook(genreId, bookId))
+                .thenReturn(false);
+        //then
+        assertThatThrownBy(() -> bookService.removeGenreFromBookByGenreIdAndBookId(genreId, bookId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(
+                        String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId)
                 );
     }
 

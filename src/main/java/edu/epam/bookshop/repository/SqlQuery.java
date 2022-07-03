@@ -81,4 +81,11 @@ public class SqlQuery {
     public static final String DELETE_AUTHOR_FROM_BOOK =
             "DELETE FROM author_books " +
                     "WHERE author_id_fk = 1?, book_id_fk = 2?";
+
+    //book review
+    public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK =
+            "SELECT CASE WHEN COUNT(book_id_fk) > 0 " +
+                    "THEN TRUE ELSE FALSE END " +
+                    "FROM book_reviews " +
+                    "WHERE book_id_fk = 1? AND user_id_fk = 2?";
 }

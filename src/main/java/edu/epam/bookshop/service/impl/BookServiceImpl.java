@@ -2,16 +2,21 @@ package edu.epam.bookshop.service.impl;
 
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
+import edu.epam.bookshop.entity.BookReview;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
+import edu.epam.bookshop.entity.Role;
+import edu.epam.bookshop.entity.User;
 import edu.epam.bookshop.exception.EntityAlreadyExistsException;
 import edu.epam.bookshop.exception.EntityNotFoundException;
 import edu.epam.bookshop.exception.InvalidInputException;
 import edu.epam.bookshop.exception.NothingFoundException;
 import edu.epam.bookshop.repository.AuthorRepository;
 import edu.epam.bookshop.repository.BookRepository;
+import edu.epam.bookshop.repository.BookReviewRepository;
 import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
+import edu.epam.bookshop.repository.UserRepository;
 import edu.epam.bookshop.service.BookService;
 import edu.epam.bookshop.util.ImageUploaderUtil;
 import edu.epam.bookshop.validator.*;
@@ -57,6 +62,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PAGES_FIELD_IS_NO
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PRICE_IS_NOT_VALID;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_ISBN_IS_NOT_VALID;
 
+import static edu.epam.bookshop.constant.ExceptionMessage.USER_WITH_GIVEN_NAME_NOT_FOUND_MSG;
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_LOCALHOST_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AUTHOR_IMAGE_PATH;
@@ -77,9 +83,11 @@ public class BookServiceImpl implements BookService {
     private static final int ELEMENTS_PER_PAGE = 6;
     private static final int BOOKS_PER_PAGE = 20;
     private final BookRepository bookRepository;
+    private final BookReviewRepository reviewRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final GenreRepository genreRepository;
+    private final UserRepository userRepository;
 
     private BookValidator bookValidator;
     private GenreValidator genreValidator;
@@ -89,7 +97,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public void addBook(Book book, MultipartFile bookImage) { //todo test and controller
+    public void addBook(Book book, MultipartFile bookImage) { //todo test
         if (!bookValidator.isBookTitleValid(book.getTitle())) {
             log.info(BOOK_TITLE_IS_NOT_VALID);
             throw new InvalidInputException(BOOK_TITLE_IS_NOT_VALID);
@@ -98,14 +106,14 @@ public class BookServiceImpl implements BookService {
             log.info(BOOK_DESCRIPTION_IS_NOT_VALID);
             throw new InvalidInputException(BOOK_DESCRIPTION_IS_NOT_VALID);
         }
-        if (!bookValidator.isIsbnValid(book.getIsbn())) {
-            log.info(BOOK_ISBN_IS_NOT_VALID);
-            throw new InvalidInputException(BOOK_ISBN_IS_NOT_VALID);
-        }
         if (!bookValidator.isPagesValid(String.valueOf(book.getPages()))) {
             log.info(BOOK_PAGES_FIELD_IS_NOT_VALID);
             throw new InvalidInputException(BOOK_PAGES_FIELD_IS_NOT_VALID);
 
+        }
+        if (!bookValidator.isIsbnValid(book.getIsbn())) {
+            log.info(BOOK_ISBN_IS_NOT_VALID);
+            throw new InvalidInputException(BOOK_ISBN_IS_NOT_VALID);
         }
         if (!bookValidator.isPriceValid(String.valueOf(book.getPrice()))) {
             log.info(BOOK_PRICE_IS_NOT_VALID);
@@ -143,7 +151,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addBookForAuthorByBookIdAndAuthorId(Long bookId, Long authorId) { //todo test and controller
+    public void addBookForAuthorByBookIdAndAuthorId(Long bookId, Long authorId) {
         if (!bookRepository.existsById(bookId)) {
             log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
             throw new EntityNotFoundException(
@@ -166,10 +174,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void removeBookForAuthorByAuthorIdAndBookId(Long authorId, Long bookId) { //todo test and controller
+    public void removeBookForAuthorByAuthorIdAndBookId(Long authorId, Long bookId) {
         if (!bookRepository.bookExistsForAuthor(authorId, bookId)) {
             log.info(String.format(BOOK_DOES_NOT_EXIST_FOR_AUTHOR, bookId, authorId));
-            throw new EntityAlreadyExistsException(
+            throw new EntityNotFoundException(
                     String.format(BOOK_DOES_NOT_EXIST_FOR_AUTHOR, bookId, authorId)
             );
         }
@@ -177,7 +185,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book findBookDetailsByTitle(String bookTitle) { //todo test and controller
+    public Book findBookDetailsByTitle(String bookTitle) {
         return bookRepository.findByTitle(bookTitle)
                 .orElseThrow(() -> {
                     log.info(BOOK_WITH_GIVEN_TITLE_NOT_FOUND, bookTitle);
@@ -188,7 +196,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findBooksByKeyWord(String keyWord) { //todo test and controller
+    public List<Book> findBooksByKeyWord(String keyWord) {
         List<Book> booksByKeyWord = bookRepository.findAll()
                 .stream()
                 .filter(o -> o.getTitle().toLowerCase().contains(keyWord.toLowerCase()))
@@ -204,7 +212,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findBooksByPage(int page) { //todo test and controller
+    public Page<Book> findBooksByPage(int page) {
         Pageable pageWithBooks = PageRequest.of(page - 1, BOOKS_PER_PAGE);
         Page<Book> booksByPage = bookRepository.findAll(pageWithBooks);
         if (booksByPage.isEmpty()) {
@@ -230,7 +238,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addGenreToBookByGenreIdAndBookId(Long genreId, Long bookId) { //todo test and controller
+    public void addGenreToBookByGenreIdAndBookId(Long genreId, Long bookId) {
         if (!genreRepository.existsById(genreId)) {
             log.info(String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId));
             throw new EntityNotFoundException(
@@ -253,10 +261,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void removeGenreFromBookByGenreIdAndBookId(Long genreId, Long bookId) { //todo test and controller
+    public void removeGenreFromBookByGenreIdAndBookId(Long genreId, Long bookId) {
         if (!bookRepository.genreExistsForBook(genreId, bookId)) {
             log.info(String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId));
-            throw new EntityAlreadyExistsException(
+            throw new EntityNotFoundException(
                     String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId)
             );
         }
@@ -593,5 +601,44 @@ public class BookServiceImpl implements BookService {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
         return authorsByPage;
+    }
+
+    @Override
+    public void addReviewToBook(BookReview review) {
+        User user = review.getUser();
+        Book bookToReview = review.getReviewedBook();
+        if (!userRepository.existsByUserName(user.getUserName())) {
+            throw new EntityNotFoundException(
+                    String.format(USER_WITH_GIVEN_NAME_NOT_FOUND_MSG, user.getUserName())
+            );
+        }
+        if (!bookRepository.existsById(bookToReview.getBookId())) {
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookToReview.getBookId())
+            );
+        }
+        if (reviewRepository.isUserReviewedBookByBookIdAndUserId(
+                bookToReview.getBookId(),
+                user.getUserId())) {
+            throw new EntityAlreadyExistsException();
+        }
+        reviewRepository.save(review);
+    }
+
+    @Override
+    public void changeReviewText(BookReview review, User userFromRequest) {
+        Book reviewedBook = review.getReviewedBook();
+        User userThatLeftReview = review.getUser();
+        if (!reviewRepository.isUserReviewedBookByBookIdAndUserId(
+                reviewedBook.getBookId(),
+                userThatLeftReview.getUserId()
+        )) {
+            throw new EntityNotFoundException();
+        }
+    }
+
+    @Override
+    public void removeReviewFromBook(BookReview bookReview, User user) {
+
     }
 }
