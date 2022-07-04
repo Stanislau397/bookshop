@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{all_genres}"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
+    <script type="text/javascript" th:src="@{/js/admin/all_genres.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/side_bar"></div>
+
+<div class="modal fade"
+     id="errorModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="error-message"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="addGenreModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAuthorLabel" th:text="#{add_genre}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3" th:text="#{name}"></span>
+                    </div>
+                    <input type="text" class="form-control shadow-none" id="title" aria-describedby="basic-addon3">
+                </div>
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="addGenre()"
+                        th:text="#{save}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="editGenreModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editGenreTitle" th:text="#{edit}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon4" th:text="#{name}"></span>
+                    </div>
+                    <input type="hidden" id="genre-id-for-edit" value="">
+                    <input type="text" class="form-control shadow-none" id="title-to-edit" aria-describedby="basic-addon3">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="editGenreTitle()"
+                        th:text="#{save}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="deleteGenreModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteGenreTitle" th:text="#{delete}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="genre-id" value="">
+                <p th:text="#{delete_genre_question}"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="deleteGenreById()"
+                        th:text="#{delete}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container w-75">
+    <div class="input-group rounded w-50">
+        <input type="search"
+               id="keyword"
+               class="form-control rounded shadow-none users-search"
+               th:placeholder="#{search}" aria-label="Search"
+               aria-describedby="search-addon"
+               onkeyup="getGenresByKeyWord()"/>
+    </div>
+
+    <table class="table users-table align-middle mb-0 bg-white w-90">
+        <input type="hidden" id="edit-btn-name" th:value="#{edit}">
+        <input type="hidden" id="delete-btn-name" th:value="#{delete}">
+        <thead class="bg-light">
+        <tr>
+            <th>#</th>
+            <th th:text="#{name}"></th>
+            <th th:text="#{actions}"></th>
+        </tr>
+        </thead>
+
+        <tbody id="tableData">
+
+        </tbody>
+    </table>
+
+    <nav aria-label="Users navigation">
+        <ul class="pagination" id="genres-pagination">
+
+        </ul>
+    </nav>
+
+</div>
+
+<button type="button" class="btn btn-primary shadow-none add-btn"
+        th:text="#{add_genre}"
+        data-bs-toggle="modal"
+        data-bs-target="#addGenreModal">
+</button>
+</body>
+</html>

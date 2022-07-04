@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="author-name"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/author_details.css}"/>
+    <script type="text/javascript" th:src="@{/js/general/author_details.js}"></script>
+</head>
+<body style="height: 1000px">
+<div th:replace="fragment/header"></div>
+
+<div class="main-container">
+    <div class="author-info">
+        <div class="image-container">
+            <img src="http://localhost:8090/image/author/default-author.jpg"
+                 id="author-image"
+                 class="image"/>
+        </div>
+        <div class="info">
+
+            <h2 class="author-name"
+                id="first_name_and_last_name">
+            </h2>
+            <h3 th:text="#{about_person}"></h3>
+
+            <ul>
+                <li class="name" th:text="#{total_books}"></li>
+                <li class="value" id="books-count"></li>
+            </ul>
+            <ul class="birth-date">
+                <li class="name" th:text="#{birth_date}"></li>
+                <li
+                        class="value" id="birth_date"></li>
+            </ul>
+            <ul class="biography">
+                <li class="name" th:text="#{biography}"></li>
+                <li class="value"
+                    id="biography"></li>
+            </ul>
+        </div>
+    </div>
+    <div class="author-books" id="author_books">
+
+    </div>
+</div>
+</body>
+</html>

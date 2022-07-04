@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{all_publishers}"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
+    <script type="text/javascript" th:src="@{/js/admin/all_publishers.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/side_bar"></div>
+
+<div class="container w-75">
+    <div class="input-group rounded w-50">
+        <input type="search"
+               id="keyword"
+               class="form-control rounded shadow-none users-search"
+               th:placeholder="#{search}" aria-label="Search"
+               aria-describedby="search-addon"
+               onkeyup=""/>
+    </div>
+
+    <table class="table users-table align-middle mb-0 bg-white w-90">
+        <thead class="bg-light">
+        <tr>
+            <th th:text="#{image}"></th>
+            <th th:text="#{first_name}"></th>
+            <th th:text="#{last_name}"></th>
+            <th th:text="#{birth_date}"></th>
+            <th th:text="#{actions}"></th>
+        </tr>
+        </thead>
+
+        <tbody id="tableData">
+
+        </tbody>
+    </table>
+    <div class="error-message" id="error-message"></div>
+
+    <nav aria-label="Users navigation">
+        <ul class="pagination" id="authors-pagination">
+
+        </ul>
+    </nav>
+
+</div>
+
+<button type="button" class="btn btn-primary shadow-none add-btn"
+        th:text="#{add_author}"
+        data-bs-toggle="modal"
+        data-bs-target="#addAuthorModal">
+</button>
+</body>
+</html>

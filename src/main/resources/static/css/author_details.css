@@ -1,0 +1,157 @@
+.main-container {
+    width: 65%;
+    height: fit-content;
+    margin: auto;
+}
+
+.main-container .author-info {
+    overflow: hidden;
+    margin-top: 3%;
+    width: 100%;
+}
+
+.author-info .image-container {
+    float: left;
+    width: 20%;
+}
+
+.author-info .image-container .image {
+    margin-top: 0;
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
+
+}
+
+.author-info .info {
+    float: left;
+    width: 80%;
+    height: 270px;
+}
+
+.author-info .info .author-name {
+    margin-left: 2%;
+    margin-top: -1%;
+    font-family: GT Super Bold, serif;
+    font-weight: 500;
+}
+
+.author-info .info h3 {
+    margin-left: 2%;
+    margin-top: 3%;
+    font-family: GT Super Bold, serif;
+    font-weight: bold;
+}
+
+.author-info .info ul {
+    margin-left: -2%;
+}
+
+.author-info .info ul li {
+    display: inline-grid;
+}
+
+.author-info .info ul .name {
+    width: 150px;
+    position: relative;
+}
+
+.author-info .info ul .value {
+    font-family: IBM Plex Sans, sans-serif;
+    width: 70%;
+    margin-left: 5%;
+}
+
+.author-info .info .birth-date,
+.author-info .info .biography {
+    margin-top: -1.5%;
+}
+
+.author-books {
+    height: fit-content;
+    margin-top: -7%;
+}
+
+.author-books-h2 {
+    margin-top: 3%;
+    color: #2c293b;
+    font-family: GT Super Bold, serif;
+    font-weight: bold;
+}
+
+.author-books .book-container {
+    margin-top: 14%;
+    width: 18%;
+    height: 300px;
+    float: left;
+    margin-left: 24px;
+}
+
+.book-container:nth-child(5n+1) {
+    margin-left: 0;
+}
+
+.book-container:nth-child(5n) {
+    margin-right : 0;
+}
+
+.author-books .book-container .book-image-container {
+    width: 100%;
+    height: 230px;
+    background-color: rgb(240, 240, 240);
+    border-radius: 5px;
+}
+
+.book-image-container .book-image {
+    width: 70%;
+    height: 200px;
+    margin-top: 8%;
+    margin-left: 15%;
+    transition: transform .4s;
+    border-radius: 5px;
+    box-shadow: 0 6px 12px rgb(0 0 0 / 30%);
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.book-image:hover {
+    transform: scale(1.05);
+}
+
+.author-books .book-info {
+    height: 130px;
+}
+
+.author-books .book-title {
+    width: 100%;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+    color: #2c293b;
+    cursor: pointer;
+}
+
+.book-author-name {
+    font-family: IBM Plex Sans, sans-serif;
+}
+
+.book-price {
+    margin-top: -9%;
+    font-family: IBM Plex Sans, sans-serif;
+    font-weight: bold;
+}
+
+.add-to-wishlist-btn {
+    width: 100%;
+    margin-top: 12%;
+    border-width: 1px;
+    background-color: #de2454;
+    border-color: #de2454;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 20px;
+    color: white;
+}

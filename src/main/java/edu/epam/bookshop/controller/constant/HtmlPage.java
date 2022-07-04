@@ -12,6 +12,11 @@ public class HtmlPage {
     public static final String ADMIN_CABINET_HTML = "admin/admin_cabinet.html";
     public static final String ALL_USERS_HTML = "admin/all_users.html";
     public static final String ACCOUNT_SETTING_HTML = "user/account_settings.html";
+    public static final String ALL_GENRES_HTML = "admin/all_genres.html";
+    public static final String ALL_PUBLISHERS_HTML = "admin/all_publishers.html";
+
+    //author
     public static final String ALL_AUTHORS_HTML = "admin/all_authors.html";
     public static final String EDIT_AUTHOR_HTML = "admin/edit_author.html";
+    public static final String AUTHOR_DETAILS_HTML = "author.html";
 }

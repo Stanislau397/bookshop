@@ -6,6 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_GENRES_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_PUBLISHERS_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.AUTHOR_DETAILS_URN;
+import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_GENRES_HTML;
+import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_PUBLISHERS_HTML;
+import static edu.epam.bookshop.controller.constant.HtmlPage.AUTHOR_DETAILS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.SIGN_UP_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.SIGN_IN_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.HOME_HTML;
@@ -77,5 +83,23 @@ public class ViewController {
     public ModelAndView editAuthorPage(ModelAndView editAuthorView) {
         editAuthorView.setViewName(EDIT_AUTHOR_HTML);
         return editAuthorView;
+    }
+
+    @GetMapping(ALL_GENRES_URN)
+    public ModelAndView allGenresPage(ModelAndView allGenresView) {
+        allGenresView.setViewName(ALL_GENRES_HTML);
+        return allGenresView;
+    }
+
+    @GetMapping(ALL_PUBLISHERS_URN)
+    public ModelAndView allPublishersPage(ModelAndView allPublishersView) {
+        allPublishersView.setViewName(ALL_PUBLISHERS_HTML);
+        return allPublishersView;
+    }
+
+    @GetMapping(AUTHOR_DETAILS_URN)
+    public ModelAndView authorDetailsPage(ModelAndView authorDetailsView) {
+        authorDetailsView.setViewName(AUTHOR_DETAILS_HTML);
+        return authorDetailsView;
     }
 }
