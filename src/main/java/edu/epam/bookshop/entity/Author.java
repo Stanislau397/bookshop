@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.CascadeType;
@@ -31,10 +34,12 @@ import static edu.epam.bookshop.entity.constant.TableColumn.BIRTH_DATE;
 import static edu.epam.bookshop.entity.constant.TableName.AUTHORS;
 
 @Table(name = AUTHORS)
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,

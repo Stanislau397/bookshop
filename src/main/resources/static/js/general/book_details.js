@@ -5,7 +5,6 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 
 function getBookDetailsByTitle(bookTitle) {
-    console.log(bookTitle)
     $.ajax({
         url : '/findBookDetails',
         data : {title : bookTitle},
