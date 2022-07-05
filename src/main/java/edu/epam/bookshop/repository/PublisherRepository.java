@@ -16,7 +16,7 @@ public interface PublisherRepository extends JpaRepository<Publisher, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = UPDATE_PUBLISHER_INFO_BY_ID, nativeQuery = true)
+    @Query(value = UPDATE_PUBLISHER_INFO_BY_ID)
     void updateInfoById(String publisherName, String description, String imagePath, Long publisherId);
 
     boolean existsByName(String publisherName);

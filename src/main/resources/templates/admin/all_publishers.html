@@ -29,6 +29,47 @@
 </div>
 
 <div class="modal fade"
+     id="editPublisherModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPublisherLabel" th:text="#{add_publisher}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="publisher_id_for_update">
+                <input type="hidden" id="old_image_path">
+                <div class="form-group mt-1">
+                    <label for="publisher_name" th:text="#{image}"></label>
+                    <input type="file" class="form-control shadow-none" id="updated_publisher_image">
+                </div>
+
+                <div class="form-group mt-1">
+                    <label for="publisher_name" th:text="#{name}"></label>
+                    <input type="text" class="form-control shadow-none" id="updated_publisher_name">
+                </div>
+
+                <div class="form-group mt-1">
+                    <label for="publisher_description" th:text="#{description}"></label>
+                    <textarea class="form-control shadow-none mt-1" id="updated_publisher_description"
+                              rows="4"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="editPublisher()"
+                        th:text="#{edit}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
      id="addPublisherModal"
      tabindex="-1"
      aria-labelledby="exampleModalLabel"
@@ -59,7 +100,8 @@
 
                         <div class="form-group mt-1">
                             <label for="publisher_description" th:text="#{description}"></label>
-                            <textarea class="form-control shadow-none mt-1" id="publisher_description" rows="4"></textarea>
+                            <textarea class="form-control shadow-none mt-1" id="publisher_description"
+                                      rows="4"></textarea>
                         </div>
                     </form>
                 </div>

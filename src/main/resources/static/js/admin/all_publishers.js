@@ -28,19 +28,45 @@ function addPublisher() {
     })
 }
 
+function editPublisher() {
+    let page = new URLSearchParams(window.location.search).get('page');
+    let publisherForm = new FormData();
+    publisherForm.append('updatedPublisherImage', $('#updated_publisher_image')[0].files[0]);
+    publisherForm.append('publisherId', $('#publisher_id_for_update').val());
+    publisherForm.append('name', $('#updated_publisher_name').val());
+    publisherForm.append('description', $('#updated_publisher_description').val());
+    publisherForm.append('imagePath', $('#old_image_path').val());
+    $.ajax({
+        method: 'POST',
+        url: '/updatePublisherInfo',
+        cache: false,
+        processData: false,
+        contentType: false,
+        data: publisherForm,
+        success: function () {
+            hideEditModal();
+            getPublishersByPage(page);
+        },
+        error: function (errorMessage) {
+            hideEditModal();
+            displayExceptionModalWithErrorMessage(errorMessage.responseText);
+        }
+    })
+}
+
 function deletePublisherById() {
     let page = new URLSearchParams(window.location.search).get('page');
     let publisher_id_input = document.getElementById('publisher_id');
     $.ajax({
         method: 'POST',
-        url : '/deletePublisherById',
-        data : {publisherId : publisher_id_input.value},
-        success : function () {
+        url: '/deletePublisherById',
+        data: {publisherId: publisher_id_input.value},
+        success: function () {
             hideDeletePublisherModal();
             getPublishersByPage(page);
 
         },
-        error : function (exception) {
+        error: function (exception) {
             hideDeletePublisherModal();
             displayExceptionModalWithErrorMessage(exception.responseText);
         }
@@ -81,6 +107,16 @@ function getPublisherByKeyWord() {
     }
 }
 
+function getPublisherByName(name) {
+    $.ajax({
+        url : '/findPublisherByName',
+        data : {publisherName : name},
+        success : function (publisher) {
+            setPublisherFieldsToUpdate(publisher);
+        }
+    })
+}
+
 function buildTableBodyForPublishers(publishers) {
     const tableBody = document.getElementById('tableData');
     const editBtn = document.getElementById('edit-btn-name').value;
@@ -95,11 +131,14 @@ function buildTableBodyForPublishers(publishers) {
             '<div class="d-flex align-items-center">' +
             '<img class="img-thumbnail" style="width: 50px" src=' + publisher.imagePath + '>' +
             '</div>' + '</td>' +
-            '<td style="width: 770px">' + publisher.name + '</td>' +
+            '<td style="width: 750px">' + publisher.name + '</td>' +
             '<td>' +
-            '<a type="button" ' +
-            'class="btn btn-secondary" ' +
-            'href="">' + editBtn + '</a>' +
+            '<button type="button" ' +
+            'class="btn btn-secondary role-btn" ' +
+            'data-bs-toggle="modal" ' +
+            'data-bs-target="#editPublisherModal" ' +
+            'value="' + publisher.name + '" ' +
+            'onclick="getPublisherByName(this.value)">' + editBtn + '</button>' +
             '<a type="button" ' +
             'class="btn btn-danger role-btn" ' +
             'data-bs-toggle="modal" ' +
@@ -133,7 +172,7 @@ function hideDeletePublisherModal() {
 
 function displayExceptionModalWithErrorMessage(exception) {
     $('#errorModal').modal('show');
-    let errorMessageH5 = document.getElementById('error-message-for-search');
+    let errorMessageH5 = document.getElementById('error-message');
     let jsonResponse = JSON.parse(exception);
     errorMessageH5.innerText = jsonResponse['message'];
 }
@@ -150,4 +189,21 @@ function resetPublisherFormFields() {
 function setPublisherIdInputField(id) {
     let publisher_id_input = document.getElementById('publisher_id');
     publisher_id_input.value = id;
+}
+
+function hideEditModal() {
+    $('#editPublisherModal').modal('hide');
+}
+
+function setPublisherFieldsToUpdate(publisher) {
+    let update_publisher_name_input = document.getElementById('updated_publisher_name');
+    update_publisher_name_input.value = publisher.name;
+    let update_publisher_description_input = document.getElementById('updated_publisher_description');
+    update_publisher_description_input.value = publisher.description;
+    let publisher_id_input = document.getElementById('publisher_id_for_update');
+    publisher_id_input.value = publisher.publisherId;
+    let old_image_path_input = document.getElementById('old_image_path');
+    old_image_path_input.value = publisher.imagePath;
+    let file_input = document.getElementById('updated_publisher_image');
+    file_input.value = '';
 }
