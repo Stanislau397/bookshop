@@ -1,0 +1,22 @@
+.image-container {
+    float: left;
+    width: 30%;
+}
+
+.info-container {
+    float: left;
+    margin-left: 5%;
+    width: 65%;
+}
+
+.image-container>input {
+    display: none;
+}
+
+.publisher-image {
+    margin-top: 7%;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    object-fit: cover;
+}

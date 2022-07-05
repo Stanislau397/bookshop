@@ -81,7 +81,7 @@ function getGenresByPage(pageNumber) {
 function getGenresByKeyWord() {
     let keywordInput = document.getElementById('keyword');
     let page = new URLSearchParams(window.location.search).get('page');
-    if (page !== '') {
+    if (keywordInput.value !== '') {
         $.ajax({
             url: '/findGenresByKeyword',
             data: {keyWord: keywordInput.value},

@@ -4,10 +4,102 @@
     <meta charset="UTF-8">
     <title th:text="#{all_publishers}"></title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/add_publisher.css}"/>
     <script type="text/javascript" th:src="@{/js/admin/all_publishers.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/side_bar"></div>
+
+<input type="hidden" id="edit-btn-name" th:value="#{edit}">
+<input type="hidden" id="delete-btn-name" th:value="#{delete}">
+
+<div class="modal fade"
+     id="errorModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exception-message"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="addPublisherModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPublisherLabel" th:text="#{add_publisher}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="image-container">
+                    <label for="file-input">
+                        <img class="publisher-image" id="publisher_image"
+                             src="http://localhost:8090/image/book/default.png"/>
+                    </label>
+                    <input id="file-input"
+                           onchange="document.getElementById('publisher_image').src = window.URL.createObjectURL(this.files[0])"
+                           type="file"/>
+                </div>
+                <div class="info-container">
+                    <form id="author_form">
+
+                        <div class="form-group mt-1">
+                            <label for="publisher_name" th:text="#{name}"></label>
+                            <input type="text" class="form-control shadow-none" id="publisher_name">
+                        </div>
+
+                        <div class="form-group mt-1">
+                            <label for="publisher_description" th:text="#{description}"></label>
+                            <textarea class="form-control shadow-none mt-1" id="publisher_description" rows="4"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="addPublisher()"
+                        th:text="#{add}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="deletePublisherModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deletePublisherTitle" th:text="#{delete}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="publisher_id" value="">
+                <p th:text="#{delete_publisher_question}"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="deletePublisherById()"
+                        th:text="#{delete}"></button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container w-75">
     <div class="input-group rounded w-50">
@@ -16,16 +108,15 @@
                class="form-control rounded shadow-none users-search"
                th:placeholder="#{search}" aria-label="Search"
                aria-describedby="search-addon"
-               onkeyup=""/>
+               onkeyup="getPublisherByKeyWord()"/>
     </div>
 
     <table class="table users-table align-middle mb-0 bg-white w-90">
         <thead class="bg-light">
         <tr>
+            <th>#</th>
             <th th:text="#{image}"></th>
-            <th th:text="#{first_name}"></th>
-            <th th:text="#{last_name}"></th>
-            <th th:text="#{birth_date}"></th>
+            <th th:text="#{name}"></th>
             <th th:text="#{actions}"></th>
         </tr>
         </thead>
@@ -34,7 +125,7 @@
 
         </tbody>
     </table>
-    <div class="error-message" id="error-message"></div>
+    <div class="error-message" id="error-message-for-search"></div>
 
     <nav aria-label="Users navigation">
         <ul class="pagination" id="authors-pagination">
@@ -45,9 +136,9 @@
 </div>
 
 <button type="button" class="btn btn-primary shadow-none add-btn"
-        th:text="#{add_author}"
+        th:text="#{add_publisher}"
         data-bs-toggle="modal"
-        data-bs-target="#addAuthorModal">
+        data-bs-target="#addPublisherModal">
 </button>
 </body>
 </html>
