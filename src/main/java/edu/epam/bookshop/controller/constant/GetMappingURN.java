@@ -43,6 +43,7 @@ public class GetMappingURN {
     public static final String ALL_GENRES_URN = "/admin/cabinet/all_genres";
     public static final String ALL_PUBLISHERS_URN = "/admin/cabinet/all_publishers";
     public static final String AUTHOR_DETAILS_URN = "/bookshop/author";
+    public static final String BOOK_DETAILS_URN = "/bookshop/book";
 
     //book
     public static final String FIND_BOOKS_BY_KEYWORD = "/findBooksByKeyword";

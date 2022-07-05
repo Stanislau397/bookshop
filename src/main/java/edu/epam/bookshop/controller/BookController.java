@@ -86,8 +86,8 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOK_DETAILS)
-    public ResponseEntity<Book> displayBookDetails(@RequestParam String bookTitle) {
-        Book foundBookByTitle = bookService.findBookDetailsByTitle(bookTitle);
+    public ResponseEntity<Book> displayBookDetails(@RequestParam String title) {
+        Book foundBookByTitle = bookService.findBookDetailsByTitle(title);
         return ResponseEntity.ok(foundBookByTitle);
     }
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="title">Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/book_details.css}"/>
+    <script type="text/javascript" th:src="@{/js/general/book_details.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/header"></div>
+<div class="main-container">
+    <div class="book-image-container">
+        <img id="book-img"
+             src="http://localhost:8090/image/book/default.png"/>
+    </div>
+    <div class="book-info-container">
+        <h1 class="book-name" id="book-title"></h1>
+        <a class="author-name"
+           id="author_name">
+        </a>
+        <span th:text="#{author_for_span}"></span>
+
+        <h1 class="description-h1" th:text="#{description}"></h1>
+        <p class="book-description" id="description"></p>
+
+        <h1 class="product-details-h1" th:text="#{product_details}"></h1>
+
+        <br>
+        <ul class="product-details-ul">
+            <li class="li-name" th:text="#{price}"></li>
+            <li class="li-value" id="book_price"></li>
+        </ul>
+        <ul class="product-details-ul">
+            <li class="li-name" th:text="#{publisher}"></li>
+            <li class="li-value" id="book_publisher"></li>
+        </ul>
+        <ul class="product-details-ul">
+            <li class="li-name" th:text="#{publish_year}"></li>
+            <li class="li-value" id="publish_year"></li>
+        </ul>
+        <ul class="product-details-ul">
+            <li class="li-name" th:text="#{pages}"></li>
+            <li class="li-value" id="pages"></li>
+        </ul>
+        <ul class="product-details-ul">
+            <li class="li-name" th:text="#{cover_type}"></li>
+            <li class="li-value" id="book_cover_type"></li>
+        </ul>
+        <ul class="product-details-ul">
+            <li class="li-name" th:text="#{isbn}"></li>
+            <li class="li-value" id="book_isbn"></li>
+        </ul>
+
+        <h1 class="about-author-h1" th:text="#{about_the_author}"></h1>
+        <p class="author-biography" id="author_biography"></p>
+    </div>
+</div>
+</body>
+</html>

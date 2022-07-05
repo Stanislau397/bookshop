@@ -9,9 +9,11 @@ import org.springframework.web.servlet.ModelAndView;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_GENRES_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_PUBLISHERS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.AUTHOR_DETAILS_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOK_DETAILS_URN;
 import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_GENRES_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_PUBLISHERS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.AUTHOR_DETAILS_HTML;
+import static edu.epam.bookshop.controller.constant.HtmlPage.BOOK_DETAILS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.SIGN_UP_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.SIGN_IN_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.HOME_HTML;
@@ -101,5 +103,11 @@ public class ViewController {
     public ModelAndView authorDetailsPage(ModelAndView authorDetailsView) {
         authorDetailsView.setViewName(AUTHOR_DETAILS_HTML);
         return authorDetailsView;
+    }
+
+    @GetMapping(BOOK_DETAILS_URN)
+    public ModelAndView bookDetailsPage(ModelAndView bookDetailsView) {
+        bookDetailsView.setViewName(BOOK_DETAILS_HTML);
+        return bookDetailsView;
     }
 }
