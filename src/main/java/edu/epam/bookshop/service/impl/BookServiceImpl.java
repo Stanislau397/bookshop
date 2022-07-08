@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK;
+import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_BY_GIVEN_BOOK_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
@@ -45,6 +46,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.LAST_NAME_IS_NOT_VALID
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_WITH_GIVEN_KEYWORD_NOT_FOUND;
 
+import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHERS_BY_GIVEN_BOOK_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_WITH_GIVEN_NAME_ALREADY_EXISTS;
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_WITH_GIVEN_NAME_NOT_FOUND;
@@ -139,7 +141,7 @@ public class BookServiceImpl implements BookService {
                 .pages(book.getPages())
                 .price(book.getPrice())
                 .genres(book.getGenres())
-                .publisher(book.getPublisher())
+                .publishers(book.getPublishers())
                 .authors(book.getAuthors())
                 .build();
         bookRepository.save(bookToSave);
@@ -470,6 +472,24 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<Publisher> findPublishersByBookId(Long bookId) { //todo test
+        if (!bookRepository.existsById(bookId)) {
+            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+        List<Publisher> publishersByBookId = publisherRepository.findByBookId(bookId);
+        if (publishersByBookId.isEmpty()) {
+            log.info(String.format(PUBLISHERS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
+            throw new NothingFoundException(
+                    String.format(PUBLISHERS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
+            );
+        }
+        return publishersByBookId;
+    }
+
+    @Override
     public void addAuthor(Author author, MultipartFile image) {
         if (!authorValidator.isFirstnameValid(author.getFirstName())) {
             throw new InvalidInputException(FIRST_NAME_IS_NOT_VALID_MSG);
@@ -578,6 +598,23 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Author findAuthorByBookId(Long bookId) { //todo test
+        if (!bookRepository.existsById(bookId)) {
+            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+        return authorRepository.findByBookId(bookId)
+                .orElseThrow(() -> {
+                    log.info(String.format(AUTHOR_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
+                    return new EntityNotFoundException(
+                            String.format(AUTHOR_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
+                    );
+                });
+    }
+
+    @Override
     public List<Author> findAuthorsByKeyword(String keyWord) {
         List<Author> authorsByKeyword = authorRepository.findAll()
                 .stream()
@@ -591,6 +628,15 @@ public class BookServiceImpl implements BookService {
             );
         }
         return authorsByKeyword;
+    }
+
+    @Override
+    public List<Author> findAllAuthors() {
+        List<Author> allAuthors = authorRepository.findAll();
+        if (allAuthors.isEmpty()) {
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return allAuthors;
     }
 
     @Override

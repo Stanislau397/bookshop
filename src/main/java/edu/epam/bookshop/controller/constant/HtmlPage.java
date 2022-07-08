@@ -14,6 +14,7 @@ public class HtmlPage {
     public static final String ACCOUNT_SETTING_HTML = "user/account_settings.html";
     public static final String ALL_GENRES_HTML = "admin/all_genres.html";
     public static final String ALL_PUBLISHERS_HTML = "admin/all_publishers.html";
+    public static final String ALL_BOOKS_HTML = "admin/all_books.html";
 
     //author
     public static final String ALL_AUTHORS_HTML = "admin/all_authors.html";

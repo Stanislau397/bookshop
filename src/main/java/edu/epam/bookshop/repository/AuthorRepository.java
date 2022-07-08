@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_AUTHOR_BY_BOOK_ID;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_AUTHOR_INFO_BY_ID;
 
 import java.time.LocalDate;
@@ -27,4 +28,7 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
                                        Long authorId);
 
     Optional<Author> findByAuthorId(Long authorId);
+
+    @Query(value = SELECT_AUTHOR_BY_BOOK_ID)
+    Optional<Author> findByBookId(Long bookId);
 }

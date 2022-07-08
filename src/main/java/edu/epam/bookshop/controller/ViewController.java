@@ -6,10 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_BOOKS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_GENRES_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_PUBLISHERS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.AUTHOR_DETAILS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOK_DETAILS_URN;
+import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_BOOKS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_GENRES_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_PUBLISHERS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.AUTHOR_DETAILS_HTML;
@@ -97,6 +99,12 @@ public class ViewController {
     public ModelAndView allPublishersPage(ModelAndView allPublishersView) {
         allPublishersView.setViewName(ALL_PUBLISHERS_HTML);
         return allPublishersView;
+    }
+
+    @GetMapping(ALL_BOOKS_URN)
+    public ModelAndView allBooksPage(ModelAndView allBooksView) {
+        allBooksView.setViewName(ALL_BOOKS_HTML);
+        return allBooksView;
     }
 
     @GetMapping(AUTHOR_DETAILS_URN)

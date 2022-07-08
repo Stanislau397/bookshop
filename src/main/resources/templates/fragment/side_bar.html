@@ -7,8 +7,9 @@
     <script type="text/javascript" th:src="@{/js/fragment/side_bar.js}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
 <div th:replace="fragment/svg_icons"></div>
@@ -48,6 +49,12 @@
                 <a th:href="@{/admin/cabinet/all_genres?page=1}" class="nav-link link-dark">
                     <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
                     <p th:text="#{all_genres}"></p>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/cabinet/all_books?page=1}" class="nav-link link-dark">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    <p th:text="#{books}"></p>
                 </a>
             </li>
         </ul>

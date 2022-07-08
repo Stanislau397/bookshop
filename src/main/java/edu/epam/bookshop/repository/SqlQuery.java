@@ -41,6 +41,10 @@ public class SqlQuery {
                     "THEN TRUE ELSE FALSE END " +
                     "FROM author_books " +
                     "WHERE author_id_fk = 1? AND book_id_fk = 2?";
+    public static final String SELECT_AUTHOR_BY_BOOK_ID =
+            "SELECT a FROM Author a " +
+                    "JOIN a.books b " +
+                    "WHERE b.bookId = :bookId";
 
     //publisher
     public static final String UPDATE_PUBLISHER_INFO_BY_ID =
@@ -49,6 +53,10 @@ public class SqlQuery {
                     "p.description = ?2, " +
                     "p.imagePath = ?3 " +
                     "WHERE p.publisherId = ?4";
+    public static final String SELECT_PUBLISHERS_BY_BOOK_ID =
+            "SELECT p FROM Publisher p " +
+                    "LEFT JOIN p.publishedBooks b " +
+                    "WHERE b.bookId = :bookId";
 
     //genre
     public static final String UPDATE_GENRE_TITLE_BY_ID =

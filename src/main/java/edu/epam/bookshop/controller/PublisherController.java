@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHERS_BY_BOOK_ID_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.PUBLISHER_EXISTS_BY_NAME_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_PUBLISHERS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHERS_BY_KEYWORD_URN;
@@ -69,6 +70,12 @@ public class PublisherController {
             @RequestParam String keyWord) {
         List<Publisher> publishersByKeyword = bookService.findPublishersByKeyword(keyWord);
         return ResponseEntity.ok(publishersByKeyword);
+    }
+
+    @GetMapping(FIND_PUBLISHERS_BY_BOOK_ID_URN)
+    public ResponseEntity<List<Publisher>> getPublishersByBookId(@RequestParam Long bookId) {
+        List<Publisher> publishersByBookId = bookService.findPublishersByBookId(bookId);
+        return ResponseEntity.ok(publishersByBookId);
     }
 
     @GetMapping(FIND_PUBLISHERS_BY_PAGE_URN)

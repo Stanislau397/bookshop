@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_PUBLISHERS_BY_BOOK_ID;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_PUBLISHER_INFO_BY_ID;
 
 @Repository
@@ -22,4 +24,7 @@ public interface PublisherRepository extends JpaRepository<Publisher, Long> {
     boolean existsByName(String publisherName);
 
     Optional<Publisher> findByName(String publisherName);
+
+    @Query(SELECT_PUBLISHERS_BY_BOOK_ID)
+    List<Publisher> findByBookId(Long bookId);
 }

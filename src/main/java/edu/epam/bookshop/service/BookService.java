@@ -61,6 +61,8 @@ public interface BookService {
 
     List<Publisher> findAllPublishers();
 
+    List<Publisher> findPublishersByBookId(Long bookId);
+
     void addAuthor(Author author, MultipartFile image);
 
     void addAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId);
@@ -73,7 +75,11 @@ public interface BookService {
 
     Author findAuthorInfoByAuthorId(Long authorId);
 
+    Author findAuthorByBookId(Long bookId);
+
     List<Author> findAuthorsByKeyword(String keyWord);
+
+    List<Author> findAllAuthors();
 
     Page<Author> findAuthorsByPage(int page);
 

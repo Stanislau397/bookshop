@@ -19,9 +19,9 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_USERS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USERS_WITH_PAGINATION_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.ACCOUNT_SETTINGS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_AUTHORS_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHOR_INFO_BY_ID;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_KEYWORD;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_PAGE;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHOR_INFO_BY_ID_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_KEYWORD_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.EDIT_AUTHOR_URN;
 
 import static edu.epam.bookshop.controller.constant.PostMappingURN.REGISTER_USER_URN;
@@ -132,19 +132,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAuthority(ROLE_ADMIN);
 
         httpSecurity.authorizeHttpRequests()
-                .antMatchers(FIND_AUTHOR_INFO_BY_ID)
+                .antMatchers(FIND_AUTHOR_INFO_BY_ID_URN)
                 .permitAll();
 
         httpSecurity.authorizeHttpRequests()
-                .antMatchers(FIND_AUTHORS_BY_KEYWORD)
+                .antMatchers(FIND_AUTHORS_BY_KEYWORD_URN)
                 .permitAll();
 
         httpSecurity.authorizeHttpRequests()
-                .antMatchers(FIND_AUTHORS_BY_PAGE)
+                .antMatchers(FIND_AUTHORS_BY_PAGE_URN)
                 .hasAuthority(ROLE_ADMIN);
 
         httpSecurity.authorizeHttpRequests()
-                .antMatchers(FIND_AUTHORS_BY_PAGE)
+                .antMatchers(FIND_AUTHORS_BY_PAGE_URN)
                 .hasAuthority(EDIT_AUTHOR_URN);
     }
 }
