@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit book</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/edit.css}"/>
+    <script type="text/javascript" th:src="@{/js/admin/edit_book.js}"></script>
+    <script type="text/javascript" th:src="@{/js/validation/book_validation.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/side_bar"></div>
+
+<div class="modal fade" id="success_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    th:text="#{author_info_updated}"
+                    id="successModalResponse"></h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="error_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="errorModalMessage"></h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="edit-container">
+    <div class="body">
+        <div class="image-container">
+            <label for="file-input">
+                <img class="image" id="book_image"
+                     src="http://localhost:8090/image/book/default.png"/>
+            </label>
+            <input id="file-input"
+                   onchange="document.getElementById('book_image').src = window.URL.createObjectURL(this.files[0])"
+                   type="file"/>
+        </div>
+        <div class="info-container">
+
+            <div class="form-group mt-1">
+                <label for="book_title" th:text="#{name}"></label>
+                <input type="text" class="form-control shadow-none" id="book_title">
+            </div>
+
+            <div class="form-group mt-1">
+                <label for="book_price" th:text="#{price}"></label>
+                <input type="text" class="form-control shadow-none" id="book_price">
+            </div>
+
+            <div class="form-group mt-1">
+                <label for="book_isbn" th:text="#{isbn}"></label>
+                <input type="text" class="form-control shadow-none" id="book_isbn">
+            </div>
+
+            <div class="form-group mt-1">
+                <label for="book_pages" th:text="#{pages}"></label>
+                <input type="text" class="form-control shadow-none" id="book_pages">
+            </div>
+
+            <div class="form-group mt-1">
+                <label for="book_cover_type"
+                       style="width: 200px"
+                       class="col-sm-2 col-form-label"
+                       th:text="#{cover_type}"></label>
+                <select class="form-select  shadow-none"
+                        aria-label="Default select example"
+                        id="book_cover_type">
+                    <option value="HARDCOVER" selected th:text="#{hard}"></option>
+                    <option value="SOFTCOVER" th:text="#{soft}"></option>
+                </select>
+            </div>
+
+            <label for="year"
+                   style="width: 200px"
+                   class="col-sm-2 col-form-label"
+                   th:text="#{publish_year}"></label>
+            <div class="form-group row mt-1">
+                <select class="form-select w-25 shadow-none"
+                        style="margin-left: 11px"
+                        aria-label="Default select example"
+                        id="day">
+                    <option selected th:text="#{day}"></option>
+                </select>
+                <select class="form-select w-25 shadow-none"
+                        style="margin-left: 11px"
+                        aria-label="Default select example"
+                        id="month">
+                    <option selected th:text="#{month}"></option>
+                </select>
+                <select class="form-select w-25 shadow-none"
+                        style="margin-left: 11px"
+                        aria-label="Default select example"
+                        id="year">
+                    <option selected th:text="#{year}"></option>
+                </select>
+            </div>
+
+            <div class="form-group mt-1">
+                <label for="book_description" th:text="#{description}"></label>
+                <textarea class="form-control shadow-none mt-1" id="book_description" rows="8"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <button type="button"
+                class="btn btn-primary edit-btn shadow-none"
+                onclick="updateAuthorInfo()"
+                th:text="#{change}"></button>
+    </div>
+
+</div>
+</body>
+</html>

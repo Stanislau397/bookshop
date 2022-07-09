@@ -21,4 +21,7 @@ public class HtmlPage {
     public static final String EDIT_AUTHOR_HTML = "admin/edit_author.html";
     public static final String AUTHOR_DETAILS_HTML = "author.html";
     public static final String BOOK_DETAILS_HTML = "book_details.html";
+
+    //book
+    public static final String EDIT_BOOK_HTML = "admin/edit_book.html";
 }
