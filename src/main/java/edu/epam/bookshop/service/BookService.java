@@ -15,7 +15,7 @@ public interface BookService {
 
     void addBook(Book book, MultipartFile bookImage);
 
-    void updateBookInfo(Book book, MultipartFile newBookImage);
+    boolean updateBookInfo(Book book, MultipartFile newBookImage);
 
     void addBookForAuthorByBookIdAndAuthorId(Long bookId, Long authorId);
 

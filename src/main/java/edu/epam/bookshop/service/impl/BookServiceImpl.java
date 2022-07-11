@@ -3,6 +3,7 @@ package edu.epam.bookshop.service.impl;
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
+import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.entity.Role;
@@ -28,6 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK;
@@ -108,7 +111,7 @@ public class BookServiceImpl implements BookService {
             log.info(BOOK_DESCRIPTION_IS_NOT_VALID);
             throw new InvalidInputException(BOOK_DESCRIPTION_IS_NOT_VALID);
         }
-        if (!bookValidator.isPagesValid(String.valueOf(book.getPages()))) {
+        if (!bookValidator.isPagesValid(book.getPages())) {
             log.info(BOOK_PAGES_FIELD_IS_NOT_VALID);
             throw new InvalidInputException(BOOK_PAGES_FIELD_IS_NOT_VALID);
 
@@ -117,7 +120,7 @@ public class BookServiceImpl implements BookService {
             log.info(BOOK_ISBN_IS_NOT_VALID);
             throw new InvalidInputException(BOOK_ISBN_IS_NOT_VALID);
         }
-        if (!bookValidator.isPriceValid(String.valueOf(book.getPrice()))) {
+        if (!bookValidator.isPriceValid(book.getPrice())) {
             log.info(BOOK_PRICE_IS_NOT_VALID);
             throw new InvalidInputException(BOOK_PRICE_IS_NOT_VALID);
         }
@@ -145,8 +148,39 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateBookInfo(Book book, MultipartFile newBookImage) {
+    public boolean updateBookInfo(Book book, MultipartFile newBookImage) { //todo test
+        boolean isBookUpdated = false;
+        Long bookId = book.getBookId();
+        String title = book.getTitle();
+        BigDecimal price = book.getPrice();
+        String description = book.getDescription();
+        Integer pages = book.getPages();
+        String isbn = book.getIsbn();
+        CoverType coverType = book.getCoverType();
+        LocalDate publishDate = book.getPublishDate();
+        String imagePath = book.getImagePath();
 
+        if (!bookRepository.existsById(bookId)) {
+            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+        if (bookValidator.isBookDataValid(title, price, description, pages, isbn)) {
+
+            if (newBookImage != null && newBookImage.getOriginalFilename() != null) {
+                String bookImageName = newBookImage.getOriginalFilename();
+                if (!imageValidator.isImageValid(bookImageName)) {
+                    throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
+                }
+                imagePath = BOOK_LOCALHOST_PATH
+                        .concat(ImageUploaderUtil.save(newBookImage, BOOK_DIRECTORY_PATH));
+            }
+            bookRepository.updateInfoById(title, price, description, pages,
+                    isbn, imagePath, coverType, publishDate, bookId);
+            isBookUpdated = true;
+        }
+        return isBookUpdated;
     }
 
     @Override

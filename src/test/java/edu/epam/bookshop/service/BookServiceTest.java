@@ -117,11 +117,11 @@ class BookServiceTest {
                 .thenReturn(true);
         when(bookValidator.isDescriptionValid(description))
                 .thenReturn(true);
-        when(bookValidator.isPagesValid(String.valueOf(pages)))
+        when(bookValidator.isPagesValid(pages))
                 .thenReturn(true);
         when(bookValidator.isIsbnValid(isbn))
                 .thenReturn(true);
-        when(bookValidator.isPriceValid(String.valueOf(new BigDecimal("12.1"))))
+        when(bookValidator.isPriceValid(new BigDecimal("12.1")))
                 .thenReturn(true);
         bookService.addBook(book, null);
         //then
@@ -179,7 +179,7 @@ class BookServiceTest {
                 .thenReturn(true);
         when(bookValidator.isDescriptionValid(description))
                 .thenReturn(true);
-        when(bookValidator.isPagesValid(anyString()))
+        when(bookValidator.isPagesValid(-123))
                 .thenReturn(false);
         //then
         assertThatThrownBy(() -> bookService.addBook(book, null))
@@ -205,7 +205,7 @@ class BookServiceTest {
                 .thenReturn(true);
         when(bookValidator.isDescriptionValid(description))
                 .thenReturn(true);
-        when(bookValidator.isPagesValid(String.valueOf(pages)))
+        when(bookValidator.isPagesValid(pages))
                 .thenReturn(true);
         when(bookValidator.isIsbnValid(isbn))
                 .thenReturn(false);
@@ -233,11 +233,11 @@ class BookServiceTest {
                 .thenReturn(true);
         when(bookValidator.isDescriptionValid(description))
                 .thenReturn(true);
-        when(bookValidator.isPagesValid(String.valueOf(pages)))
+        when(bookValidator.isPagesValid(pages))
                 .thenReturn(true);
         when(bookValidator.isIsbnValid(isbn))
                 .thenReturn(true);
-        when(bookValidator.isPriceValid(anyString()))
+        when(bookValidator.isPriceValid(new BigDecimal("po")))
                 .thenReturn(false);
         //then
         assertThatThrownBy(() -> bookService.addBook(book, null))

@@ -38,6 +38,10 @@
 
 <div class="edit-container">
     <div class="body">
+        <input type="hidden" id="hard_cover" th:value="#{hard}">
+        <input type="hidden" id="soft_cover" th:value="#{soft}">
+        <input type="hidden" id="book_id" value="">
+        <input type="hidden" id="old_image_path" value="">
         <div class="image-container">
             <label for="file-input">
                 <img class="image" id="book_image"
@@ -116,7 +120,7 @@
     <div class="footer">
         <button type="button"
                 class="btn btn-primary edit-btn shadow-none"
-                onclick="updateAuthorInfo()"
+                onclick="editBook()"
                 th:text="#{change}"></button>
     </div>
 

@@ -89,6 +89,17 @@ public class SqlQuery {
     public static final String DELETE_AUTHOR_FROM_BOOK =
             "DELETE FROM author_books " +
                     "WHERE author_id_fk = 1?, book_id_fk = 2?";
+    public static final String UPDATE_BOOK_INFO_BY_ID =
+            "UPDATE Book b " +
+                    "SET b.title = :title, " +
+                    "b.price = :price, " +
+                    "b.description = :description, " +
+                    "b.pages = :pages, " +
+                    "b.isbn = :isbn, " +
+                    "b.imagePath = :imagePath, " +
+                    "b.coverType = :coverType, " +
+                    "b.publishDate = :publishDate " +
+                    "WHERE b.bookId = :bookId";
 
     //book review
     public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK =

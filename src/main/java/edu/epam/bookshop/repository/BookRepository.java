@@ -1,11 +1,14 @@
 package edu.epam.bookshop.repository;
 
 import edu.epam.bookshop.entity.Book;
+import edu.epam.bookshop.entity.CoverType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_FOR_AUTHOR;
@@ -16,8 +19,16 @@ import static edu.epam.bookshop.repository.SqlQuery.DELETE_GENRE_FROM_BOOK;
 import static edu.epam.bookshop.repository.SqlQuery.INSERT_AUTHOR_TO_BOOK;
 import static edu.epam.bookshop.repository.SqlQuery.INSERT_BOOK_TO_AUTHOR;
 import static edu.epam.bookshop.repository.SqlQuery.INSERT_GENRE_TO_BOOK;
+import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_INFO_BY_ID;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
+
+    @Modifying
+    @Transactional
+    @Query(value = UPDATE_BOOK_INFO_BY_ID)
+    void updateInfoById(String title, BigDecimal price, String description,
+                        Integer pages, String isbn, String imagePath,
+                        CoverType coverType, LocalDate publishDate, Long bookId);
 
     @Modifying
     @Transactional

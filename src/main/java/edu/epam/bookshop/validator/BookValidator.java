@@ -1,10 +1,17 @@
 package edu.epam.bookshop.validator;
 
+import edu.epam.bookshop.exception.InvalidInputException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
+
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DESCRIPTION_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_ISBN_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PAGES_FIELD_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PRICE_IS_NOT_VALID;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_TITLE_IS_NOT_VALID;
 
 @Slf4j
 @Component
@@ -20,49 +27,60 @@ public class BookValidator {
                     "[-\\ ]?[0-9]+[-\\ ]?[0-9]+[-\\ ]?[0-9]$");
 
     private static final Pattern DESCRIPTION_PATTERN =
-            Pattern.compile("^(.{1,1000})$");
+            Pattern.compile("^.{1,1500}$");
 
     private static final Pattern PAGES_PATTERN =
             Pattern.compile("^(?:[1-9][0-9]{3}|[1-9][0-9]{2}|[1-9][0-9]|[1-9])$");
 
-    public boolean isBookTitleValid(String bookTitle) {
-        boolean bookTitleValid = bookTitle.matches(BOOK_TITLE_PATTERN.pattern());
-        if (!bookTitleValid) {
-            log.info("Book title is not valid");
-        }
-        return bookTitleValid;
+    public boolean isBookDataValid(String title, BigDecimal price, String description,
+                                   Integer pages, String isbn) {
+
+        return isBookTitleValid(title)
+                && isPriceValid(price)
+                && isDescriptionValid(description)
+                && isPagesValid(pages)
+                && isIsbnValid(isbn);
     }
 
-    public boolean isPriceValid(String price) {
-        BigDecimal bookPrice = new BigDecimal(price);
-        boolean priceValid = bookPrice.signum() == 1;
+    public boolean isBookTitleValid(String bookTitle) {
+        if (!bookTitle.matches(BOOK_TITLE_PATTERN.pattern())) {
+            log.info("Book title is not valid");
+            throw new InvalidInputException(BOOK_TITLE_IS_NOT_VALID);
+        }
+        return true;
+    }
+
+    public boolean isPriceValid(BigDecimal price) {
+        boolean priceValid = price.signum() == 1;
         if (!priceValid) {
             log.info("Price is not valid");
+            throw new InvalidInputException(BOOK_PRICE_IS_NOT_VALID);
         }
-        return priceValid;
+        return true;
     }
 
     public boolean isDescriptionValid(String description) {
-        boolean descriptionValid = description.matches(DESCRIPTION_PATTERN.pattern());
-        if (!descriptionValid) {
-            log.info("Description is not valid");
-        }
-        return descriptionValid;
+//        if (!description.matches(DESCRIPTION_PATTERN.pattern())) {
+//            log.info("Description is not valid");
+//            throw new InvalidInputException(BOOK_DESCRIPTION_IS_NOT_VALID);
+//        }
+        return true;
     }
 
-    public boolean isPagesValid(String pages) {
-        boolean pagesValid = pages.matches(PAGES_PATTERN.pattern());
-        if (!pagesValid) {
+    public boolean isPagesValid(Integer pages) {
+        String pagesAsString = String.valueOf(pages);
+        if (!pagesAsString.matches(PAGES_PATTERN.pattern())) {
             log.info("Pages are not valid");
+            throw new InvalidInputException(BOOK_PAGES_FIELD_IS_NOT_VALID);
         }
-        return pagesValid;
+        return true;
     }
 
     public boolean isIsbnValid(String isbn) {
-        boolean isbnValid = isbn.matches(ISBN_PATTERN.pattern());
-        if (!isbnValid) {
+        if (!isbn.matches(ISBN_PATTERN.pattern())) {
             log.info("Isbn is not valid");
+            throw new InvalidInputException(BOOK_ISBN_IS_NOT_VALID);
         }
-        return isbnValid;
+        return true;
     }
 }

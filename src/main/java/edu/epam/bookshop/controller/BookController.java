@@ -38,9 +38,9 @@ public class BookController {
     }
 
     @PostMapping(UPDATE_BOOK_INFO_URN)
-    public ResponseEntity<Void> changeBookInfo(Book book, MultipartFile newBookImage) {
-        bookService.updateBookInfo(book, newBookImage);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> changeBookInfo(Book book, MultipartFile newBookImage) {
+        Boolean isBookUpdated = bookService.updateBookInfo(book, newBookImage);
+        return ResponseEntity.ok(isBookUpdated);
     }
 
     @PostMapping(ADD_BOOK_TO_AUTHOR_URN)
