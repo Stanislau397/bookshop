@@ -250,7 +250,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addGenreToBookByGenreIdAndBookId(Long genreId, Long bookId) {
+    public void addGenreToBook(Long genreId, Long bookId) {
         if (!genreRepository.existsById(genreId)) {
             log.info(String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId));
             throw new EntityNotFoundException(
@@ -263,24 +263,24 @@ public class BookServiceImpl implements BookService {
                     String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
             );
         }
-        if (bookRepository.genreExistsForBook(genreId, bookId)) {
+        if (genreRepository.genreExistsForBook(genreId, bookId)) {
             log.info(GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK);
             throw new EntityAlreadyExistsException(
                     GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK
             );
         }
-        bookRepository.insertGenreToBookByGenreIdAndBookId(genreId, bookId);
+        genreRepository.insertGenreToBookByGenreIdAndBookId(genreId, bookId);
     }
 
     @Override
-    public void removeGenreFromBookByGenreIdAndBookId(Long genreId, Long bookId) {
-        if (!bookRepository.genreExistsForBook(genreId, bookId)) {
+    public void removeGenreFromBook(Long genreId, Long bookId) {
+        if (!genreRepository.genreExistsForBook(genreId, bookId)) {
             log.info(String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId));
             throw new EntityNotFoundException(
                     String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId)
             );
         }
-        bookRepository.deleteGenreFromBookByGenreIdAndBookId(genreId, bookId);
+        genreRepository.deleteGenreFromBookByGenreIdAndBookId(genreId, bookId);
     }
 
     @Override

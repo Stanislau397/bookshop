@@ -79,17 +79,15 @@ public class SqlQuery {
                     "SET g.title = ?1 " +
                     "WHERE g.genreId = ?2";
     public static final String INSERT_GENRE_TO_BOOK =
-            "INSERT INTO book_genres " +
-                    "VALUES (genre_id_fk, book_id_fk) " +
-                    "WHERE genre_id_fk = 1? AND book_id_fk = 2?";
+            "INSERT INTO book_genres (genre_id_fk, book_id_fk) " +
+                    "VALUES(?, ?)";
     public static final String DELETE_GENRE_FROM_BOOK =
             "DELETE FROM book_genres " +
-                    "WHERE genre_id_fk = 1? AND book_id_fk = 2?";
+                    "WHERE genre_id_fk = (?) AND book_id_fk = (?)";
     public static final String CHECK_IF_GENRE_EXISTS_FOR_BOOK =
-            "SELECT CASE WHEN COUNT(genre_id_fk) > 0 " +
-                    "THEN TRUE ELSE FALSE END " +
+            "SELECT IF(COUNT(genre_id_fk) > 0, 'true', 'false') " +
                     "FROM book_genres " +
-                    "WHERE genre_id_fk = 1? AND book_id_fk = 2?";
+                    "WHERE genre_id_fk = (?) AND book_id_fk = (?)";
     public static final String SELECT_GENRE_BY_BOOK_ID =
             "SELECT g FROM Genre g " +
                     "LEFT JOIN g.books b " +

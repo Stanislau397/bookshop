@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,9 +17,7 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_DETAILS;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_TO_AUTHOR_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_GENRE_TO_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.REMOVE_BOOK_FROM_AUTHOR_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.REMOVE_GENRE_FROM_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_BOOK_INFO_URN;
 
 @AllArgsConstructor
@@ -42,47 +39,31 @@ public class BookController {
     }
 
     @PostMapping(ADD_BOOK_TO_AUTHOR_URN)
-    public ResponseEntity<Void> addBookToAuthor(@RequestParam Long authorId,
-                                                @RequestParam Long bookId) {
+    public ResponseEntity<Void> addBookToAuthor(Long authorId, Long bookId) {
         bookService.addAuthorToBook(bookId, authorId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(REMOVE_BOOK_FROM_AUTHOR_URN)
-    public ResponseEntity<Void> removeBookFromAuthor(@RequestParam Long authorId,
-                                                     @RequestParam Long bookId) {
+    public ResponseEntity<Void> removeBookFromAuthor(Long authorId, Long bookId) {
         bookService.removeBookForAuthorByAuthorIdAndBookId(authorId, bookId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(ADD_GENRE_TO_BOOK_URN)
-    public ResponseEntity<Void> addGenreToBook(@RequestParam Long genreId,
-                                               @RequestParam Long bookId) {
-        bookService.addGenreToBookByGenreIdAndBookId(genreId, bookId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping(REMOVE_GENRE_FROM_BOOK_URN)
-    public ResponseEntity<Void> removeGenreFromBook(@RequestParam Long genreId,
-                                                    @RequestParam Long bookId) {
-        bookService.removeGenreFromBookByGenreIdAndBookId(genreId, bookId);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping(FIND_BOOK_DETAILS)
-    public ResponseEntity<Book> displayBookDetails(@RequestParam String title) {
+    public ResponseEntity<Book> displayBookDetails(String title) {
         Book foundBookByTitle = bookService.findBookDetailsByTitle(title);
         return ResponseEntity.ok(foundBookByTitle);
     }
 
     @GetMapping(FIND_BOOKS_BY_KEYWORD)
-    public ResponseEntity<List<Book>> displayBooksByKeyword(@RequestParam String keyWord) {
+    public ResponseEntity<List<Book>> displayBooksByKeyword(String keyWord) {
         List<Book> booksByKeyWord = bookService.findBooksByKeyWord(keyWord);
         return ResponseEntity.ok(booksByKeyWord);
     }
 
     @GetMapping(FIND_BOOKS_BY_PAGE)
-    public ResponseEntity<Page<Book>> displayBooksByPage(@RequestParam Integer page) {
+    public ResponseEntity<Page<Book>> displayBooksByPage(Integer page) {
         Page<Book> booksByPage = bookService.findBooksByPage(page);
         return ResponseEntity.ok(booksByPage);
     }

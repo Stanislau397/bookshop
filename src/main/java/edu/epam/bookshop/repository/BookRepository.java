@@ -43,30 +43,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Transactional
     @Modifying
     @Query(
-            value = INSERT_GENRE_TO_BOOK,
-            nativeQuery = true
-    )
-    void insertGenreToBookByGenreIdAndBookId(Long genreId, Long bookId);
-
-    @Transactional
-    @Modifying
-    @Query(
-            value = DELETE_GENRE_FROM_BOOK,
-            nativeQuery = true
-    )
-    void deleteGenreFromBookByGenreIdAndBookId(Long genreId, Long bookId);
-
-    @Transactional
-    @Modifying
-    @Query(
-            value = CHECK_IF_GENRE_EXISTS_FOR_BOOK,
-            nativeQuery = true
-    )
-    boolean genreExistsForBook(Long genreId, Long bookId);
-
-    @Transactional
-    @Modifying
-    @Query(
             value = INSERT_AUTHOR_TO_BOOK,
             nativeQuery = true
     )

@@ -504,9 +504,9 @@ class BookServiceTest {
                 .thenReturn(true);
         when(bookRepository.existsById(bookId))
                 .thenReturn(true);
-        bookService.addGenreToBookByGenreIdAndBookId(genreId, bookId);
+        bookService.addGenreToBook(genreId, bookId);
         //then
-        verify(bookRepository, times(1))
+        verify(genreRepository, times(1))
                 .insertGenreToBookByGenreIdAndBookId(genreId, bookId);
     }
 
@@ -519,7 +519,7 @@ class BookServiceTest {
         when(genreRepository.existsById(genreId))
                 .thenReturn(false);
         //then
-        assertThatThrownBy(() -> bookService.addGenreToBookByGenreIdAndBookId(genreId, bookId))
+        assertThatThrownBy(() -> bookService.addGenreToBook(genreId, bookId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(
                         String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
@@ -537,7 +537,7 @@ class BookServiceTest {
         when(bookRepository.existsById(bookId))
                 .thenReturn(false);
         //then
-        assertThatThrownBy(() -> bookService.addGenreToBookByGenreIdAndBookId(genreId, bookId))
+        assertThatThrownBy(() -> bookService.addGenreToBook(genreId, bookId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(
                         String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, genreId)
@@ -550,11 +550,11 @@ class BookServiceTest {
         long genreId = 1;
         long bookId = 1;
         //when
-        when(bookRepository.genreExistsForBook(genreId, bookId))
+        when(genreRepository.genreExistsForBook(genreId, bookId))
                 .thenReturn(true);
-        bookService.removeGenreFromBookByGenreIdAndBookId(genreId, bookId);
+        bookService.removeGenreFromBook(genreId, bookId);
         //then
-        verify(bookRepository, times(1))
+        verify(genreRepository, times(1))
                 .deleteGenreFromBookByGenreIdAndBookId(genreId, bookId);
 
     }
@@ -565,10 +565,10 @@ class BookServiceTest {
         long genreId = 1;
         long bookId = 1;
         //when
-        when(bookRepository.genreExistsForBook(genreId, bookId))
+        when(genreRepository.genreExistsForBook(genreId, bookId))
                 .thenReturn(false);
         //then
-        assertThatThrownBy(() -> bookService.removeGenreFromBookByGenreIdAndBookId(genreId, bookId))
+        assertThatThrownBy(() -> bookService.removeGenreFromBook(genreId, bookId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(
                         String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId)

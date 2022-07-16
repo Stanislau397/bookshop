@@ -32,65 +32,63 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(REGISTER_USER_URN)
-    public ResponseEntity<Void> registerUser(@RequestBody User user) {
+    public ResponseEntity<Void> registerUser(User user) {
         userService.addUser(user);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(UPDATE_USER_STATUS_URN)
-    public ResponseEntity<Void> changeUserStatusByUsername(@RequestParam String userName) {
+    public ResponseEntity<Void> changeUserStatusByUsername(String userName) {
         userService.updateUserStatusByUsername(userName);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(UPDATE_USER_AVATAR_URN)
-    public ResponseEntity<Void> changeUserAvatarByUsername(@RequestParam MultipartFile avatar,
-                                                           @RequestParam String userName) {
+    public ResponseEntity<Void> changeUserAvatarByUsername(MultipartFile avatar, String userName) {
         userService.updateUserAvatarByUsername(avatar, userName);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(UPDATE_USER_ROLE_URN)
-    public ResponseEntity<Void> changeUserRole(@RequestParam long userId,
-                                               @RequestParam long roleId) {
+    public ResponseEntity<Void> changeUserRole(long userId, long roleId) {
         userService.updateUserRoleByUserIdAndRoleId(userId, roleId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(UPDATE_USER_PASSWORD_URN)
-    public ResponseEntity<Void> changeUserPassword(@RequestParam String oldPassword,
-                                                   @RequestParam String newPassword,
-                                                   @RequestParam String userName) {
+    public ResponseEntity<Void> changeUserPassword(String oldPassword,
+                                                   String newPassword,
+                                                   String userName) {
         userService.updateUserPasswordByUsernameAndOldPassword(newPassword, oldPassword, userName);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(CHECK_IF_USER_NAME_TAKEN_URN)
-    public ResponseEntity<Boolean> isUserExistsByUsername(@RequestParam String username) {
+    public ResponseEntity<Boolean> isUserExistsByUsername(String username) {
         boolean isUsernameTaken = userService.userExistsByUserName(username);
         return ResponseEntity.ok(isUsernameTaken);
     }
 
     @GetMapping(CHECK_IF_EMAIL_TAKEN_URN)
-    public ResponseEntity<Boolean> isUserExistsByEmail(@RequestParam String email) {
+    public ResponseEntity<Boolean> isUserExistsByEmail(String email) {
         boolean isEmailTaken = userService.userExistsByEmail(email);
         return ResponseEntity.ok(isEmailTaken);
     }
 
     @GetMapping(FIND_USERS_WITH_PAGINATION_URN)
-    public ResponseEntity<Page<User>> getUsersWithPagination(@RequestParam int page) {
+    public ResponseEntity<Page<User>> getUsersWithPagination(int page) {
         Page<User> usersWithPagination = userService.findUsersWithPagination(page);
         return ResponseEntity.ok(usersWithPagination);
     }
 
     @GetMapping(FIND_USERS_BY_KEYWORD)
-    public ResponseEntity<List<User>> getUsersByKeyword(@RequestParam String keyword) {
+    public ResponseEntity<List<User>> getUsersByKeyword(String keyword) {
         List<User> usersByKeyword = userService.findUsersByKeyword(keyword);
         return ResponseEntity.ok(usersByKeyword);
     }
 
     @GetMapping(FIND_USER_BY_USERNAME)
-    public ResponseEntity<User> getUserByUsername(@RequestParam String username) {
+    public ResponseEntity<User> getUserByUsername(String username) {
         User userByUsername = userService.findUserByUserName(username);
         return ResponseEntity.ok(userByUsername);
     }

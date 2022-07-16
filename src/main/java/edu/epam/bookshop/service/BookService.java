@@ -27,9 +27,9 @@ public interface BookService {
 
     void addGenre(Genre genre);
 
-    void addGenreToBookByGenreIdAndBookId(Long genreId, Long bookId);
+    void addGenreToBook(Long genreId, Long bookId);
 
-    void removeGenreFromBookByGenreIdAndBookId(Long genreId, Long bookId);
+    void removeGenreFromBook(Long genreId, Long bookId);
 
     void deleteGenreById(Long genreId);
 

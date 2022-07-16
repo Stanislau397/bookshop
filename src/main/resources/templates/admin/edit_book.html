@@ -104,6 +104,40 @@
     </div>
 </div>
 
+<div class="modal fade"
+     id="addGenreToBookModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addGenreLabel" th:text="#{add_genre}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group mt-1">
+                    <label for="book_cover_type"
+                           style="width: 200px"
+                           class="col-sm-2 col-form-label"
+                           th:text="#{all_genres}"></label>
+                    <select class="form-select  shadow-none"
+                            aria-label="Default select example"
+                            id="book_genres_to_select">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="addGenreToBook()"
+                        th:text="#{add}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="deleteAuthorFromBookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -159,6 +193,36 @@
                         class="btn btn-danger"
                         id="delete_publisher_btn"
                         onclick="removePublisherFromBook()"
+                        th:text="#{delete}">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteGenreFromBookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="deleteGenreModalLabel"
+                    th:text="#{delete}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"
+                 th:text="#{delete_genre_question}">
+            </div>
+            <input type="hidden" id="genre_id_input" value="">
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        th:text="#{close}">
+
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        onclick="removeGenreFromBook()"
                         th:text="#{delete}">
                 </button>
             </div>
@@ -301,6 +365,32 @@
             data-bs-toggle="modal"
             data-bs-target="#addPublisherToBookModal">
     </button>
+</div>
+
+<div class="book-genres">
+    <h1 th:text="#{all_genres}"></h1>
+    <table class="table align-middle mb-0 bg-white">
+        <thead class="bg-light">
+        <tr>
+            <th>#</th>
+            <th th:text="#{name}"></th>
+            <th th:text="#{actions}"></th>
+        </tr>
+        </thead>
+
+        <tbody id="genreTableData">
+
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary shadow-none add-genre-btn"
+            th:text="#{add_genre}"
+            data-bs-toggle="modal"
+            data-bs-target="#addGenreToBookModal">
+    </button>
+</div>
+
+<div class="footer">
+
 </div>
 </body>
 </html>

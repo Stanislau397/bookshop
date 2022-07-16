@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,8 +37,7 @@ public class AuthorController {
     }
 
     @PostMapping(ADD_AUTHOR_TO_BOOK_URN)
-    public ResponseEntity<Void> addAuthorToBook(@RequestParam Long authorId,
-                                                @RequestParam Long bookId) {
+    public ResponseEntity<Void> addAuthorToBook(Long authorId, Long bookId) {
         bookService.addAuthorToBook(bookId, authorId);
         return ResponseEntity.ok().build();
     }
@@ -51,7 +49,7 @@ public class AuthorController {
     }
 
     @PostMapping(DELETE_AUTHOR_URN)
-    public ResponseEntity<Void> removeAuthorById(@RequestParam Long authorId) {
+    public ResponseEntity<Void> removeAuthorById(Long authorId) {
         bookService.deleteAuthorById(authorId);
         return ResponseEntity.ok().build();
     }
@@ -63,25 +61,25 @@ public class AuthorController {
     }
 
     @GetMapping(FIND_AUTHOR_INFO_BY_ID_URN)
-    public ResponseEntity<Author> displayAuthorInfoById(@RequestParam Long authorId) {
+    public ResponseEntity<Author> displayAuthorInfoById(Long authorId) {
         Author authorInfoById = bookService.findAuthorInfoByAuthorId(authorId);
         return ResponseEntity.ok(authorInfoById);
     }
 
     @GetMapping(FIND_AUTHORS_BY_BOOK_ID_URN)
-    public ResponseEntity<List<Author>> displayAuthorInfoByBookId(@RequestParam Long bookId) {
+    public ResponseEntity<List<Author>> displayAuthorInfoByBookId(Long bookId) {
         List<Author> authorsByBookId = bookService.findAuthorsByBookId(bookId);
         return ResponseEntity.ok(authorsByBookId);
     }
 
     @GetMapping(FIND_AUTHORS_BY_KEYWORD_URN)
-    public ResponseEntity<List<Author>> displayAuthorsByKeyword(@RequestParam String keyWord) {
+    public ResponseEntity<List<Author>> displayAuthorsByKeyword(String keyWord) {
         List<Author> authorsByKeyword = bookService.findAuthorsByKeyword(keyWord);
         return ResponseEntity.ok(authorsByKeyword);
     }
 
     @GetMapping(FIND_AUTHORS_BY_PAGE_URN)
-    public ResponseEntity<Page<Author>> displayAuthorsByPage(@RequestParam int page) {
+    public ResponseEntity<Page<Author>> displayAuthorsByPage(int page) {
         Page<Author> authorsByPage = bookService.findAuthorsByPage(page);
         return ResponseEntity.ok(authorsByPage);
     }

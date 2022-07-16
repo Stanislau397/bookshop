@@ -3,6 +3,7 @@ window.addEventListener('DOMContentLoaded', function () {
     getBookByTitle(bookTitleFromParameter);
     getAllAuthors();
     getAllPublishers();
+    getAllGenres();
 });
 
 
@@ -66,10 +67,30 @@ function addAuthorToBook() {
     })
 }
 
+function addGenreToBook() {
+    let genre_id_from_select = document.getElementById('book_genres_to_select').value;
+    let book_id_input = document.getElementById('book_id').value;
+    $.ajax({
+        method: 'POST',
+        url: '/addGenreToBook',
+        data: {
+            bookId: book_id_input,
+            genreId: genre_id_from_select
+        },
+        success: function () {
+            hideAddGenreModal()
+            getGenresForBook(book_id_input);
+        },
+        error: function (exception) {
+            hideAddGenreModal();
+            displayErrorMessageInModal(exception.responseText);
+        }
+    })
+}
+
 function addPublisherToBook() {
     let publisher_id_from_select = document.getElementById('book_publishers_to_select').value;
     let book_id_input = document.getElementById('book_id').value;
-    console.log(publisher_id_from_select);
     $.ajax({
         method: 'POST',
         url: '/addPublisherToBook',
@@ -130,6 +151,27 @@ function removePublisherFromBook() {
     })
 }
 
+function removeGenreFromBook() {
+    let book_id_input = document.getElementById('book_id');
+    let genre_id_input = document.getElementById('genre_id_input');
+    $.ajax({
+        method: 'POST',
+        url: '/removeGenreFromBook',
+        data: {
+            bookId: book_id_input.value,
+            genreId: genre_id_input.value
+        },
+        success: function () {
+            hideDeleteGenreFromBookModal();
+            getGenresForBook(book_id_input.value);
+        },
+        error: function (exception) {
+            hideDeleteGenreFromBookModal();
+            displayErrorMessageInModal(exception.responseText);
+        }
+    })
+}
+
 function getBookByTitle(bookTitle) {
     $.ajax({
         url: '/findBookDetails',
@@ -138,6 +180,7 @@ function getBookByTitle(bookTitle) {
             setBookInputFields(bookDetails);
             getAuthorsForBookByBookId(bookDetails.bookId);
             getPublishersForBook(bookDetails.bookId);
+            getGenresForBook(bookDetails.bookId);
         },
         error: function (exception) {
             console.log(exception);
@@ -160,8 +203,17 @@ function getPublishersForBook(book_id) {
         url: '/findPublishersByBookId',
         data: {bookId: book_id},
         success: function (publishers) {
-            console.log(publishers);
             buildTableBodyForBookPublishers(publishers);
+        }
+    })
+}
+
+function getGenresForBook(book_id) {
+    $.ajax({
+        url: '/findGenresByBookId',
+        data: {bookId: book_id},
+        success: function (genres) {
+            buildTableBodyForBookGenres(genres);
         }
     })
 }
@@ -190,6 +242,18 @@ function getAllPublishers() {
     })
 }
 
+function getAllGenres() {
+    $.ajax({
+        url: '/findAllGenres',
+        success: function (allGenres) {
+            displayGenresInSelect(allGenres);
+        },
+        error: function (exception) {
+
+        }
+    })
+}
+
 function buildTableForBookAuthor(authors) {
     const tableBody = document.getElementById('tableData');
     const deleteAuthorLabel = document.getElementById('delete_author_btn').innerText;
@@ -205,7 +269,7 @@ function buildTableForBookAuthor(authors) {
             '<td>' + author.birthDate + '</td>' +
             '<td>' +
             '<a type="button" ' +
-            'class="btn btn-danger role-btn" ' +
+            'class="btn btn-danger delete-btn" ' +
             'data-bs-toggle="modal" ' +
             'data-bs-target="#deleteAuthorFromBookModal" ' +
             'onclick="setAuthorIdInInputField(' + author.authorId + ')">' + deleteAuthorLabel + '</a>' +
@@ -230,13 +294,34 @@ function buildTableBodyForBookPublishers(publishers) {
             '<td style="width: 750px">' + publisher.name + '</td>' +
             '<td>' +
             '<a type="button" ' +
-            'class="btn btn-danger role-btn" ' +
+            'class="btn btn-danger delete-btn" ' +
             'data-bs-toggle="modal" ' +
             'data-bs-target="#deletePublisherFromBookModal" ' +
             'onclick="setPublisherIdInputField(' + publisher.publisherId + ')">' + deleteBtn + '</a>' +
             '</td>' + '</tr>';
     }
     tableBody.innerHTML = publishersHtml;
+}
+
+function buildTableBodyForBookGenres(genres) {
+    const tableBody = document.getElementById('genreTableData');
+    const deleteBtn = document.getElementById('delete_author_btn').innerText;
+    let genresHtml = '';
+    let counter = 0;
+    for (let genre of genres) {
+        counter = counter + 1;
+        genresHtml += '<tr>' +
+            '<td>' + counter + '</td>' +
+            '<td style="width: 820px">' + genre.title + '</td>' +
+            '<td>' +
+            '<a type="button" ' +
+            'class="btn btn-danger delete-btn" ' +
+            'data-bs-toggle="modal" ' +
+            'data-bs-target="#deleteGenreFromBookModal" ' +
+            'onclick="setGenreIdInput(' + genre.genreId + ')">' + deleteBtn + '</a>' +
+            '</td>' + '</tr>';
+    }
+    tableBody.innerHTML = genresHtml;
 }
 
 function displayAuthorsInSelect(authors) {
@@ -255,9 +340,18 @@ function displayPublishersInSelect(publishers) {
     for (let publisher of publishers) {
         let publisherName = publisher.name;
         let publisherId = publisher.publisherId;
-        console.log(publisherId);
         publishers_select.innerHTML +=
             '<option value="' + publisherId + '">' + publisherName + '</option>';
+    }
+}
+
+function displayGenresInSelect(genres) {
+    let genres_select = document.getElementById('book_genres_to_select');
+    for (let genre of genres) {
+        let genreTitle = genre.title;
+        let genreId = genre.genreId;
+        genres_select.innerHTML +=
+            '<option value="' + genreId + '">' + genreTitle + '</option>';
     }
 }
 
@@ -268,6 +362,11 @@ function setAuthorIdInInputField(authorId) {
 function setPublisherIdInputField(id) {
     let publisher_id_input = document.getElementById('publisher_id_input');
     publisher_id_input.value = id;
+}
+
+function setGenreIdInput(genreId) {
+    let genre_id_input = document.getElementById('genre_id_input');
+    genre_id_input.value = genreId;
 }
 
 function setBookInputFields(book) {
@@ -385,6 +484,14 @@ function hideAddPublisherModal() {
 
 function hideRemovePublisherModal() {
     $('#deletePublisherFromBookModal').modal('hide');
+}
+
+function hideAddGenreModal() {
+    $('#addGenreToBookModal').modal('hide');
+}
+
+function hideDeleteGenreFromBookModal() {
+    $('#deleteGenreFromBookModal').modal('hide');
 }
 
 function displayErrorMessageInModal(exception) {
