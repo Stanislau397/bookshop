@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_BOOK_ID_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_KEYWORD_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.GENRE_EXISTS_BY_TITLE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_PAGE_URN;
@@ -67,5 +68,11 @@ public class GenreController {
     public ResponseEntity<List<Genre>> getAllGenres() {
         List<Genre> allGenres = bookService.findAllGenres();
         return ResponseEntity.ok(allGenres);
+    }
+
+    @GetMapping(FIND_GENRES_BY_BOOK_ID_URN)
+    public ResponseEntity<List<Genre>> displayGenresByBookId(@RequestParam Long bookId) {
+        List<Genre> genresByBookId = bookService.findGenresByBookId(bookId);
+        return ResponseEntity.ok(genresByBookId);
     }
 }

@@ -257,10 +257,10 @@ class BookServiceTest {
                 .thenReturn(true);
         when(bookRepository.bookExistsForAuthor(authorId, bookId))
                 .thenReturn(false);
-        bookService.addBookForAuthorByBookIdAndAuthorId(bookId, authorId);
+        bookService.addAuthorToBook(bookId, authorId);
         //then
-        verify(bookRepository, times(1))
-                .insertBookToAuthorByBookIdAndAuthorId(bookId, authorId);
+        verify(authorRepository, times(1)).
+                insertAuthorToBookByBookIdAndAuthorId(bookId, authorId);
     }
 
     @Test
@@ -271,7 +271,7 @@ class BookServiceTest {
         when(bookRepository.existsById(bookId))
                 .thenReturn(false);
         //then
-        assertThatThrownBy(() -> bookService.addBookForAuthorByBookIdAndAuthorId(bookId, 1L))
+        assertThatThrownBy(() -> bookService.addAuthorToBook(bookId, 1L))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(
                         String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
@@ -289,7 +289,7 @@ class BookServiceTest {
         when(authorRepository.existsById(authorId))
                 .thenReturn(false);
         //then
-        assertThatThrownBy(() -> bookService.addBookForAuthorByBookIdAndAuthorId(bookId, authorId))
+        assertThatThrownBy(() -> bookService.addAuthorToBook(bookId, authorId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(
                         String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId)
@@ -309,7 +309,7 @@ class BookServiceTest {
         when(bookRepository.bookExistsForAuthor(authorId, bookId))
                 .thenReturn(true);
         //then
-        assertThatThrownBy(() -> bookService.addBookForAuthorByBookIdAndAuthorId(bookId, authorId))
+        assertThatThrownBy(() -> bookService.addAuthorToBook(bookId, authorId))
                 .isInstanceOf(EntityAlreadyExistsException.class)
                 .hasMessageContaining(AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK);
     }

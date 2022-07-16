@@ -17,7 +17,7 @@ public class GetMappingURN {
     public static final String FIND_AUTHORS_BY_PAGE_URN = "/findAuthorsByPage";
     public static final String FIND_AUTHORS_BY_KEYWORD_URN = "/findAuthorsByKeyword";
     public static final String FIND_AUTHOR_INFO_BY_ID_URN = "/findAuthorInfoById";
-    public static final String FIND_AUTHOR_BY_BOOK_ID_URN = "/findAuthorByBookId";
+    public static final String FIND_AUTHORS_BY_BOOK_ID_URN = "/findAuthorsByBookId";
     public static final String FIND_ALL_AUTHORS_URN = "/findAllAuthors";
 
     //genre
@@ -25,6 +25,7 @@ public class GetMappingURN {
     public static final String FIND_ALL_GENRES_URN = "/findAllGenres";
     public static final String FIND_GENRES_BY_PAGE_URN = "/findGenresByPage";
     public static final String FIND_GENRES_BY_KEYWORD_URN = "/findGenresByKeyword";
+    public static final String FIND_GENRES_BY_BOOK_ID_URN = "/findGenresByBookId";
 
     //publisher
     public static final String PUBLISHER_EXISTS_BY_NAME_URN = "/isPublisherExistsByName";

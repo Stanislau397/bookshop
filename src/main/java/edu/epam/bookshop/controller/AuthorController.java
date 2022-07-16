@@ -14,12 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_AUTHORS_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHOR_BY_BOOK_ID_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_BOOK_ID_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHOR_INFO_BY_ID_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_KEYWORD_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_PAGE_URN;
 
+import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_AUTHOR_TO_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_AUTHOR_URN;
+import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_AUTHOR_FROM_BOOK;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_AUTHOR_INFO_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_AUTHOR_URN;
 
@@ -35,6 +37,13 @@ public class AuthorController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(ADD_AUTHOR_TO_BOOK_URN)
+    public ResponseEntity<Void> addAuthorToBook(@RequestParam Long authorId,
+                                                @RequestParam Long bookId) {
+        bookService.addAuthorToBook(bookId, authorId);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping(UPDATE_AUTHOR_INFO_URN)
     public ResponseEntity<Void> changeAuthorInfo(Author author, MultipartFile image) {
         bookService.updateAuthorInfo(author, image);
@@ -47,16 +56,22 @@ public class AuthorController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(DELETE_AUTHOR_FROM_BOOK)
+    public ResponseEntity<Void> removeAuthorFromBook(Long authorId, Long bookId) {
+        bookService.removeAuthorFromBook(authorId, bookId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(FIND_AUTHOR_INFO_BY_ID_URN)
     public ResponseEntity<Author> displayAuthorInfoById(@RequestParam Long authorId) {
         Author authorInfoById = bookService.findAuthorInfoByAuthorId(authorId);
         return ResponseEntity.ok(authorInfoById);
     }
 
-    @GetMapping(FIND_AUTHOR_BY_BOOK_ID_URN)
-    public ResponseEntity<Author> displayAuthorInfoByBookId(@RequestParam Long bookId) {
-        Author authorByBookId = bookService.findAuthorByBookId(bookId);
-        return ResponseEntity.ok(authorByBookId);
+    @GetMapping(FIND_AUTHORS_BY_BOOK_ID_URN)
+    public ResponseEntity<List<Author>> displayAuthorInfoByBookId(@RequestParam Long bookId) {
+        List<Author> authorsByBookId = bookService.findAuthorsByBookId(bookId);
+        return ResponseEntity.ok(authorsByBookId);
     }
 
     @GetMapping(FIND_AUTHORS_BY_KEYWORD_URN)

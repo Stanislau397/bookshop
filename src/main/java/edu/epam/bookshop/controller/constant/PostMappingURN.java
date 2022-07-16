@@ -24,6 +24,8 @@ public class PostMappingURN {
 
     //publisher
     public static final String ADD_PUBLISHER_URN = "/addPublisher";
+    public static final String ADD_PUBLISHER_TO_BOOK_URN = "/addPublisherToBook";
+    public static final String DELETE_PUBLISHER_FROM_BOOK_URN = "/deletePublisherFromBook";
     public static final String UPDATE_PUBLISHER_INFO_URN = "/updatePublisherInfo";
     public static final String DELETE_PUBLISHER_BY_ID = "/deletePublisherById";
 
@@ -35,5 +37,5 @@ public class PostMappingURN {
     public static final String ADD_GENRE_TO_BOOK_URN = "/addGenreToBook";
     public static final String REMOVE_GENRE_FROM_BOOK_URN = "/removeGenreFromBook";
     public static final String ADD_AUTHOR_TO_BOOK_URN = "/addAuthorToBook";
-    public static final String REMOVE_AUTHOR_FROM_BOOK = "/removeAuthorFromBook";
+    public static final String DELETE_AUTHOR_FROM_BOOK = "/removeAuthorFromBook";
 }

@@ -14,11 +14,12 @@
              src="http://localhost:8090/image/book/default.png"/>
     </div>
     <div class="book-info-container">
+        <input type="hidden" id="author_for_span" th:value="#{author_for_span}">
+
         <h1 class="book-name" id="book-title"></h1>
-        <a class="author-name"
-           id="author_name">
-        </a>
-        <span th:text="#{author_for_span}"></span>
+        <div class="author" id="author">
+
+        </div>
 
         <h1 class="description-h1" th:text="#{description}"></h1>
         <p class="book-description" id="description"></p>
@@ -50,9 +51,10 @@
             <li class="li-name" th:text="#{isbn}"></li>
             <li class="li-value" id="book_isbn"></li>
         </ul>
-
-        <h1 class="about-author-h1" th:text="#{about_the_author}"></h1>
-        <p class="author-biography" id="author_biography"></p>
+        <ul class="product-details-ul">
+            <li class="li-name" th:text="#{genre}"></li>
+            <li class="li-value" id="book_genres"></li>
+        </ul>
     </div>
 </div>
 </body>

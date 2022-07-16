@@ -13,8 +13,9 @@ function getBookDetailsByTitle(bookTitle) {
             setBookImage(bookInfo);
             setBookTitle(bookInfo);
             setH1Title(bookInfo);
-            getAuthorByBookId(bookInfo.bookId);
+            getAuthorsByBookId(bookInfo.bookId);
             getPublishersByBookId(bookInfo.bookId);
+            getGenresByBookId(bookInfo.bookId);
             setBookDescription(bookInfo);
             setProductDetails(bookInfo);
         },
@@ -24,13 +25,12 @@ function getBookDetailsByTitle(bookTitle) {
     })
 }
 
-function getAuthorByBookId(id) {
+function getAuthorsByBookId(id) {
     $.ajax({
-        url : '/findAuthorByBookId',
+        url : '/findAuthorsByBookId',
         data : {bookId : id},
-        success : function (author) {
-            setAuthorFirstAndLastName(author);
-            setAuthorBiography(author);
+        success : function (authors) {
+            setAuthors(authors);
         },
         error : function (exception) {
             console.log(exception.responseText);
@@ -51,6 +51,20 @@ function getPublishersByBookId(id) {
     })
 }
 
+function getGenresByBookId(id) {
+    $.ajax({
+        url : '/findGenresByBookId',
+        data : {bookId: id},
+        success : function (genres) {
+            setBookGenres(genres);
+        },
+        error : function (exception) {
+            let book_genres_li = document.getElementById('book_genres');
+            book_genres_li.innerText = '-';
+        }
+    })
+}
+
 function setBookTitle(bookInfo) {
     let title = document.getElementById('title');
     title.innerText = bookInfo.title;
@@ -66,13 +80,25 @@ function setH1Title(bookInfo) {
     book_title_h1.innerText = bookInfo.title;
 }
 
-function setAuthorFirstAndLastName(author) {
-    let authorId = author.authorId;
-    let author_name_a = document.getElementById('author_name');
-    let firstName = author.firstName;
-    let lastName = author.lastName;
-    author_name_a.innerText = firstName + " " + lastName;
-    author_name_a.href = "author?authorId=" + authorId;
+function setAuthors(authors) {
+    let author_div = document.getElementById('author');
+    let author_span_name = document.getElementById('author_for_span').value;
+    for (let i = 0; i < authors.length; i++) {
+        let firstName = authors[i].firstName;
+        let lastName = authors[i].lastName;
+        if (i !== authors.length - 1) {
+            author_div.innerHTML +=
+                '<a class="author-name" href="author?authorId='+authors[i].authorId+'">' +
+                firstName + ' ' + lastName + ', ' +
+                '</a>';
+        } else {
+            author_div.innerHTML +=
+                '<a class="author-name" href="author?authorId='+authors[i].authorId+'">' +
+                firstName + ' ' + lastName +
+                '</a>';
+        }
+    }
+    author_div.innerHTML += '<span>' + author_span_name + '</span>';
 }
 
 function setBookDescription(bookInfo) {
@@ -118,9 +144,9 @@ function setBookPublishers(publishers) {
     if (publishers.length !== 0) {
         for (let i = 0; i < publishers.length; i++) {
             if (i !== publishers.length - 1) {
-                book_publisher_li.innerText += publishers[0].name + ', '
+                book_publisher_li.innerText += publishers[i].name + ', '
             } else {
-                book_publisher_li.innerText += publishers[0].name;
+                book_publisher_li.innerText += publishers[i].name;
             }
         }
     } else {
@@ -128,7 +154,17 @@ function setBookPublishers(publishers) {
     }
 }
 
-function setAuthorBiography(author) {
-    let author_biography_p = document.getElementById('author_biography');
-    author_biography_p.innerText = author.biography;
+function setBookGenres(genres) {
+    let book_genres_li = document.getElementById('book_genres');
+    if (genres.length !== 0) {
+        for (let i = 0; i < genres.length; i++) {
+            if (i !== genres.length - 1) {
+                book_genres_li.innerText += genres[i].title + ', '
+            } else {
+                book_genres_li.innerText += genres[i].title;
+            }
+        }
+    } else {
+        book_genres_li.innerText = '-';
+    }
 }

@@ -17,8 +17,6 @@ public interface BookService {
 
     boolean updateBookInfo(Book book, MultipartFile newBookImage);
 
-    void addBookForAuthorByBookIdAndAuthorId(Long bookId, Long authorId);
-
     void removeBookForAuthorByAuthorIdAndBookId(Long authorId, Long bookId);
 
     Book findBookDetailsByTitle(String bookTitle);
@@ -41,6 +39,8 @@ public interface BookService {
 
     Page<Genre> findGenresByPage(int page);
 
+    List<Genre> findGenresByBookId(Long bookId);
+
     List<Genre> findGenresByKeyword(String keyWord);
 
     List<Genre> findAllGenres();
@@ -50,6 +50,10 @@ public interface BookService {
     void updatePublisherInfo(Publisher publisher, MultipartFile image);
 
     void deletePublisherById(Long publisherId);
+
+    void addPublisherToBook(Long bookId, Long publisherId);
+
+    void removePublisherFromBook(Long bookId, Long publisherId);
 
     boolean isPublisherExistsByName(String publisherName);
 
@@ -65,9 +69,9 @@ public interface BookService {
 
     void addAuthor(Author author, MultipartFile image);
 
-    void addAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId);
+    void addAuthorToBook(Long bookId, Long authorId);
 
-    void removeAuthorFromBookByAuthorIdAndBookId(Long authorId, Long bookId);
+    void removeAuthorFromBook(Long authorId, Long bookId);
 
     void updateAuthorInfo(Author author, MultipartFile image);
 
@@ -75,7 +79,7 @@ public interface BookService {
 
     Author findAuthorInfoByAuthorId(Long authorId);
 
-    Author findAuthorByBookId(Long bookId);
+    List<Author> findAuthorsByBookId(Long bookId);
 
     List<Author> findAuthorsByKeyword(String keyWord);
 

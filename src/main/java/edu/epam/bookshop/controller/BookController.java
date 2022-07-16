@@ -16,11 +16,9 @@ import java.util.List;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_DETAILS;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_AUTHOR_TO_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_TO_AUTHOR_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_GENRE_TO_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.REMOVE_AUTHOR_FROM_BOOK;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.REMOVE_BOOK_FROM_AUTHOR_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.REMOVE_GENRE_FROM_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_BOOK_INFO_URN;
@@ -46,7 +44,7 @@ public class BookController {
     @PostMapping(ADD_BOOK_TO_AUTHOR_URN)
     public ResponseEntity<Void> addBookToAuthor(@RequestParam Long authorId,
                                                 @RequestParam Long bookId) {
-        bookService.addBookForAuthorByBookIdAndAuthorId(bookId, authorId);
+        bookService.addAuthorToBook(bookId, authorId);
         return ResponseEntity.ok().build();
     }
 
@@ -54,20 +52,6 @@ public class BookController {
     public ResponseEntity<Void> removeBookFromAuthor(@RequestParam Long authorId,
                                                      @RequestParam Long bookId) {
         bookService.removeBookForAuthorByAuthorIdAndBookId(authorId, bookId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping(ADD_AUTHOR_TO_BOOK_URN)
-    public ResponseEntity<Void> addAuthorToBook(@RequestParam Long authorId,
-                                                @RequestParam Long bookId) {
-        bookService.addAuthorToBookByAuthorIdAndBookId(authorId, bookId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping(REMOVE_AUTHOR_FROM_BOOK)
-    public ResponseEntity<Void> removeAuthorFromBook(@RequestParam Long authorId,
-                                                     @RequestParam Long bookId) {
-        bookService.removeAuthorFromBookByAuthorIdAndBookId(authorId, bookId);
         return ResponseEntity.ok().build();
     }
 

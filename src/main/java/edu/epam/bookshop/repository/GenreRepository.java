@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
+
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_GENRE_BY_BOOK_ID;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_GENRE_TITLE_BY_ID;
 
 @Repository
@@ -19,4 +22,9 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
     void updateGenreTitleById(String genreTitle, Long genreId);
 
     boolean existsByTitle(String genreTitle);
+
+    @Transactional
+    @Modifying
+    @Query(value = SELECT_GENRE_BY_BOOK_ID)
+    List<Genre> findByBookId(Long bookId);
 }

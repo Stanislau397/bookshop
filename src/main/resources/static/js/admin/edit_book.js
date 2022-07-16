@@ -1,6 +1,8 @@
 window.addEventListener('DOMContentLoaded', function () {
     let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
     getBookByTitle(bookTitleFromParameter);
+    getAllAuthors();
+    getAllPublishers();
 });
 
 
@@ -32,13 +34,98 @@ function editBook() {
             let book_title_input = document.getElementById('book_title').value;
             let queryParams = new URLSearchParams(window.location.search);
             queryParams.set('title', book_title_input);
-            history.replaceState(null, null, "?"+queryParams.toString());
+            history.replaceState(null, null, "?" + queryParams.toString());
             let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
             getBookByTitle(bookTitleFromParameter);
-            console.log(isBookUpdated);
+            displaySuccessMessage();
         },
         error: function (errorMessage) {
             console.log(errorMessage.responseText);
+        }
+    })
+}
+
+function addAuthorToBook() {
+    let author_id_from_select = document.getElementById('book_authors_to_select').value;
+    let book_id_input = document.getElementById('book_id').value;
+    $.ajax({
+        method: 'POST',
+        url: '/addAuthorToBook',
+        data: {
+            authorId: author_id_from_select,
+            bookId: book_id_input
+        },
+        success: function () {
+            hideAddAuthorToBookModal();
+            getAuthorsForBookByBookId(book_id_input);
+        },
+        error: function (exception) {
+            hideAddAuthorToBookModal();
+            displayErrorMessageInModal(exception.responseText);
+        }
+    })
+}
+
+function addPublisherToBook() {
+    let publisher_id_from_select = document.getElementById('book_publishers_to_select').value;
+    let book_id_input = document.getElementById('book_id').value;
+    console.log(publisher_id_from_select);
+    $.ajax({
+        method: 'POST',
+        url: '/addPublisherToBook',
+        data: {
+            bookId: book_id_input,
+            publisherId: publisher_id_from_select
+        },
+        success: function () {
+            hideAddPublisherModal();
+            getPublishersForBook(book_id_input);
+        },
+        error: function (exception) {
+            hideAddPublisherModal();
+            displayErrorMessageInModal(exception.responseText);
+        }
+    })
+}
+
+function removeAuthorFromBook() {
+    let book_id_input = document.getElementById('book_id');
+    let author_id_input = document.getElementById('author_id_input');
+    $.ajax({
+        method: 'POST',
+        url: '/removeAuthorFromBook',
+        data: {
+            bookId: book_id_input.value,
+            authorId: author_id_input.value
+        },
+        success: function () {
+            hideRemoveAuthorFormBookModal();
+            getAuthorsForBookByBookId(book_id_input.value);
+        },
+        error: function (exception) {
+            displayErrorMessageInModal(exception.responseText);
+            hideRemoveAuthorFormBookModal();
+        }
+    })
+}
+
+function removePublisherFromBook() {
+    let book_id_input = document.getElementById('book_id');
+    let publisher_id_input = document.getElementById('publisher_id_input');
+    $.ajax({
+        method: 'POST',
+        url: '/deletePublisherFromBook',
+        data: {
+            bookId: book_id_input.value,
+            publisherId: publisher_id_input.value
+        },
+        success: function () {
+            hideRemovePublisherModal();
+            getPublishersForBook(book_id_input.value);
+        },
+        error: function (exception) {
+            hideRemovePublisherModal();
+            displayErrorMessageInModal(exception.responseText);
         }
     })
 }
@@ -49,11 +136,138 @@ function getBookByTitle(bookTitle) {
         data: {title: bookTitle},
         success: function (bookDetails) {
             setBookInputFields(bookDetails);
+            getAuthorsForBookByBookId(bookDetails.bookId);
+            getPublishersForBook(bookDetails.bookId);
         },
         error: function (exception) {
             console.log(exception);
         }
     })
+}
+
+function getAuthorsForBookByBookId(book_id) {
+    $.ajax({
+        url: '/findAuthorsByBookId',
+        data: {bookId: book_id},
+        success: function (authors) {
+            buildTableForBookAuthor(authors);
+        }
+    })
+}
+
+function getPublishersForBook(book_id) {
+    $.ajax({
+        url: '/findPublishersByBookId',
+        data: {bookId: book_id},
+        success: function (publishers) {
+            console.log(publishers);
+            buildTableBodyForBookPublishers(publishers);
+        }
+    })
+}
+
+function getAllAuthors() {
+    $.ajax({
+        url: '/findAllAuthors',
+        success: function (authors) {
+            displayAuthorsInSelect(authors);
+        },
+        error: function (exception) {
+
+        }
+    })
+}
+
+function getAllPublishers() {
+    $.ajax({
+        url: '/findAllPublishers',
+        success: function (allPublishers) {
+            displayPublishersInSelect(allPublishers);
+        },
+        error: function (exception) {
+
+        }
+    })
+}
+
+function buildTableForBookAuthor(authors) {
+    const tableBody = document.getElementById('tableData');
+    const deleteAuthorLabel = document.getElementById('delete_author_btn').innerText;
+    let authorsHtml = '';
+    for (let author of authors) {
+        authorsHtml += '<tr>' +
+            '<td>' +
+            '<div class="d-flex align-items-center">' +
+            '<img class="rounded-circle" src=' + author.imagePath + '>' +
+            '</div>' + '</td>' +
+            '<td>' + author.firstName + '</td>' +
+            '<td>' + author.lastName + '</td>' +
+            '<td>' + author.birthDate + '</td>' +
+            '<td>' +
+            '<a type="button" ' +
+            'class="btn btn-danger role-btn" ' +
+            'data-bs-toggle="modal" ' +
+            'data-bs-target="#deleteAuthorFromBookModal" ' +
+            'onclick="setAuthorIdInInputField(' + author.authorId + ')">' + deleteAuthorLabel + '</a>' +
+            '</td>' + '</tr>';
+    }
+    tableBody.innerHTML = authorsHtml;
+}
+
+function buildTableBodyForBookPublishers(publishers) {
+    const tableBody = document.getElementById('publisherTableData');
+    const deleteBtn = document.getElementById('delete_author_btn').innerText;
+    let publishersHtml = '';
+    let counter = 0;
+    for (let publisher of publishers) {
+        counter = counter + 1;
+        publishersHtml += '<tr>' +
+            '<td>' + counter + '</td>' +
+            '<td>' +
+            '<div class="d-flex align-items-center">' +
+            '<img class="img-thumbnail" style="width: 50px" src=' + publisher.imagePath + '>' +
+            '</div>' + '</td>' +
+            '<td style="width: 750px">' + publisher.name + '</td>' +
+            '<td>' +
+            '<a type="button" ' +
+            'class="btn btn-danger role-btn" ' +
+            'data-bs-toggle="modal" ' +
+            'data-bs-target="#deletePublisherFromBookModal" ' +
+            'onclick="setPublisherIdInputField(' + publisher.publisherId + ')">' + deleteBtn + '</a>' +
+            '</td>' + '</tr>';
+    }
+    tableBody.innerHTML = publishersHtml;
+}
+
+function displayAuthorsInSelect(authors) {
+    let authors_select = document.getElementById('book_authors_to_select');
+    for (let author of authors) {
+        let firstName = author.firstName;
+        let lastName = author.lastName;
+        let authorId = author.authorId;
+        authors_select.innerHTML +=
+            '<option value="' + authorId + '">' + firstName + ' ' + lastName + '</option>';
+    }
+}
+
+function displayPublishersInSelect(publishers) {
+    let publishers_select = document.getElementById('book_publishers_to_select');
+    for (let publisher of publishers) {
+        let publisherName = publisher.name;
+        let publisherId = publisher.publisherId;
+        console.log(publisherId);
+        publishers_select.innerHTML +=
+            '<option value="' + publisherId + '">' + publisherName + '</option>';
+    }
+}
+
+function setAuthorIdInInputField(authorId) {
+    document.getElementById('author_id_input').value = authorId;
+}
+
+function setPublisherIdInputField(id) {
+    let publisher_id_input = document.getElementById('publisher_id_input');
+    publisher_id_input.value = id;
 }
 
 function setBookInputFields(book) {
@@ -87,16 +301,16 @@ function setBookInputFields(book) {
     let dateArray = date.split('-');
 
     let yearSelect = addYearsToBookOption();
-    let yearOption = '<option selected value="' + dateArray[0] +'">' + dateArray[0] + '</option>';
+    let yearOption = '<option selected value="' + dateArray[0] + '">' + dateArray[0] + '</option>';
     yearSelect.innerHTML += yearOption;
 
     let month = dateArray[1] - 1;
     let monthSelect = addMonthToBookOption();
-    let monthOption = '<option selected value="' + month +'">' + dateArray[1] + '</option>';
+    let monthOption = '<option selected value="' + month + '">' + dateArray[1] + '</option>';
     monthSelect.innerHTML += monthOption;
 
     let daySelect = addDaysToBookOption();
-    let dayOption = '<option selected value="' + dateArray[2] +'">' + dateArray[2] + '</option>';
+    let dayOption = '<option selected value="' + dateArray[2] + '">' + dateArray[2] + '</option>';
     daySelect.innerHTML += dayOption;
 }
 
@@ -120,7 +334,7 @@ function addYearsToBookOption() {
     let finish = new Date().getFullYear();
     let year_select_for_update = document.getElementById('year');
     let year_option_for_update = '';
-    for (let i = start; i <=finish; i++) {
+    for (let i = start; i <= finish; i++) {
         year_option_for_update += '<option value="' + i + '">' + i + '</option>';
     }
     year_select_for_update.innerHTML = year_option_for_update;
@@ -151,4 +365,31 @@ function addDaysToBookOption() {
     }
     day_select_for_update.innerHTML = day_option_for_update;
     return day_select_for_update;
+}
+
+function displaySuccessMessage() {
+    $('#success_modal').modal('show');
+}
+
+function hideAddAuthorToBookModal() {
+    $('#addAuthorToBookModal').modal('hide');
+}
+
+function hideRemoveAuthorFormBookModal() {
+    $('#deleteAuthorFromBookModal').modal('hide');
+}
+
+function hideAddPublisherModal() {
+    $('#addPublisherToBookModal').modal('hide');
+}
+
+function hideRemovePublisherModal() {
+    $('#deletePublisherFromBookModal').modal('hide');
+}
+
+function displayErrorMessageInModal(exception) {
+    let errorMessageH5 = document.getElementById('errorModalMessage');
+    let jsonResponse = JSON.parse(exception);
+    errorMessageH5.innerText = jsonResponse['message'];
+    $('#error_modal').modal('show');
 }

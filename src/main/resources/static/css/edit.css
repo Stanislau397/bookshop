@@ -2,10 +2,18 @@
     float: left;
     margin-top: 4.4%;
     margin-left: 5%;
-    border: 2px solid silver;
+    border: 1px solid silver;
     border-radius: 5px;
     width: 75%;
     overflow: hidden;
+}
+
+.book-authors,
+.book-publishers {
+    margin-top: 15px;
+    float: left;
+    width: 75%;
+    margin-left: 21.5%;
 }
 
 .image-container {
@@ -31,16 +39,16 @@
     float: right;
 }
 
-.image-container>input {
+.image-container > input {
     display: none;
 }
 
 .image {
     object-fit: cover;
-    border: 2px solid silver;
+    border: 1px solid silver;
     border-radius: 5px;
     width: 250px;
-    height: 325px;
+    height: 340px;
     margin-left: 15%;
     margin-top: 14%;
     cursor: pointer;
@@ -54,4 +62,17 @@
 .image-alert {
     margin-left: 11%;
     width: 250px;
+}
+
+h1 {
+    display: inline-block;
+    width: 200px;
+    margin-left: 5%;
+}
+
+.add-author-btn,
+.add-publisher-btn {
+    display: inline-block;
+    float: right;
+    margin-top: 1%;
 }

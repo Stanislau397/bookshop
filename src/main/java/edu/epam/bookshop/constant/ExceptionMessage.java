@@ -65,7 +65,7 @@ public class ExceptionMessage {
     public static final String AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("author_already_exists_in_given_book");
 
-    public static final String AUTHOR_BY_GIVEN_BOOK_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+    public static final String AUTHORS_BY_GIVEN_BOOK_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("author_with_given_book_id_not_found");
 
     //publisher
@@ -83,8 +83,15 @@ public class ExceptionMessage {
 
     public static final String PUBLISHER_DESCRIPTION_IS_INVALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("publisher_description_is_invalid");
+
     public static final String PUBLISHERS_BY_GIVEN_BOOK_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("publishers_by_book_id_not_found");
+
+    public static final String PUBLISHER_ALREADY_EXISTS_FOR_GIVEN_BOOK = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("publisher_exists_for_book");
+
+    public static final String PUBLISHER_DOES_NOT_EXIST_FOR_BOOK = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("publisher_not_exist_for_book");
 
     //genre
     public static final String GENRE_WITH_GIVEN_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
@@ -104,6 +111,9 @@ public class ExceptionMessage {
 
     public static final String GENRE_NOT_FOUND_FOR_GIVEN_BOOK = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("genre_not_found_for_book");
+
+    public static final String GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genres_by_given_book_id_not_found");
 
     //book
     public static final String BOOK_TITLE_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)

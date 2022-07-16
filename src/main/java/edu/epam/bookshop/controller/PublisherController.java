@@ -20,7 +20,9 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHER
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHER_BY_NAME_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHERS_BY_PAGE_URN;
 
+import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_PUBLISHER_TO_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_PUBLISHER_URN;
+import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_PUBLISHER_FROM_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_PUBLISHER_INFO_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_PUBLISHER_BY_ID;
 
@@ -34,6 +36,19 @@ public class PublisherController {
     public ResponseEntity<Void> insertPublisher(Publisher newPublisher,
                                                 MultipartFile publisherImage) {
         bookService.addPublisher(newPublisher, publisherImage);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(ADD_PUBLISHER_TO_BOOK_URN)
+    public ResponseEntity<Void> insertPublisherToBook(Long bookId, Long publisherId) {
+        System.out.println(publisherId);
+        bookService.addPublisherToBook(bookId, publisherId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(DELETE_PUBLISHER_FROM_BOOK_URN)
+    public ResponseEntity<Void> deletePublisherFromBook(Long bookId, Long publisherId) {
+        bookService.removePublisherFromBook(bookId, publisherId);
         return ResponseEntity.ok().build();
     }
 

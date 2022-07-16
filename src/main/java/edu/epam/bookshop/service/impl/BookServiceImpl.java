@@ -6,7 +6,6 @@ import edu.epam.bookshop.entity.BookReview;
 import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
-import edu.epam.bookshop.entity.Role;
 import edu.epam.bookshop.entity.User;
 import edu.epam.bookshop.exception.EntityAlreadyExistsException;
 import edu.epam.bookshop.exception.EntityNotFoundException;
@@ -34,11 +33,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK;
-import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_BY_GIVEN_BOOK_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.AUTHORS_BY_GIVEN_BOOK_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_TITLE_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_NOT_FOUND_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.IMAGE_IS_NOT_VALID_MSG;
@@ -50,6 +50,8 @@ import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_WITH_GIVEN_ID_N
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_WITH_GIVEN_KEYWORD_NOT_FOUND;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHERS_BY_GIVEN_BOOK_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_ALREADY_EXISTS_FOR_GIVEN_BOOK;
+import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_DOES_NOT_EXIST_FOR_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_WITH_GIVEN_NAME_ALREADY_EXISTS;
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_WITH_GIVEN_NAME_NOT_FOUND;
@@ -181,29 +183,6 @@ public class BookServiceImpl implements BookService {
             isBookUpdated = true;
         }
         return isBookUpdated;
-    }
-
-    @Override
-    public void addBookForAuthorByBookIdAndAuthorId(Long bookId, Long authorId) {
-        if (!bookRepository.existsById(bookId)) {
-            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
-            throw new EntityNotFoundException(
-                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
-            );
-        }
-        if (!authorRepository.existsById(authorId)) {
-            log.info(String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId));
-            throw new EntityNotFoundException(
-                    String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId)
-            );
-        }
-        if (bookRepository.bookExistsForAuthor(authorId, bookId)) {
-            log.info(AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK);
-            throw new EntityAlreadyExistsException(
-                    AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK
-            );
-        }
-        bookRepository.insertBookToAuthorByBookIdAndAuthorId(bookId, authorId);
     }
 
     @Override
@@ -355,6 +334,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<Genre> findGenresByBookId(Long bookId) { //todo test
+        List<Genre> genresByBookId = genreRepository.findByBookId(bookId);
+        if (genresByBookId.isEmpty()) {
+            log.info(String.format(GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
+            throw new NothingFoundException(
+                    String.format(GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
+            );
+        }
+        return genresByBookId;
+    }
+
+    @Override
     public List<Genre> findGenresByKeyword(String keyWord) {
         List<Genre> genresByKeyword = genreRepository.findAll()
                 .stream()
@@ -449,6 +440,38 @@ public class BookServiceImpl implements BookService {
             );
         }
         publisherRepository.deleteById(publisherId);
+    }
+
+    @Override
+    public void addPublisherToBook(Long bookId, Long publisherId) { //todo test
+        if (!bookRepository.existsById(bookId)) {
+            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+        if (!publisherRepository.existsById(publisherId)) {
+            log.info(String.format(PUBLISHER_WITH_GIVEN_ID_NOT_FOUND, publisherId));
+            throw new EntityNotFoundException(
+                    String.format(PUBLISHER_WITH_GIVEN_ID_NOT_FOUND, publisherId)
+            );
+        }
+        if (publisherRepository.isPublisherExistsForBook(bookId, publisherId)) {
+            log.info(PUBLISHER_ALREADY_EXISTS_FOR_GIVEN_BOOK);
+            throw new EntityAlreadyExistsException(PUBLISHER_ALREADY_EXISTS_FOR_GIVEN_BOOK);
+        }
+        publisherRepository.insertPublisherToBookByBookIdAndPublisherId(bookId, publisherId);
+    }
+
+    @Override
+    public void removePublisherFromBook(Long bookId, Long publisherId) { //todo test
+        if (!publisherRepository.isPublisherExistsForBook(bookId, publisherId)) {
+            log.info(String.format(PUBLISHER_DOES_NOT_EXIST_FOR_BOOK, publisherId, bookId));
+            throw new EntityNotFoundException(
+                    String.format(PUBLISHER_DOES_NOT_EXIST_FOR_BOOK, publisherId, bookId)
+            );
+        }
+        publisherRepository.deletePublisherFromBookByBookIdAndPublisherId(bookId, publisherId);
     }
 
     @Override
@@ -548,35 +571,37 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId) { //todo test and controller
-        if (!authorRepository.existsById(authorId)) {
-            log.info(String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId));
-            throw new EntityNotFoundException(
-                    String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId)
-            );
-        }
+    public void addAuthorToBook(Long bookId, Long authorId) {
         if (!bookRepository.existsById(bookId)) {
             log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
             throw new EntityNotFoundException(
                     String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
             );
         }
+        if (!authorRepository.existsById(authorId)) {
+            log.info(String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId));
+            throw new EntityNotFoundException(
+                    String.format(AUTHOR_WITH_GIVEN_ID_NOT_FOUND, authorId)
+            );
+        }
         if (bookRepository.bookExistsForAuthor(authorId, bookId)) {
             log.info(AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK);
-            throw new EntityAlreadyExistsException(AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK);
+            throw new EntityAlreadyExistsException(
+                    AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK
+            );
         }
-        bookRepository.insertAuthorToBookByAuthorIdAndBookId(authorId, bookId);
+        authorRepository.insertAuthorToBookByBookIdAndAuthorId(bookId, authorId);
     }
 
     @Override
-    public void removeAuthorFromBookByAuthorIdAndBookId(Long authorId, Long bookId) { //todo test and controller
+    public void removeAuthorFromBook(Long authorId, Long bookId) { //todo test and controller
         if (!bookRepository.bookExistsForAuthor(authorId, bookId)) {
             log.info(String.format(BOOK_DOES_NOT_EXIST_FOR_AUTHOR, bookId, authorId));
             throw new EntityAlreadyExistsException(
                     String.format(BOOK_DOES_NOT_EXIST_FOR_AUTHOR, bookId, authorId)
             );
         }
-        bookRepository.deleteAuthorFromBookByAuthorIdAndBookId(authorId, bookId);
+        authorRepository.deleteAuthorFromBookByAuthorIdAndBookId(authorId, bookId);
     }
 
     @Override
@@ -629,20 +654,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Author findAuthorByBookId(Long bookId) { //todo test
-        if (!bookRepository.existsById(bookId)) {
-            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
+    public List<Author> findAuthorsByBookId(Long bookId) { //todo test
+        List<Author> authorsByBookId = authorRepository.findByBookId(bookId);
+        if (authorsByBookId.isEmpty()) {
+            log.info(String.format(AUTHORS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
             throw new EntityNotFoundException(
-                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
-            );
+                    String.format(AUTHORS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
         }
-        return authorRepository.findByBookId(bookId)
-                .orElseThrow(() -> {
-                    log.info(String.format(AUTHOR_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
-                    return new EntityNotFoundException(
-                            String.format(AUTHOR_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
-                    );
-                });
+        return authorsByBookId;
     }
 
     @Override
