@@ -1,26 +1,24 @@
 window.addEventListener('DOMContentLoaded', function () {
-    let genreTitle = new URLSearchParams(window.location.search).get('genreTitle');
+    let bookYear = new URLSearchParams(window.location.search).get('year');
     let pageNumber = new URLSearchParams(window.location.search).get('page');
-    hideAllGenres();
-    setPageTitle(genreTitle);
-    setGenreButton(genreTitle);
-    getBooksByGenreTitleAndPage(genreTitle, pageNumber);
+    getBooksByYearAndPage(bookYear, pageNumber);
+    hideBookYears();
 });
 
-function getBooksByGenreTitleAndPage(genre_title, page_number) {
-    let url = window.location.href.split('?')[0] + "?genreTitle=" + genre_title + "&page=" + page_number;
+function getBooksByYearAndPage(book_year, page_number) {
+    let url = window.location.href.split('?')[0] + "?year=" + book_year + "&page=" + page_number;
     history.pushState(undefined, '', url);
-    setGenreButton(genre_title);
+    setYearBtn(book_year);
     $.ajax({
-        url: '/findBooksByGenreTitleAndPageNumber',
+        url: '/findBooksByYearAndPageNumber',
         data: {
-            genreTitle: genre_title,
+            year: book_year,
             page: page_number
         },
-        success: function (booksByGenreTitle) {
-            displayBooksByGenreTitle(booksByGenreTitle.content);
+        success: function (booksByYear) {
+            displayBooksByYear(booksByYear.content);
         },
-        error: function (exception) {
+        error : function (exception) {
             displayErrorMessage(exception.responseText);
         }
     })
@@ -36,26 +34,26 @@ function getAuthorsForBookByBookId(book_id, counter) {
     })
 }
 
-function getAllGenres() {
+function getExistingYears() {
     $.ajax({
-        url: '/findAllGenres',
-        success: function (allGenres) {
-            displayAllGenresInDiv(allGenres);
+        url : '/findExistingYearsInBooks',
+        success : function (years) {
+            displayExistingYearsInDiv(years);
         }
     })
 }
 
-function displayBooksByGenreTitle(booksByGenreTitle) {
-    let books_by_genre_container = document.getElementById('books_by_genre_title');
+function displayBooksByYear(booksByYear) {
+    let books_by_year_container = document.getElementById('books_by_year');
     let add_to_wishlist = document.getElementById('add_to_wishlist').value;
-    books_by_genre_container.innerHTML = '';
+    books_by_year_container.innerHTML = '';
     let counter = 0;
-    for (let book of booksByGenreTitle) {
+    for (let book of booksByYear) {
         counter = counter + 1;
         let book_price = '$' + book.price;
         let book_href = 'http://localhost:8070/bookshop/book?title=' + book.title;
         let book_href_with_under_scores = book_href.replace(/ /g, "_")
-        books_by_genre_container.innerHTML +=
+        books_by_year_container.innerHTML +=
             '<div class="book-container">' +
             '<div class="book-image-container">' +
             '<a href="' + book_href_with_under_scores + '">' + '<img class="book-image" src="' + book.imagePath + '"/>' + '</a>' +
@@ -72,37 +70,31 @@ function displayBooksByGenreTitle(booksByGenreTitle) {
     }
 }
 
-function setPageTitle(title) {
-    let page_title = document.getElementById('title');
-    page_title.innerText = title;
-}
-
-function setGenreButton(genre_title) {
-    let genre_button = document.getElementById('genre-btn');
-    genre_button.innerText = genre_title;
-}
-
-function displayAllGenresInDiv(genres) {
-    let targetDiv = document.getElementById("all_genres");
+function displayExistingYearsInDiv(years) {
+    let targetDiv = document.getElementById("all_years");
     targetDiv.innerHTML = '';
     if (targetDiv.style.display !== "none") {
         targetDiv.style.display = "none";
     } else {
         targetDiv.style.display = 'block'
-        addGenresToGenresDiv(genres, targetDiv);
+        addExistingYearsToDiv(years, targetDiv);
     }
 }
 
-function addGenresToGenresDiv(genres, genres_div) {
-    for (let genre of genres) {
-        let genreTitle = genre.title;
-        genres_div.innerHTML +=
-            '<div class="genre-title">' +
-            '<button class="genre-title-btn" ' +
-            'value="' + genreTitle + '" ' +
-            'onclick="getBooksByGenreTitleAndPage(this.value, ' + 1 + ')">' + genreTitle + '</button>' +
+function addExistingYearsToDiv(years, year_div) {
+    for (let year of years) {
+        year_div.innerHTML +=
+            '<div class="book-year">' +
+            '<button class="book-year-btn" ' +
+            'value="' + year + '" ' +
+            'onclick="getBooksByYearAndPage(this.value, ' + 1 + ')">' + year + '</button>' +
             '</div>';
     }
+}
+
+function setYearBtn(year) {
+    let year_btn = document.getElementById('year_btn');
+    year_btn.innerText = year;
 }
 
 function setAuthorsInBookInfo(authors, counter) {
@@ -120,14 +112,14 @@ function setAuthorsInBookInfo(authors, counter) {
     return authors_div;
 }
 
-function hideAllGenres() {
-    let all_genres_div = document.getElementById('all_genres');
-    all_genres_div.style.display = 'none';
+function hideBookYears() {
+    let book_years_div = document.getElementById('all_years');
+    book_years_div.style.display = 'none';
 }
 
 function displayErrorMessage(exception) {
-    let books_by_genre_container = document.getElementById('books_by_genre_title');
-    books_by_genre_container.innerHTML = '';
+    let books_by_year_container = document.getElementById('books_by_year');
+    books_by_year_container.innerHTML = '';
     let jsonResponse = JSON.parse(exception);
-    books_by_genre_container.innerHTML += '<p class="error-message">' + jsonResponse['message'] + '</p>';
+    books_by_year_container.innerHTML += '<p class="error-message">' + jsonResponse['message'] + '</p>';
 }

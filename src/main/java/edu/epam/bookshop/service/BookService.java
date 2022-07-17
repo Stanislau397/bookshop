@@ -25,6 +25,8 @@ public interface BookService {
 
     Page<Book> findBooksByPage(Integer page);
 
+    Page<Book> findBooksByYearAndPage(Integer year, Integer pageNumber);
+
     Page<Book> findBooksByGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
 
     void addGenre(Genre genre);
@@ -88,6 +90,8 @@ public interface BookService {
     List<Author> findAllAuthors();
 
     Page<Author> findAuthorsByPage(int page);
+
+    List<Integer> findExistingYearsInBooks();
 
     void addReviewToBook(BookReview bookReview);
 

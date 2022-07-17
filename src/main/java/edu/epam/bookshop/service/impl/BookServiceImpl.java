@@ -34,6 +34,7 @@ import java.util.List;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHORS_BY_GIVEN_BOOK_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_BY_GIVEN_YEAR_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
@@ -233,6 +234,19 @@ public class BookServiceImpl implements BookService {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
         return booksByPage;
+    }
+
+    @Override
+    public Page<Book> findBooksByYearAndPage(Integer year, Integer pageNumber) { //todo test
+        Pageable pageWithBooksByYear = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
+        Page<Book> booksByYear = bookRepository.selectBooksByYearAndPage(year, pageWithBooksByYear);
+        if (booksByYear.isEmpty()) {
+            log.info(String.format(BOOKS_BY_GIVEN_YEAR_NOT_FOUND, year));
+            throw new NothingFoundException(
+                    String.format(BOOKS_BY_GIVEN_YEAR_NOT_FOUND, year)
+            );
+        }
+        return booksByYear;
     }
 
     @Override
@@ -712,6 +726,17 @@ public class BookServiceImpl implements BookService {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
         return authorsByPage;
+    }
+
+    @Override
+    public List<Integer> findExistingYearsInBooks() { //todo test
+        List<Integer> existingYears =
+                bookRepository.selectExistingYearsInBooksOrderedByYearAsc();
+        if (existingYears.isEmpty()) {
+            log.info(NOTHING_WAS_FOUND_MSG);
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return existingYears;
     }
 
     @Override

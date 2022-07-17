@@ -25,4 +25,5 @@ public class HtmlPage {
     public static final String EDIT_BOOK_HTML = "admin/edit_book.html";
     public static final String BOOK_DETAILS_HTML = "book_details.html";
     public static final String BOOKS_BY_GENRE_TITLE_HTML = "books_by_genre_title.html";
+    public static final String BOOKS_BY_YEAR_HTML = "books_by_year.html";
 }

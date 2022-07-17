@@ -2,24 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title id="title"></title>
+    <title></title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/books_list.css}"/>
-    <script type="text/javascript" th:src="@{/js/general/books_by_genre_title.js}"></script>
+    <script type="text/javascript" th:src="@{/js/general/books_by_year.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/header"></div>
+
 <input type="hidden" id="add_to_wishlist" th:value="#{add_to_wishlist}">
 <div class="content">
     <div class="content-head">
-        <h1 id="genre_title_h1" th:text="#{genre}"></h1>
+        <h1 id="year_title_h1" th:text="#{year}"></h1>
         <button type="button"
-                id="genre-btn"
-                onclick="getAllGenres()"
+                id="year_btn"
+                onclick="getExistingYears()"
                 class="btn btn-secondary shadow-none"></button>
-        <div class="book-genres" id="all_genres"></div>
+        <div class="book-years" id="all_years"></div>
     </div>
-    <div class="books-by-genre-title"
-         id="books_by_genre_title">
+    <div class="books-by-year"
+         id="books_by_year">
     </div>
 </div>
 </body>

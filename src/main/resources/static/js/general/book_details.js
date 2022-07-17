@@ -6,9 +6,9 @@ window.addEventListener('DOMContentLoaded', function () {
 
 function getBookDetailsByTitle(bookTitle) {
     $.ajax({
-        url : '/findBookDetails',
-        data : {title : bookTitle},
-        success : function (bookInfo) {
+        url: '/findBookDetails',
+        data: {title: bookTitle},
+        success: function (bookInfo) {
             setBookTitle(bookInfo);
             setBookImage(bookInfo);
             setBookTitle(bookInfo);
@@ -19,7 +19,7 @@ function getBookDetailsByTitle(bookTitle) {
             setBookDescription(bookInfo);
             setProductDetails(bookInfo);
         },
-        error : function (exception) {
+        error: function (exception) {
             console.log(exception.responseText)
         }
     })
@@ -27,12 +27,12 @@ function getBookDetailsByTitle(bookTitle) {
 
 function getAuthorsByBookId(id) {
     $.ajax({
-        url : '/findAuthorsByBookId',
-        data : {bookId : id},
-        success : function (authors) {
+        url: '/findAuthorsByBookId',
+        data: {bookId: id},
+        success: function (authors) {
             setAuthors(authors);
         },
-        error : function (exception) {
+        error: function (exception) {
             console.log(exception.responseText);
         }
     })
@@ -40,12 +40,12 @@ function getAuthorsByBookId(id) {
 
 function getPublishersByBookId(id) {
     $.ajax({
-        url : '/findPublishersByBookId',
-        data : {bookId: id},
-        success : function (publishers) {
+        url: '/findPublishersByBookId',
+        data: {bookId: id},
+        success: function (publishers) {
             setBookPublishers(publishers);
         },
-        error : function (exception) {
+        error: function (exception) {
             console.log(exception.responseText);
         }
     })
@@ -53,12 +53,12 @@ function getPublishersByBookId(id) {
 
 function getGenresByBookId(id) {
     $.ajax({
-        url : '/findGenresByBookId',
-        data : {bookId: id},
-        success : function (genres) {
+        url: '/findGenresByBookId',
+        data: {bookId: id},
+        success: function (genres) {
             setBookGenres(genres);
         },
-        error : function (exception) {
+        error: function (exception) {
             let book_genres_li = document.getElementById('book_genres');
             book_genres_li.innerText = '-';
         }
@@ -88,12 +88,12 @@ function setAuthors(authors) {
         let lastName = authors[i].lastName;
         if (i !== authors.length - 1) {
             author_div.innerHTML +=
-                '<a class="author-name" href="author?authorId='+authors[i].authorId+'">' +
+                '<a class="author-name" href="author?authorId=' + authors[i].authorId + '">' +
                 firstName + ' ' + lastName + ', ' +
                 '</a>';
         } else {
             author_div.innerHTML +=
-                '<a class="author-name" href="author?authorId='+authors[i].authorId+'">' +
+                '<a class="author-name" href="author?authorId=' + authors[i].authorId + '">' +
                 firstName + ' ' + lastName +
                 '</a>';
         }
@@ -130,8 +130,13 @@ function setBookPrice(bookInfo) {
 }
 
 function setBookPublishYear(bookInfo) {
+    let date = bookInfo.publishDate;
+    let dateArray = date.split('-');
+    let year = dateArray[0];
     let book_year_li = document.getElementById('publish_year');
-    book_year_li.innerText = bookInfo.publishDate;
+    book_year_li.innerHTML +=
+        '<a class="book-year" ' +
+        'href="booksByYear?year=' + year + '&page=1">' + year + '</a>'
 }
 
 function setBookPages(bookInfo) {
@@ -161,12 +166,12 @@ function setBookGenres(genres) {
             if (i !== genres.length - 1) {
                 book_genres_li.innerHTML +=
                     '<a class="book-genre" ' +
-                    'href="booksByGenre?genreTitle='+genres[i].title+'&page=1">' + genres[i].title +
+                    'href="booksByGenre?genreTitle=' + genres[i].title + '&page=1">' + genres[i].title +
                     ', ' + '</a>'
             } else {
                 book_genres_li.innerHTML +=
                     '<a class="book-genre" ' +
-                    'href="booksByGenre?genreTitle='+genres[i].title+'&page=1">' + genres[i].title +
+                    'href="booksByGenre?genreTitle=' + genres[i].title + '&page=1">' + genres[i].title +
                     '</a>'
             }
         }

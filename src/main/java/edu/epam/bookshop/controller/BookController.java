@@ -15,7 +15,9 @@ import java.util.List;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_YEAR_AND_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_DETAILS;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_EXISTING_YEARS_IN_BOOKS_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_TO_AUTHOR_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.REMOVE_BOOK_FROM_AUTHOR_URN;
@@ -74,5 +76,17 @@ public class BookController {
         Page<Book> booksByGenreTitleAndPage =
                 bookService.findBooksByGenreTitleAndPageNumber(genreTitle, page);
         return ResponseEntity.ok(booksByGenreTitleAndPage);
+    }
+
+    @GetMapping(FIND_BOOKS_BY_YEAR_AND_PAGE_URN)
+    public ResponseEntity<Page<Book>> displayBooksByYearAndPageNumber(Integer year, Integer page) {
+        Page<Book> booksByYearAndPage = bookService.findBooksByYearAndPage(year, page);
+        return ResponseEntity.ok(booksByYearAndPage);
+    }
+
+    @GetMapping(FIND_EXISTING_YEARS_IN_BOOKS_URN)
+    public ResponseEntity<List<Integer>> displayExistingYears() {
+        List<Integer> existingYears = bookService.findExistingYearsInBooks();
+        return ResponseEntity.ok(existingYears);
     }
 }

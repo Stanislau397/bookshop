@@ -93,7 +93,8 @@
     font-family: IBM Plex Sans, sans-serif;
 }
 
-.book-info-container .book-genre {
+.book-info-container .book-genre,
+.book-info-container .book-year {
     cursor: pointer;
     text-decoration: none;
     color: #573ba3;

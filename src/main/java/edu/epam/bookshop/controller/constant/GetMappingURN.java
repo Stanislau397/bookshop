@@ -33,7 +33,7 @@ public class GetMappingURN {
     public static final String FIND_ALL_PUBLISHERS_URN = "/findAllPublishers";
     public static final String FIND_PUBLISHERS_BY_PAGE_URN = "/findPublishersByPage";
     public static final String FIND_PUBLISHERS_BY_KEYWORD_URN = "/findPublishersByKeyword";
-    public static final String FIND_PUBLISHERS_BY_BOOK_ID_URN =  "/findPublishersByBookId";
+    public static final String FIND_PUBLISHERS_BY_BOOK_ID_URN = "/findPublishersByBookId";
 
     //pages
     public static final String REGISTRATION_URN = "/registration";
@@ -51,11 +51,13 @@ public class GetMappingURN {
     public static final String AUTHOR_DETAILS_URN = "/bookshop/author";
     public static final String BOOK_DETAILS_URN = "/bookshop/book";
     public static final String BOOKS_BY_GENRE_TITLE_URN = "/bookshop/booksByGenre";
+    public static final String BOOKS_BY_YEAR_URN = "/bookshop/booksByYear";
 
     //book
     public static final String FIND_BOOKS_BY_KEYWORD = "/findBooksByKeyword";
     public static final String FIND_BOOKS_BY_PAGE = "/findBooksByPage";
     public static final String FIND_BOOK_DETAILS = "/findBookDetails";
     public static final String FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN = "/findBooksByGenreTitleAndPageNumber";
-
+    public static final String FIND_BOOKS_BY_YEAR_AND_PAGE_URN = "/findBooksByYearAndPageNumber";
+    public static final String FIND_EXISTING_YEARS_IN_BOOKS_URN = "/findExistingYearsInBooks";
 }
