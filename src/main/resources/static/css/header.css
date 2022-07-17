@@ -45,7 +45,7 @@ nav {
 }
 
 .search-bar {
-    margin-left: 15%;
+    margin-left: 5%;
 }
 
 .locale-btn {
@@ -62,7 +62,7 @@ nav {
 }
 
 .searchTerm {
-    width: 500px;
+    width: 300px;
     margin-top: 6px;
     border: 1px solid #00B4CC;
     border-right: none;
@@ -88,4 +88,67 @@ nav {
 .h1-user-name {
     font-size: 20px;
     margin-left: 7%;
+}
+
+
+.search-result {
+    margin-top: -0.7%;
+    width: 340px;
+    position: absolute;
+    z-index: 10;
+    margin-left: 22.2%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
+    border-radius: 3px;
+    background-color: white;
+}
+
+.search-result .book-container {
+    float: left;
+    text-decoration: none;
+    cursor: pointer;
+    width: 340px;
+    position: relative;
+}
+
+.search-result .book-container .book-image {
+    float: left;
+    margin-top: 2%;
+    margin-left: 2%;
+    width: 45px;
+    height: 65px;
+}
+
+.search-result .book-container .book-image .found-image {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+}
+
+.search-result .book-container .book-info {
+    float: left;
+    margin-left: 2%;
+    margin-top: 1%;
+    width: 78%;
+}
+
+.book-info .book-name {
+    color: #2c293b;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.book-info .book-year {
+    width: 100%;
+    color: #2c293b;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 13px;
+}
+
+.search-result .error-message {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: IBM Plex Sans, sans-serif;
 }

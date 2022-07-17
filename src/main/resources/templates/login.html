@@ -19,7 +19,7 @@
             <div class="d-flex justify-content-center h-15">
                 <h5 th:text="#{authentication}"></h5>
             </div>
-            <form name="f" th:action="@{/login}" method="post">
+            <form name="f" th:action="@{/bookshop/login}" method="post">
                 <div class="mb-3">
                     <input type="text" name="username" class="form-control shadow-none" th:placeholder="#{user_name}">
                 </div>
@@ -34,7 +34,7 @@
                 </div>
             </form>
             <div class="mb-3">
-                <p><span>Если у вас нет аккаунта: <a th:href="@{/registration}" th:text="#{registration}"></a></span>
+                <p><span>Если у вас нет аккаунта: <a th:href="@{/bookshop/registration}" th:text="#{registration}"></a></span>
                 </p>
             </div>
         </div>

@@ -36,9 +36,9 @@ public class GetMappingURN {
     public static final String FIND_PUBLISHERS_BY_BOOK_ID_URN = "/findPublishersByBookId";
 
     //pages
-    public static final String REGISTRATION_URN = "/registration";
-    public static final String LOGIN_URN = "/login";
-    public static final String MAIN_URN = "/home";
+    public static final String REGISTRATION_URN = "/bookshop/registration";
+    public static final String LOGIN_URN = "/bookshop/login";
+    public static final String MAIN_URN = "/bookshop/home";
     public static final String ADMIN_CABINET_URN = "/admin/cabinet";
     public static final String ALL_USERS_URN = "/admin/cabinet/all_users";
     public static final String ACCOUNT_SETTINGS_URN = "/user/account_settings";

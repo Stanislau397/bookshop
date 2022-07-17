@@ -214,7 +214,7 @@ public class BookServiceImpl implements BookService {
         List<Book> booksByKeyWord = bookRepository.findAll()
                 .stream()
                 .filter(o -> o.getTitle().toLowerCase().contains(keyWord.toLowerCase()))
-                .limit(BOOKS_PER_PAGE)
+                .limit(ELEMENTS_PER_PAGE)
                 .toList();
         if (booksByKeyWord.isEmpty()) {
             log.info(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord);
