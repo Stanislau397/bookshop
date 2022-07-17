@@ -142,4 +142,7 @@ public class ExceptionMessage {
 
     public static final String BOOK_DOES_NOT_EXIST_FOR_AUTHOR = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_does_not_exist_for_author");
+
+    public static final String BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("books_by_given_genre_title_not_found");
 }

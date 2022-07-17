@@ -34,6 +34,7 @@ import java.util.List;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHORS_BY_GIVEN_BOOK_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
@@ -224,7 +225,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findBooksByPage(int page) {
+    public Page<Book> findBooksByPage(Integer page) {
         Pageable pageWithBooks = PageRequest.of(page - 1, BOOKS_PER_PAGE);
         Page<Book> booksByPage = bookRepository.findAll(pageWithBooks);
         if (booksByPage.isEmpty()) {
@@ -232,6 +233,20 @@ public class BookServiceImpl implements BookService {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
         return booksByPage;
+    }
+
+    @Override
+    public Page<Book> findBooksByGenreTitleAndPageNumber(String genreTitle, Integer pageNumber) { //todo test
+        Pageable pageWithBooksByGenreTitle = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
+        Page<Book> booksByGenreTitle =
+                bookRepository.selectBooksByGenreTitleAndPage(genreTitle, pageWithBooksByGenreTitle);
+        if (booksByGenreTitle.isEmpty()) {
+            log.info(String.format(BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND, genreTitle));
+            throw new NothingFoundException(
+                    String.format(BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND, genreTitle)
+            );
+        }
+        return booksByGenreTitle;
     }
 
     @Override

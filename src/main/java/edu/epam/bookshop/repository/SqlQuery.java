@@ -108,6 +108,14 @@ public class SqlQuery {
                     "b.coverType = :coverType, " +
                     "b.publishDate = :publishDate " +
                     "WHERE b.bookId = :bookId";
+    public static final String SELECT_BOOKS_BY_GENRE_TITLE =
+            "SELECT b FROM Book b " +
+                    "LEFT JOIN b.genres g " +
+                    "WHERE g.title = :genreTitle";
+    public static final String COUNT_BOOKS_BY_GENRE_TITLE =
+            "SELECT COUNT(g.title) FROM Book b " +
+                    "LEFT JOIN b.genres g " +
+                    "WHERE g.title = :genreTitle";
 
     //book review
     public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK =

@@ -2,6 +2,8 @@ package edu.epam.bookshop.repository;
 
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.CoverType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,11 +14,10 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_FOR_AUTHOR;
-import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_GENRE_EXISTS_FOR_BOOK;
+import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_GENRE_TITLE;
 import static edu.epam.bookshop.repository.SqlQuery.DELETE_BOOK_FROM_AUTHOR;
-import static edu.epam.bookshop.repository.SqlQuery.DELETE_GENRE_FROM_BOOK;
 import static edu.epam.bookshop.repository.SqlQuery.INSERT_AUTHOR_TO_BOOK;
-import static edu.epam.bookshop.repository.SqlQuery.INSERT_GENRE_TO_BOOK;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_GENRE_TITLE;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_INFO_BY_ID;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
@@ -47,6 +48,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             nativeQuery = true
     )
     void insertAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId);
+
+    @Query(
+            value = SELECT_BOOKS_BY_GENRE_TITLE,
+            countQuery = COUNT_BOOKS_BY_GENRE_TITLE
+    )
+    Page<Book> selectBooksByGenreTitleAndPage(String genreTitle, Pageable page);
 
     Optional<Book> findByTitle(String bookTitle);
 }

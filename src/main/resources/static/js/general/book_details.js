@@ -121,7 +121,7 @@ function setBookIsbn(bookInfo) {
 
 function setBookCoverType(bookInfo) {
     let cover_type_li = document.getElementById('book_cover_type');
-    cover_type_li.innerText = bookInfo.coverType;
+    cover_type_li.innerText = bookInfo.coverType.toLowerCase();
 }
 
 function setBookPrice(bookInfo) {
@@ -159,9 +159,15 @@ function setBookGenres(genres) {
     if (genres.length !== 0) {
         for (let i = 0; i < genres.length; i++) {
             if (i !== genres.length - 1) {
-                book_genres_li.innerText += genres[i].title + ', '
+                book_genres_li.innerHTML +=
+                    '<a class="book-genre" ' +
+                    'href="booksByGenre?genreTitle='+genres[i].title+'&page=1">' + genres[i].title +
+                    ', ' + '</a>'
             } else {
-                book_genres_li.innerText += genres[i].title;
+                book_genres_li.innerHTML +=
+                    '<a class="book-genre" ' +
+                    'href="booksByGenre?genreTitle='+genres[i].title+'&page=1">' + genres[i].title +
+                    '</a>'
             }
         }
     } else {

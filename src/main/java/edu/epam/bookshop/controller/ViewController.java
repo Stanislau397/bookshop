@@ -10,12 +10,14 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_BOOKS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_GENRES_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_PUBLISHERS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.AUTHOR_DETAILS_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOKS_BY_GENRE_TITLE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOK_DETAILS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.EDIT_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_BOOKS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_GENRES_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_PUBLISHERS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.AUTHOR_DETAILS_HTML;
+import static edu.epam.bookshop.controller.constant.HtmlPage.BOOKS_BY_GENRE_TITLE_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.BOOK_DETAILS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.EDIT_BOOK_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.SIGN_UP_HTML;
@@ -125,5 +127,11 @@ public class ViewController {
     public ModelAndView bookDetailsPage(ModelAndView bookDetailsView) {
         bookDetailsView.setViewName(BOOK_DETAILS_HTML);
         return bookDetailsView;
+    }
+
+    @GetMapping(BOOKS_BY_GENRE_TITLE_URN)
+    public ModelAndView booksByGenreTitlePage(ModelAndView booksByGenreTitleView) {
+        booksByGenreTitleView.setViewName(BOOKS_BY_GENRE_TITLE_HTML);
+        return booksByGenreTitleView;
     }
 }

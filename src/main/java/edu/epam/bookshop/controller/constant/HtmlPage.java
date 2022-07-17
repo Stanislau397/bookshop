@@ -20,8 +20,9 @@ public class HtmlPage {
     public static final String ALL_AUTHORS_HTML = "admin/all_authors.html";
     public static final String EDIT_AUTHOR_HTML = "admin/edit_author.html";
     public static final String AUTHOR_DETAILS_HTML = "author.html";
-    public static final String BOOK_DETAILS_HTML = "book_details.html";
 
     //book
     public static final String EDIT_BOOK_HTML = "admin/edit_book.html";
+    public static final String BOOK_DETAILS_HTML = "book_details.html";
+    public static final String BOOKS_BY_GENRE_TITLE_HTML = "books_by_genre_title.html";
 }

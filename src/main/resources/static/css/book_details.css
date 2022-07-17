@@ -93,6 +93,14 @@
     font-family: IBM Plex Sans, sans-serif;
 }
 
+.book-info-container .book-genre {
+    cursor: pointer;
+    text-decoration: none;
+    color: #573ba3;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 15px;
+}
+
 span {
     margin-left: 1%;
 }

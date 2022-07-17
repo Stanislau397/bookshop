@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_DETAILS;
@@ -66,5 +67,12 @@ public class BookController {
     public ResponseEntity<Page<Book>> displayBooksByPage(Integer page) {
         Page<Book> booksByPage = bookService.findBooksByPage(page);
         return ResponseEntity.ok(booksByPage);
+    }
+
+    @GetMapping(FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN)
+    public ResponseEntity<Page<Book>> displayBooksByGenreTitleAndPageNumber(String genreTitle, Integer page) {
+        Page<Book> booksByGenreTitleAndPage =
+                bookService.findBooksByGenreTitleAndPageNumber(genreTitle, page);
+        return ResponseEntity.ok(booksByGenreTitleAndPage);
     }
 }

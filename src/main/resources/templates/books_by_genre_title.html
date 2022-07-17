@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="title"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/books_list.css}"/>
+    <script type="text/javascript" th:src="@{/js/general/books_by_genre_title.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/header"></div>
+<input type="hidden" id="add_to_wishlist" th:value="#{add_to_wishlist}">
+<div class="content">
+    <h1 id="genre_title_h1"></h1>
+    <div class="books-by-genre-title"
+         id="books_by_genre_title">
+
+    </div>
+</div>
+</body>
+</html>

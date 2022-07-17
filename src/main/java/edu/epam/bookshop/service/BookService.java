@@ -23,7 +23,9 @@ public interface BookService {
 
     List<Book> findBooksByKeyWord(String keyWord);
 
-    Page<Book> findBooksByPage(int page);
+    Page<Book> findBooksByPage(Integer page);
+
+    Page<Book> findBooksByGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
 
     void addGenre(Genre genre);
 
