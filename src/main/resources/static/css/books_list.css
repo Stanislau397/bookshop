@@ -59,7 +59,7 @@
 
 .books-by-genre-title .book-info {
     margin-top: 10px;
-    height: 130px;
+    height: 150px;
 }
 
 .books-by-genre-title .book-title {
@@ -97,7 +97,7 @@
 
 .add-to-wishlist-btn {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 13%;
     border-width: 1px;
     background-color: #de2454;
     border-color: #de2454;

@@ -98,7 +98,7 @@ function buildTableBodyForBooks(books) {
             '<div class="d-flex align-items-center">' +
             '<img class="img-thumbnail" style="width: 50px" src=' + book.imagePath + '>' +
             '</div>' + '</td>' +
-            '<td style="width: 750px">' + book.title + '</td>' +
+            '<td style="width: 700px">' + book.title + '</td>' +
             '<td>' +
             '<a type="button" ' +
             'class="btn btn-secondary role-btn" ' +
