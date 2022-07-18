@@ -108,23 +108,29 @@ public class SqlQuery {
                     "b.coverType = :coverType, " +
                     "b.publishDate = :publishDate " +
                     "WHERE b.bookId = :bookId";
+    public static final String SELECT_BOOKS_BY_KEYWORD =
+            "SELECT b FROM Book b " +
+                    "WHERE b.title LIKE %:keyWord%";
     public static final String SELECT_BOOKS_BY_GENRE_TITLE =
             "SELECT b FROM Book b " +
-                    "LEFT JOIN b.genres g " +
-                    "WHERE g.title = :genreTitle";
-    public static final String COUNT_BOOKS_BY_GENRE_TITLE =
-            "SELECT COUNT(g.title) FROM Book b " +
                     "LEFT JOIN b.genres g " +
                     "WHERE g.title = :genreTitle";
     public static final String SELECT_BOOKS_BY_YEAR =
             "SELECT b FROM Book b " +
                     "WHERE YEAR(b.publishDate) = :year";
-    public static final String COUNT_BOOKS_BY_YEAR =
-            "SELECT COUNT(b.bookId) FROM Book b " +
-                    "WHERE YEAR(b.publishDate) = :year";
     public static final String SELECT_EXISTING_YEARS_FOR_BOOKS =
             "SELECT DISTINCT YEAR(b.publishDate) FROM Book b " +
                     "ORDER BY YEAR(b.publishDate) ASC";
+    public static final String COUNT_BOOKS_BY_KEYWORD =
+            "SELECT COUNT(b.bookId) FROM Book b " +
+                    "WHERE b.title LIKE %:keyWord%";
+    public static final String COUNT_BOOKS_BY_GENRE_TITLE =
+            "SELECT COUNT(g.title) FROM Book b " +
+                    "LEFT JOIN b.genres g " +
+                    "WHERE g.title = :genreTitle";
+    public static final String COUNT_BOOKS_BY_YEAR =
+            "SELECT COUNT(b.bookId) FROM Book b " +
+                    "WHERE YEAR(b.publishDate) = :year";
 
     //book review
     public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK =

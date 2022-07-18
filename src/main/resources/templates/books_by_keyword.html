@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="page_title"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/books_list.css}"/>
+    <script type="text/javascript" th:src="@{/js/general/books_by_keyword.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/header"></div>
+<input type="hidden" id="add_to_wishlist" th:value="#{add_to_wishlist}">
+<div class="content">
+    <div class="content-head">
+        <h1 id="result_title" th:text="#{search_results}"></h1>
+    </div>
+    <div class="books-by-keyword"
+         id="books_by_keyword">
+    </div>
+</div>
+</body>
+</html>

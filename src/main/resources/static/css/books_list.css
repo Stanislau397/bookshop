@@ -24,7 +24,7 @@
     margin-top: -1.5%;
 }
 
-.content-head .book-genres{
+.content-head .book-genres {
     width: 200px;
     border-radius: 5px;
     position: absolute;
@@ -70,13 +70,16 @@
     background-color: silver;
 }
 
-.books-by-genre-title {
+.books-by-genre-title,
+.books-by-year,
+.books-by-keyword {
     height: fit-content;
     margin-top: 1%;
 }
 
 .books-by-genre-title .book-container,
-.books-by-year .book-container {
+.books-by-year .book-container,
+.books-by-keyword .book-container {
     margin-top: 15px;
     width: 18%;
     height: 500px;
@@ -110,13 +113,15 @@
 }
 
 .books-by-genre-title .book-info,
-.books-by-year .book-info {
+.books-by-year .book-info,
+.books-by-keyword .book-info {
     margin-top: 10px;
     height: 150px;
 }
 
 .books-by-genre-title .book-title,
-.books-by-year .book-title {
+.books-by-year .book-title,
+.books-by-keyword .book-title {
     width: 100%;
     font-family: IBM Plex Sans, sans-serif;
     font-size: 1.1em;

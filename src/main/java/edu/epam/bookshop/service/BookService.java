@@ -7,6 +7,7 @@ import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.entity.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -23,9 +24,11 @@ public interface BookService {
 
     List<Book> findBooksByKeyWord(String keyWord);
 
+    Page<Book> findBooksByKeyWordAndPageNumber(String keyWord, Integer pageNumber);
+
     Page<Book> findBooksByPage(Integer page);
 
-    Page<Book> findBooksByYearAndPage(Integer year, Integer pageNumber);
+    Page<Book> findBooksByYearAndPageNumber(Integer year, Integer pageNumber);
 
     Page<Book> findBooksByGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
 

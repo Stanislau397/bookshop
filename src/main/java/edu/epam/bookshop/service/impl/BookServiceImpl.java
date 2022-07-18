@@ -83,6 +83,7 @@ import static edu.epam.bookshop.constant.ImageStoragePath.PUBLISHERS_DIRECTORY_P
 import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_BOOK_IMAGE_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_LOCALHOST_PATH;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @AllArgsConstructor
@@ -129,7 +130,7 @@ public class BookServiceImpl implements BookService {
             throw new InvalidInputException(BOOK_PRICE_IS_NOT_VALID);
         }
         String imagePathForBook = DEFAULT_BOOK_IMAGE_PATH;
-        if (bookImage != null && bookImage.getOriginalFilename() != null) {
+        if (nonNull(bookImage) && nonNull(bookImage.getOriginalFilename())) {
             String imageName = bookImage.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
@@ -172,7 +173,7 @@ public class BookServiceImpl implements BookService {
         }
         if (bookValidator.isBookDataValid(title, price, description, pages, isbn)) {
 
-            if (newBookImage != null && newBookImage.getOriginalFilename() != null) {
+            if (nonNull(newBookImage) && nonNull(newBookImage.getOriginalFilename())) {
                 String bookImageName = newBookImage.getOriginalFilename();
                 if (!imageValidator.isImageValid(bookImageName)) {
                     throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
@@ -226,6 +227,20 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Page<Book> findBooksByKeyWordAndPageNumber(String keyWord, Integer pageNumber) { // todo test
+        Pageable pageWithBooksByKeyWord = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
+        Page<Book> booksByKeyWordAndPage =
+                bookRepository.selectBooksByKeyWordAndPage(keyWord, pageWithBooksByKeyWord);
+        if (booksByKeyWordAndPage.isEmpty()) {
+            log.info(String.format(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord));
+            throw new NothingFoundException(
+                    String.format(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord)
+            );
+        }
+        return booksByKeyWordAndPage;
+    }
+
+    @Override
     public Page<Book> findBooksByPage(Integer page) {
         Pageable pageWithBooks = PageRequest.of(page - 1, BOOKS_PER_PAGE);
         Page<Book> booksByPage = bookRepository.findAll(pageWithBooks);
@@ -237,7 +252,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findBooksByYearAndPage(Integer year, Integer pageNumber) { //todo test
+    public Page<Book> findBooksByYearAndPageNumber(Integer year, Integer pageNumber) { //todo test
         Pageable pageWithBooksByYear = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
         Page<Book> booksByYear = bookRepository.selectBooksByYearAndPage(year, pageWithBooksByYear);
         if (booksByYear.isEmpty()) {
@@ -417,7 +432,7 @@ public class BookServiceImpl implements BookService {
         }
 
         String imagePath = DEFAULT_PUBLISHER_IMAGE_PATH;
-        if (image != null && image.getOriginalFilename() != null) {
+        if (nonNull(image) && nonNull(image.getOriginalFilename())) {
             String imageName = image.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
@@ -445,7 +460,7 @@ public class BookServiceImpl implements BookService {
         if (!publisherValidator.isDescriptionValid(updatedPublisherDescription)) {
             throw new InvalidInputException(PUBLISHER_DESCRIPTION_IS_INVALID);
         }
-        if (image != null && image.getOriginalFilename() != null) {
+        if (nonNull(image) && nonNull(image.getOriginalFilename())) {
             String imageName = image.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
@@ -581,7 +596,7 @@ public class BookServiceImpl implements BookService {
             throw new InvalidInputException(LAST_NAME_IS_NOT_VALID_MSG);
         }
         String imagePath = DEFAULT_AUTHOR_IMAGE_PATH;
-        if (image != null && image.getOriginalFilename() != null) {
+        if (nonNull(image) && nonNull(image.getOriginalFilename())) {
             String imageName = image.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
@@ -647,7 +662,7 @@ public class BookServiceImpl implements BookService {
             throw new InvalidInputException(LAST_NAME_IS_NOT_VALID_MSG);
         }
         String imagePath = author.getImagePath();
-        if (image != null && image.getOriginalFilename() != null) {
+        if (nonNull(image) && nonNull(image.getOriginalFilename())) {
             String imageName = image.getOriginalFilename();
             if (!imageValidator.isImageValid(imageName)) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);

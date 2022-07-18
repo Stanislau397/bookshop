@@ -29,9 +29,12 @@
                                autocomplete="off"
                                onkeyup="getBooksByKeyWord(this.value)"
                                placeholder="">
-                        <button type="submit" class="searchButton">
+                        <a type="submit"
+                           class="search-a"
+                           onclick="openSearchResultsPage()"
+                           id="search_by_keyword">
                             <i class="fa fa-search"></i>
-                        </button>
+                        </a>
                     </div>
                 </li>
 

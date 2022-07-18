@@ -11,7 +11,7 @@ function getBooksByKeyWord(key_word) {
             success: function (booksByKeyWord) {
                 displaySearchResults(booksByKeyWord);
             },
-            error : function (exception) {
+            error: function (exception) {
                 displayErrorMessageInSearchResults(exception.responseText);
             }
         })
@@ -61,4 +61,10 @@ function displayErrorMessageInSearchResults(exception) {
     search_result_div.innerHTML = '';
     let jsonResponse = JSON.parse(exception);
     search_result_div.innerHTML += '<div class="error-message">' + jsonResponse['message'] + '</div>';
+}
+
+function openSearchResultsPage() {
+    let key_word = document.getElementById('key_word').value;
+    let search_by_keyword_a = document.getElementById('search_by_keyword');
+    search_by_keyword_a.href = 'http://localhost:8070/bookshop/booksByKeyWord?keyWord=' + key_word + '&page=1';
 }

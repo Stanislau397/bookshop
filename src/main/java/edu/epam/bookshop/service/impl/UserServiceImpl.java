@@ -40,6 +40,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.USER_WITH_GIVEN_ID_NOT
 import static edu.epam.bookshop.constant.ImageStoragePath.AVATARS_LOCALHOST_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.AVATARS_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AVATAR_PATH;
+import static java.util.Objects.nonNull;
 
 @Service
 @AllArgsConstructor
@@ -121,11 +122,11 @@ public class UserServiceImpl implements UserService {
                     String.format(USER_WITH_GIVEN_NAME_NOT_FOUND_MSG, userName)
             );
         }
-        if (avatar == null) {
+        if (!nonNull(avatar)) {
             throw new FileIsEmptyException(FILE_IS_EMPTY_MSG);
         }
         String imageName = avatar.getOriginalFilename();
-        if (imageName != null) {
+        if (nonNull(imageName)) {
             boolean imageValid = imageValidator.isImageValid(imageName);
             if (!imageValid) {
                 throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);

@@ -16,10 +16,12 @@ import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_FOR_AUTHOR;
 import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_GENRE_TITLE;
+import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_YEAR;
 import static edu.epam.bookshop.repository.SqlQuery.DELETE_BOOK_FROM_AUTHOR;
 import static edu.epam.bookshop.repository.SqlQuery.INSERT_AUTHOR_TO_BOOK;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_GENRE_TITLE;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_YEAR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_EXISTING_YEARS_FOR_BOOKS;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_INFO_BY_ID;
@@ -48,6 +50,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query(value = INSERT_AUTHOR_TO_BOOK,
             nativeQuery = true)
     void insertAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId);
+
+    @Query(value = SELECT_BOOKS_BY_KEYWORD,
+            countQuery = COUNT_BOOKS_BY_KEYWORD)
+    Page<Book> selectBooksByKeyWordAndPage(String keyWord, Pageable page);
 
     @Query(value = SELECT_BOOKS_BY_YEAR,
             countQuery = COUNT_BOOKS_BY_YEAR)
