@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -71,7 +72,8 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PAGES_FIELD_IS_NO
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PRICE_IS_NOT_VALID;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_ISBN_IS_NOT_VALID;
 
-import static edu.epam.bookshop.constant.ExceptionMessage.USER_WITH_GIVEN_NAME_NOT_FOUND_MSG;
+import static edu.epam.bookshop.constant.ExceptionMessage.REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.USER_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_LOCALHOST_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AUTHOR_IMAGE_PATH;
@@ -755,41 +757,92 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addReviewToBook(BookReview review) {
-        User user = review.getUser();
-        Book bookToReview = review.getReviewedBook();
-        if (!userRepository.existsByUserName(user.getUserName())) {
-            throw new EntityNotFoundException(
-                    String.format(USER_WITH_GIVEN_NAME_NOT_FOUND_MSG, user.getUserName())
-            );
-        }
-        if (!bookRepository.existsById(bookToReview.getBookId())) {
-            throw new EntityNotFoundException(
-                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookToReview.getBookId())
-            );
-        }
-        if (reviewRepository.isUserReviewedBookByBookIdAndUserId(
-                bookToReview.getBookId(),
-                user.getUserId())) {
-            throw new EntityAlreadyExistsException();
-        }
-        reviewRepository.save(review);
+    public void addReviewToBook(BookReview review, Long bookId, Long userId) { //todo test
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(USER_WITH_GIVEN_ID_NOT_FOUND, userId))
+                );
+        Book bookToReview = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId))
+                );
+        String text = review.getReviewText();
+        LocalDate dateNow = LocalDate.now();
+        Double reviewScore = review.getScore();
+
+        BookReview bookReviewToSave = BookReview.builder()
+                .reviewedBook(bookToReview)
+                .user(user)
+                .reviewText(text)
+                .publishDate(dateNow)
+                .score(reviewScore)
+                .build();
+        reviewRepository.save(bookReviewToSave);
     }
 
     @Override
-    public void changeReviewText(BookReview review, User userFromRequest) {
-        Book reviewedBook = review.getReviewedBook();
-        User userThatLeftReview = review.getUser();
-        if (!reviewRepository.isUserReviewedBookByBookIdAndUserId(
-                reviewedBook.getBookId(),
-                userThatLeftReview.getUserId()
-        )) {
-            throw new EntityNotFoundException();
+    public void editBookReview(String newText, Double newScore, Long userId, Long reviewId) { //todo test
+        BookReview oldReview = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("Not found"));
+        User userFromRequest = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(USER_WITH_GIVEN_ID_NOT_FOUND, userId)
+                ));
+        User userInOldReview = oldReview.getUser();
+        if (userFromRequest.equals(userInOldReview)) {
+            reviewRepository.updateByTextAndScoreAndReviewId(newText, newScore, reviewId);
         }
     }
 
     @Override
     public void removeReviewFromBook(BookReview bookReview, User user) {
 
+    }
+
+    @Override
+    public boolean checkIfUserAlreadyReviewedGivenBook(Long bookId, Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException(
+                    String.format(USER_WITH_GIVEN_ID_NOT_FOUND, userId)
+            );
+        }
+        if (!bookRepository.existsById(bookId)) {
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+        return reviewRepository.isUserReviewedBookByBookIdAndUserId(bookId, userId);
+    }
+
+    @Override
+    public Double findAverageBookReviewScoreByBookId(Long bookId) { //todo test
+        if (!bookRepository.existsById(bookId)) {
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+
+        Double averageBookReviewScore = reviewRepository.selectAverageScoreByBookId(bookId);
+        if (!nonNull(averageBookReviewScore)) {
+            throw new NothingFoundException(
+                    String.format(REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
+            );
+        }
+        averageBookReviewScore = BigDecimal.valueOf(averageBookReviewScore)
+                .setScale(1, RoundingMode.HALF_UP).doubleValue();
+        return averageBookReviewScore;
+    }
+
+    @Override
+    public Page<BookReview> findBookReviewsByBookIdAndPageNumber(Long bookId, Integer pageNumber) { //todo test
+        Pageable pageWithReviews = PageRequest.of(pageNumber - 1, ELEMENTS_PER_PAGE);
+        Page<BookReview> bookReviewsByBookIdAndPage =
+                reviewRepository.selectByBookIdAndPage(bookId, pageWithReviews);
+        if (bookReviewsByBookIdAndPage.isEmpty()) {
+            throw new NothingFoundException(
+                    String.format(REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
+            );
+        }
+        return bookReviewsByBookIdAndPage;
     }
 }

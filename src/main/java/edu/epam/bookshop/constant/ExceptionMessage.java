@@ -148,4 +148,8 @@ public class ExceptionMessage {
 
     public static final String BOOKS_BY_GIVEN_YEAR_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("books_by_given_year_not_found");
+
+    //review
+    public static final String REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("not_reviews_found_by_book_id");
 }

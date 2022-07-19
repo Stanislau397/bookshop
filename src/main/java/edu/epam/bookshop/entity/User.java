@@ -1,6 +1,7 @@
 package edu.epam.bookshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
@@ -80,8 +81,10 @@ public class User {
     @JoinTable(name = USERS_ROLES,
             joinColumns = @JoinColumn(name = USER_ID_FK),
             inverseJoinColumns = @JoinColumn(name = ROLE_ID_FK))
+    @JsonIgnore
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<BookReview> bookReviews;
 }

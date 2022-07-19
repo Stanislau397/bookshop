@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title id="title">Title</title>
@@ -10,6 +10,9 @@
 <div th:replace="fragment/header"></div>
 <div class="main-container">
     <div class="book-image-container">
+        <div class="book-average-score" id="average_score">
+
+        </div>
         <img id="book-img"
              src="http://localhost:8090/image/book/default.png"/>
     </div>
@@ -55,6 +58,67 @@
             <li class="li-name" th:text="#{genre}"></li>
             <li class="li-value" id="book_genres"></li>
         </ul>
+
+        <h1 th:text="#{reviews}" class="reviews-h1"></h1>
+        <div class="book-reviews-container" id="book_reviews_container">
+
+        </div>
+        <nav aria-label="book-reviews navigation">
+            <ul class="pagination" id="book-reviews-pagination">
+
+            </ul>
+        </nav>
+
+        <h1 th:text="#{add_review}" class="reviews-h1"></h1>
+        <div class="add-review-container" sec:authorize="isAuthenticated()">
+            <div class="book-review-head">
+
+                <div class="user-image-container">
+                    <img class="image-in-review"
+                         id="user_image_in_review"
+                         src="http://localhost:8090/image/author/default-author.jpg">
+                </div>
+                <div class="right-side">
+                    <h2 class="user-name" id="user_name_h2" sec:authentication="name"></h2>
+                            <div class="stars">
+                                <form action="">
+                                    <input class="star star-5" id="star-5" value="5.0" type="radio" name="star"/>
+
+                                    <label class="star star-5" for="star-5"></label>
+
+                                    <input class="star star-4" id="star-4" value="4.0" type="radio" name="star"/>
+
+                                    <label class="star star-4" for="star-4"></label>
+
+                                    <input class="star star-3" id="star-3" value="3.0" type="radio" name="star"/>
+
+                                    <label class="star star-3" for="star-3"></label>
+
+                                    <input class="star star-2" id="star-2" value="2.0" type="radio" name="star"/>
+
+                                    <label class="star star-2" for="star-2"></label>
+
+                                    <input class="star star-1" id="star-1" value="1.0" type="radio" name="star"/>
+
+                                    <label class="star star-1" for="star-1"></label>
+
+                                </form>
+                            </div>
+                </div>
+            </div>
+            <div class="book-review-bottom">
+                <div class="form-group">
+                    <textarea class="form-control shadow-none bg-light" id="review_text" rows="10"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="button"
+                            class="btn btn-primary w-100"
+                            onclick="addReview()"
+                            th:text="#{add_review}"
+                            id="submit_review"></button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

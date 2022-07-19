@@ -38,4 +38,7 @@ public class PostMappingURN {
     public static final String REMOVE_GENRE_FROM_BOOK_URN = "/removeGenreFromBook";
     public static final String ADD_AUTHOR_TO_BOOK_URN = "/addAuthorToBook";
     public static final String DELETE_AUTHOR_FROM_BOOK = "/removeAuthorFromBook";
+
+    //review
+    public static final String ADD_REVIEW_TO_BOOK_URN = "/addReviewToBook";
 }

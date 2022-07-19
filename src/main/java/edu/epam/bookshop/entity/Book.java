@@ -117,5 +117,6 @@ public class Book {
     private Set<Author> authors;
 
     @OneToMany(mappedBy = "reviewedBook")
+    @JsonIgnore
     private List<BookReview> bookReviews;
 }

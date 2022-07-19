@@ -1,6 +1,7 @@
 package edu.epam.bookshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -68,13 +69,14 @@ public class BookReview {
             name = SCORE,
             nullable = false
     )
-    private Integer score;
+    private Double score;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(
             name = BOOK_ID_FK,
             referencedColumnName = BOOK_ID
     )
+    @JsonIgnore
     private Book reviewedBook;
 
     @ManyToOne(cascade = CascadeType.MERGE)
@@ -82,5 +84,6 @@ public class BookReview {
             name = USER_ID_FK,
             referencedColumnName = USER_ID
     )
+    @JsonIgnore
     private User user;
 }

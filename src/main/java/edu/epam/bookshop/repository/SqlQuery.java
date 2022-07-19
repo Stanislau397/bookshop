@@ -27,6 +27,11 @@ public class SqlQuery {
                     "SET u.password = ?1 " +
                     "WHERE u.userName = ?2";
 
+    public static final String SELECT_USER_BY_REVIEW_ID =
+            "SELECT u FROM BookReview br " +
+                    "LEFT JOIN br.user u " +
+                    "WHERE br.bookReviewId = :reviewId";
+
     //author
     public static final String INSERT_AUTHOR_TO_BOOK =
             "INSERT INTO author_books (book_id_fk, author_id_fk) " +
@@ -134,8 +139,27 @@ public class SqlQuery {
 
     //book review
     public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK =
-            "SELECT CASE WHEN COUNT(book_id_fk) > 0 " +
-                    "THEN TRUE ELSE FALSE END " +
-                    "FROM book_reviews " +
-                    "WHERE book_id_fk = 1? AND user_id_fk = 2?";
+            "SELECT CASE WHEN COUNT(br.bookReviewId) > 0 " +
+                    "THEN 'true' ELSE 'false' END " +
+                    "FROM BookReview br " +
+                    "LEFT JOIN br.reviewedBook rb " +
+                    "LEFT JOIN br.user u " +
+                    "WHERE rb.bookId = :bookId AND u.userId = :userId";
+    public static final String UPDATE_BOOK_REVIEW =
+            "UPDATE BookReview br " +
+                    "SET br.reviewText = :updatedText, " +
+                    "br.score = :updatedScore " +
+                    "WHERE br.bookReviewId = :reviewId";
+    public static final String SELECT_REVIEWS_BY_BOOK_ID =
+            "SELECT br FROM BookReview br " +
+                    "LEFT JOIN br.reviewedBook rb " +
+                    "WHERE rb.bookId = :bookId";
+    public static final String COUNT_REVIEWS_BY_BOOK_ID =
+            "SELECT COUNT(br.bookReviewId) FROM BookReview br " +
+                    "LEFT JOIN br.reviewedBook rb " +
+                    "WHERE rb.bookId = :bookId";
+    public static final String SELECT_AVERAGE_SCORE_BY_BOOK_ID =
+            "SELECT AVG(br.score) FROM BookReview br " +
+                    "LEFT JOIN br.reviewedBook rb " +
+                    "WHERE rb.bookId = :bookId";
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_USER_BY_REVIEW_ID;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_USER_STATUS_BY_USERNAME;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_USER_ROLES_BY_USERNAME;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_USER_AVATAR_BY_USERNAME;
@@ -48,6 +49,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(UPDATE_USER_PASSWORD_BY_USERNAME)
     void updatePasswordByUsername(String password, String userName);
+
+    @Query(SELECT_USER_BY_REVIEW_ID)
+    Optional<User> selectUserByReviewId(Long reviewId);
 
     Optional<User> findByUserName(String userName);
 

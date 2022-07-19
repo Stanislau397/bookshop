@@ -2,18 +2,17 @@ function registerUser() {
     let user_name_input = $('#user_name').val();
     let email_input = $("#email").val();
     let password_input = $('#password').val();
-    let user = {
-        userName : user_name_input,
-        email: email_input,
-        password : password_input
-    };
+    let userForm = new FormData();
+    userForm.append('userName', user_name_input);
+    userForm.append('email', email_input);
+    userForm.append('password', password_input);
     $.ajax({
         method : 'POST',
         url : '/register_user',
         cache: false,
-        contentType: "application/json",
+        contentType: false,
         processData: false,
-        data: JSON.stringify(user),
+        data: userForm,
         success : function (response) {
             console.log(response);
         },

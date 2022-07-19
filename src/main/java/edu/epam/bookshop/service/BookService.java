@@ -7,7 +7,6 @@ import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.entity.User;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -96,9 +95,15 @@ public interface BookService {
 
     List<Integer> findExistingYearsInBooks();
 
-    void addReviewToBook(BookReview bookReview);
+    void addReviewToBook(BookReview bookReview, Long bookId, Long userId);
 
-    void changeReviewText(BookReview bookReview, User user);
+    void editBookReview(String newText, Double newScore, Long userId, Long reviewId);
 
     void removeReviewFromBook(BookReview bookReview, User user);
+
+    boolean checkIfUserAlreadyReviewedGivenBook(Long bookId, Long userId);
+
+    Double findAverageBookReviewScoreByBookId(Long bookId);
+
+    Page<BookReview> findBookReviewsByBookIdAndPageNumber(Long bookId, Integer pageNumber);
 }

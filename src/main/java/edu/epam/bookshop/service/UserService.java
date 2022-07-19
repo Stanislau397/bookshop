@@ -29,6 +29,8 @@ public interface UserService {
 
     User findUserByUserName(String userName);
 
+    User findUserByBookReviewId(Long bookReviewId);
+
     List<User> findAllUsers() throws ServiceException;
 
     Page<User> findUsersWithPagination(int page);

@@ -1,14 +1,23 @@
+let book;
+let userInfo;
+
 window.addEventListener('DOMContentLoaded', function () {
     let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
     let title = bookTitleFromParameter.replace(/_/g, ' ');
-    getBookDetailsByTitle(decodeURI(title));
+    book = getBookDetailsByTitle(decodeURI(title));
+    getBookReviews(book.bookId, 1);
+    getAverageBookReviewScoreByBookId(book.bookId);
+    userInfo = getUserByUserName();
 });
 
 function getBookDetailsByTitle(bookTitle) {
+    let bookDetails = null;
     $.ajax({
         url: '/findBookDetails',
+        async: false,
         data: {title: bookTitle},
         success: function (bookInfo) {
+            bookDetails = bookInfo;
             setBookTitle(bookInfo);
             setBookImage(bookInfo);
             setBookTitle(bookInfo);
@@ -18,11 +27,13 @@ function getBookDetailsByTitle(bookTitle) {
             getGenresByBookId(bookInfo.bookId);
             setBookDescription(bookInfo);
             setProductDetails(bookInfo);
+            return bookDetails;
         },
         error: function (exception) {
             console.log(exception.responseText)
         }
     })
+    return bookDetails;
 }
 
 function getAuthorsByBookId(id) {
@@ -63,6 +74,115 @@ function getGenresByBookId(id) {
             book_genres_li.innerText = '-';
         }
     })
+}
+
+function getUserByUserName() {
+    let user_name_h2 = document.getElementById('user_name_h2');
+    let userToReturn = null;
+    $.ajax({
+        url: '/findUserByUsername',
+        async: false,
+        data: {username: user_name_h2.innerText},
+        success: function (user) {
+            userToReturn = user;
+            setUserImageInReview(user);
+            return userToReturn;
+        }
+    })
+    return userToReturn;
+}
+
+function getBookReviews(book_id, page_number) {
+    $.ajax({
+        url: '/findBookReviewsByBookIdAndPage',
+        data: {
+            bookId: book_id,
+            pageNumber: page_number
+        },
+        success: function (bookReviews) {
+            displayBookReviews(bookReviews.content);
+            buildPaginationForBookReviews(bookReviews.totalPages);
+        }
+    })
+}
+
+function getUserByReviewId(review_id) {
+    let userByReviewId = null;
+    $.ajax({
+        url: '/findUserByReviewId',
+        data: {reviewId: review_id},
+        async: false,
+        success: function (foundUser) {
+            userByReviewId = foundUser;
+            return userByReviewId;
+        }
+    })
+    return userByReviewId;
+}
+
+function getAverageBookReviewScoreByBookId(book_id) {
+    $.ajax({
+        url: '/findAverageBookReviewScore',
+        data: {bookId: book_id},
+        success: function (averageScore) {
+            setBookAverageScore(averageScore);
+        },
+        error: function () {
+            setBookAverageScore(0);
+        }
+    })
+}
+
+function addReview() {
+    let review_text = document.getElementById('review_text').value;
+    let review_score = document.querySelector('input[name="star"]:checked').value;
+    let review_form = new FormData();
+    review_form.append('reviewText', review_text);
+    review_form.append('score', review_score);
+    review_form.append('userId', userInfo.userId);
+    review_form.append('bookId', book.bookId);
+
+    $.ajax({
+        method: 'POST',
+        url: '/addReviewToBook',
+        cache: false,
+        processData: false,
+        contentType: false,
+        data: review_form,
+        success: function () {
+            resetRadioInput();
+            resetTextArea();
+            getBookReviews(book.bookId, 1);
+            getAverageBookReviewScoreByBookId(book.bookId);
+        },
+        error: function (exception) {
+            console.log('false');
+        }
+    })
+}
+
+function setBookAverageScore(average_score) {
+    let average_score_div = document.getElementById('average_score');
+    average_score_div.innerText = '';
+    if (average_score > 0 && average_score < 3) {
+        average_score_div.style.backgroundColor = 'red';
+        average_score_div.innerText = average_score;
+    } else if (average_score > 3 && average_score < 4) {
+        average_score_div.style.backgroundColor = '#fc3';
+        average_score_div.innerText = average_score;
+    } else if (average_score >= 4) {
+        average_score_div.style.backgroundColor = '#6c3';
+        average_score_div.innerText = average_score;
+    } else {
+        average_score_div.style.backgroundColor = 'silver';
+        average_score_div.innerText = 'tbh';
+    }
+}
+
+function setUserImageInReview(user) {
+    let user_image_path = user.avatarName;
+    let image = document.getElementById('user_image_in_review');
+    image.src = user_image_path;
 }
 
 function setBookTitle(bookInfo) {
@@ -177,5 +297,52 @@ function setBookGenres(genres) {
         }
     } else {
         book_genres_li.innerText = '-';
+    }
+}
+
+function displayBookReviews(bookReviews) {
+    let book_reviews_container = document.getElementById('book_reviews_container');
+    book_reviews_container.innerHTML = '';
+    for (let review of bookReviews) {
+        let user = getUserByReviewId(review.bookReviewId);
+        let publishDate = review.publishDate;
+        let reversedDate = publishDate.split('-').reverse().join('-');
+        book_reviews_container.innerHTML +=
+            '<div class="review-container bg-light">' +
+            '<div class="review-head">' +
+            '<div class="review-head-image-container">' +
+            '<img class="review-head-user-image" src="' + user.avatarName + '">' + '</div>' +
+            '<div class="review-head-user-info">' +
+            '<p class="review-head-user-name">' + user.userName + '</p>' +
+            '<p class="review-head-post-date">' + reversedDate + '</p>' + '</div>' +
+            '<div class="review-head-score-container">' +
+            '<div class="review-score">' + review.score + '</div>' + '</div>' + '</div>' +
+            '<div class="review-bottom">' + '<div class="review-text">' + review.reviewText + '</div>' +
+            '</div>' + '</div>';
+    }
+}
+
+function resetRadioInput() {
+    let radio_input = document.querySelector('input[name="star"]:checked');
+    radio_input.checked = false;
+}
+
+function resetTextArea() {
+    let text_area_input = document.getElementById('review_text');
+    text_area_input.value = '';
+}
+
+function buildPaginationForBookReviews(pages) {
+    let pagination_ul = document.getElementById('book-reviews-pagination');
+    pagination_ul.innerHTML = '';
+    if (pages > 1) {
+        for (let i = 0; i < pages; i++) {
+            let page = i + 1;
+            pagination_ul.innerHTML +=
+                '<li class="page-item">' +
+                '<button class="page-link shadow-none" ' +
+                'onclick="getBookReviews(book.bookId, ' + page + ')">' + page + '</button>' +
+                '</li>';
+        }
     }
 }

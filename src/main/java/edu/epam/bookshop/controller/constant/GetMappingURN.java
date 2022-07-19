@@ -11,6 +11,7 @@ public class GetMappingURN {
     public static final String FIND_USERS_WITH_PAGINATION_URN = "/findUsersWithPagination";
     public static final String FIND_USERS_BY_KEYWORD = "/findUsersByKeyword";
     public static final String FIND_USER_BY_USERNAME = "/findUserByUsername";
+    public static final String FIND_USER_BY_REVIEW_ID = "/findUserByReviewId";
     public static final String FIND_ALL_ROLES = "/findAllRoles";
 
     //author
@@ -62,4 +63,9 @@ public class GetMappingURN {
     public static final String FIND_BOOKS_BY_YEAR_AND_PAGE_URN = "/findBooksByYearAndPageNumber";
     public static final String FIND_EXISTING_YEARS_IN_BOOKS_URN = "/findExistingYearsInBooks";
     public static final String FIND_BOOKS_BY_KEYWORD_AND_PAGE = "/findBooksByKeyWordAndPage";
+
+    //reviews
+    public static final String FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN = "/findBookReviewsByBookIdAndPage";
+    public static final String FIND_AVERAGE_BOOK_REVIEW_SCORE_URN = "/findAverageBookReviewScore";
+    public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK = "/isUserReviewedGivenBook";
 }

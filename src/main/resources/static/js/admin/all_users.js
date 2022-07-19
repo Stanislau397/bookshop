@@ -115,7 +115,7 @@ function buildTableBodyForUsers(users) {
     const tableBody = document.getElementById('tableData');
     let usersHtml = '';
     for (let user of users) {
-        let user_roles = parseUserRoles(user.roles);
+        // let user_roles = parseUserRoles(user.roles);
         let userStatus = 'Active';
         if (user.locked) {
             userStatus = 'Banned'
@@ -129,7 +129,7 @@ function buildTableBodyForUsers(users) {
             '<p class="text-muted mb-0">' + user.email + '</p>' +
             '</div>' +
             '</div>' + '</td>' +
-            '<td>' + user_roles + '</td>' +
+            '<td>' + 'user_roles' + '</td>' +
             '<td>' + userStatus + '</td>' +
             '<td>' + '<button type="button" ' +
             'class="btn btn-primary" ' +

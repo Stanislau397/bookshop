@@ -211,6 +211,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserByBookReviewId(Long bookReviewId) { //todo test
+        return userRepository.selectUserByReviewId(bookReviewId)
+                .orElseThrow(() -> {
+                    log.info("asd");
+                    return new EntityNotFoundException("asd");
+                });
+    }
+
+    @Override
     public List<User> findAllUsers() throws ServiceException {
         List<User> allUsers = userRepository.findAll();
         if (allUsers.isEmpty()) {

@@ -16,6 +16,7 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.CHECK_IF_USER_
 import static edu.epam.bookshop.controller.constant.GetMappingURN.CHECK_IF_EMAIL_TAKEN_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USERS_WITH_PAGINATION_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USERS_BY_KEYWORD;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USER_BY_REVIEW_ID;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USER_BY_USERNAME;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_ROLES;
 
@@ -91,6 +92,12 @@ public class UserController {
     public ResponseEntity<User> getUserByUsername(String username) {
         User userByUsername = userService.findUserByUserName(username);
         return ResponseEntity.ok(userByUsername);
+    }
+
+    @GetMapping(FIND_USER_BY_REVIEW_ID)
+    public ResponseEntity<User> displayUserByReviewId(Long reviewId) {
+        User userByReviewId = userService.findUserByBookReviewId(reviewId);
+        return ResponseEntity.ok(userByReviewId);
     }
 
     @GetMapping(FIND_ALL_ROLES)

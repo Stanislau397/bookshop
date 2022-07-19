@@ -12,6 +12,22 @@
     margin-top: 30px;
 }
 
+.book-image-container .book-average-score {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: red;
+    margin-top: 5px;
+    margin-left: 200px;
+    border-radius: 3px;
+    text-align: center;
+    padding: 7px 0;
+    color: white;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+}
+
 .book-image-container img {
     width: 100%;
     height: 100%;
@@ -32,6 +48,7 @@
     font-weight: inherit;
     font-family: GT Super Bold, serif;
     letter-spacing: -1px;
+    color: #2c293b;
 }
 
 .book-info-container .author-name {
@@ -45,6 +62,7 @@
 .book-info-container span {
     font-family: IBM Plex Sans, sans-serif;
     font-size: 17px;
+    color: #2c293b;
 }
 
 .book-info-container .format-div .book-price {
@@ -56,12 +74,14 @@
 
 .book-info-container .description-h1,
 .book-info-container .product-details-h1,
-.book-info-container .about-author-h1 {
+.book-info-container .about-author-h1,
+.book-info-container .reviews-h1 {
     margin-top: 10px;
     margin-left: 35px;
     font-weight: inherit;
     font-family: GT Super Bold, serif;
     letter-spacing: -1px;
+    color: #2c293b;
 }
 
 .book-info-container .book-description,
@@ -69,6 +89,7 @@
     margin-left: 35px;
     font-size: 17px;
     font-family: IBM Plex Sans, sans-serif;
+    color: #2c293b;
 }
 
 .book-info-container .product-details-ul {
@@ -91,6 +112,7 @@
     margin-left: 5px;
     font-size: 15px;
     font-family: IBM Plex Sans, sans-serif;
+    color: #2c293b;
 }
 
 .book-info-container .book-genre,
@@ -104,4 +126,205 @@
 
 span {
     margin-left: 1%;
+}
+
+.add-review-container {
+    margin-left: 35px;
+    border-radius: 3px;
+    height: 400px;
+    border: 1px solid silver;
+    width: 100%;
+}
+
+.add-review-container .book-review-head {
+    width: 100%;
+    height: 70px;
+    border-bottom: 1px solid silver;
+}
+
+.book-review-head .user-image-container {
+    float: left;
+    width: 13%;
+    height: 100%;
+}
+
+.book-review-head .user-image-container .image-in-review {
+    position: center;
+    width: 60px;
+    height: 60px;
+    margin-left: 20px;
+    margin-top: 5px;
+    border: 3px solid #2c293b;;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.book-review-head .right-side {
+    float: left;
+    width: 85%;
+
+}
+
+.book-review-head .right-side .user-name {
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-left: 3px;
+    color: #2c293b;
+}
+
+.book-review-bottom {
+    width: 100%;
+}
+
+.book-review-bottom .form-group {
+    margin-top: 2%;
+    width: 96%;
+    margin-left: 2%;
+}
+
+.stars {
+    display: inline-block;
+    margin-top: -10px;
+}
+
+input.star {
+    display: none;
+}
+
+
+label.star {
+    float: right;
+    padding: 3px;
+    font-size: 20px;
+    color: #4A148C;
+    transition: all .2s;
+
+}
+
+
+input.star:checked ~ label.star:before {
+    content: '\f005';
+    color: #FD4;
+    transition: all .25s;
+
+}
+
+
+input.star-1:checked ~ label.star:before {
+    color: #F62;
+}
+
+
+label.star:hover {
+    cursor: pointer;
+}
+
+
+label.star:before {
+    content: '\f006';
+    font-family: FontAwesome;
+}
+
+.book-info-container .book-reviews-container {
+    width: 100%;
+    margin-left: 35px;
+}
+
+.review-container {
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid silver;
+}
+
+.review-container .review-head {
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid silver;
+}
+
+.review-head .review-head-image-container {
+    float: left;
+    width: 9%;
+    height: 100%;
+}
+
+.review-head-image-container .review-head-user-image {
+    margin-top: 5px;
+    margin-left: 15px;
+    width: 40px;
+    height: 40px;
+    border: 3px solid silver;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.review-head .review-head-user-info {
+    float: left;
+    width: 65%;
+    height: 100%;
+}
+
+.review-head-user-info .review-head-user-name {
+    margin-top: 2px;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 17px;
+    font-weight: bold;
+    margin-left: 3px;
+    color: #2c293b;
+}
+
+.review-head-user-info .review-head-post-date {
+    margin-top: -20px;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 14px;
+    margin-left: 3px;
+    color: #2c293b;
+}
+
+.review-head .review-head-score-container {
+    float: left;
+    width: 26%;
+    height: 100%;
+}
+
+.review-score {
+    width: 35px;
+    height: 35px;
+    border: 1px solid black;
+    border-radius: 5px;
+    float: right;
+    margin-right: 5px;
+    margin-top: 7px;
+    text-align: center;
+    font-family: IBM Plex Sans, sans-serif;
+    padding: 3px 0;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.review-bottom {
+    width: 100%;
+}
+
+.review-bottom .review-text {
+    width: 96%;
+    margin-left: 2%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    border-radius: 5px;
+    padding: 8px 8px;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 18px;
+}
+
+.page-item {
+    margin-left: 5px;
+}
+
+.pagination {
+    margin-left: 30px;
+    margin-top: 5px;
 }
