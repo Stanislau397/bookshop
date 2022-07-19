@@ -79,17 +79,20 @@ function getGenresByBookId(id) {
 function getUserByUserName() {
     let user_name_h2 = document.getElementById('user_name_h2');
     let userToReturn = null;
-    $.ajax({
-        url: '/findUserByUsername',
-        async: false,
-        data: {username: user_name_h2.innerText},
-        success: function (user) {
-            userToReturn = user;
-            setUserImageInReview(user);
-            return userToReturn;
-        }
-    })
-    return userToReturn;
+    if (user_name_h2.innerText !== '') {
+        $.ajax({
+            url: '/findUserByUsername',
+            async: false,
+            data: {username: user_name_h2.innerText},
+            success: function (user) {
+                userToReturn = user;
+                checkIfUserReviewedBook(user.userId, book.bookId);
+                setUserImageInReview(user);
+                return userToReturn;
+            }
+        })
+        return userToReturn;
+    }
 }
 
 function getBookReviews(book_id, page_number) {
@@ -133,6 +136,21 @@ function getAverageBookReviewScoreByBookId(book_id) {
     })
 }
 
+function checkIfUserReviewedBook(user_id, book_id) {
+    $.ajax({
+        url: '/isUserReviewedGivenBook',
+        data: {
+            bookId: book_id,
+            userId: user_id
+        },
+        success: function (userReviewedBook) {
+            if (userReviewedBook) {
+                hideAddReviewContainer();
+            }
+        }
+    })
+}
+
 function addReview() {
     let review_text = document.getElementById('review_text').value;
     let review_score = document.querySelector('input[name="star"]:checked').value;
@@ -154,6 +172,7 @@ function addReview() {
             resetTextArea();
             getBookReviews(book.bookId, 1);
             getAverageBookReviewScoreByBookId(book.bookId);
+            checkIfUserReviewedBook(userInfo.userId, book.bookId);
         },
         error: function (exception) {
             console.log('false');
@@ -167,7 +186,7 @@ function setBookAverageScore(average_score) {
     if (average_score > 0 && average_score < 3) {
         average_score_div.style.backgroundColor = 'red';
         average_score_div.innerText = average_score;
-    } else if (average_score > 3 && average_score < 4) {
+    } else if (average_score >= 3 && average_score < 4) {
         average_score_div.style.backgroundColor = '#fc3';
         average_score_div.innerText = average_score;
     } else if (average_score >= 4) {
@@ -345,4 +364,9 @@ function buildPaginationForBookReviews(pages) {
                 '</li>';
         }
     }
+}
+
+function hideAddReviewContainer() {
+    $('#h1-for-add-review').hide();
+    $('#add_review_container').hide();
 }

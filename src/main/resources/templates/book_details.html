@@ -69,8 +69,11 @@
             </ul>
         </nav>
 
-        <h1 th:text="#{add_review}" class="reviews-h1"></h1>
-        <div class="add-review-container" sec:authorize="isAuthenticated()">
+        <h1 th:text="#{add_review}"
+            sec:authorize="isAuthenticated()"
+            class="reviews-h1"
+            id="h1-for-add-review"></h1>
+        <div class="add-review-container" id="add_review_container" sec:authorize="isAuthenticated()">
             <div class="book-review-head">
 
                 <div class="user-image-container">
