@@ -816,12 +816,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Double findAverageBookReviewScoreByBookId(Long bookId) { //todo test
-        if (!bookRepository.existsById(bookId)) {
-            throw new EntityNotFoundException(
-                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
-            );
-        }
-
         Double averageBookReviewScore = reviewRepository.selectAverageScoreByBookId(bookId);
         if (!nonNull(averageBookReviewScore)) {
             throw new NothingFoundException(
