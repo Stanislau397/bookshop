@@ -50,13 +50,21 @@
                        data-bs-toggle="dropdown"
                        aria-expanded="false">
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    <ul class="dropdown-menu books-drop-down" aria-labelledby="navbarScrollingDropdown">
+                        <div class="left-side">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </div>
+                        <div class="right-side">
+                            <h3 th:text="#{all_genres}"></h3>
+                            <ul class="genres-container" id="genres_ul">
+
+                            </ul>
+                        </div>
                     </ul>
                 </li>
 

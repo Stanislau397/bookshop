@@ -41,4 +41,5 @@ public class PostMappingURN {
 
     //review
     public static final String ADD_REVIEW_TO_BOOK_URN = "/addReviewToBook";
+    public static final String EDIT_REVIEW_URN = "/editReview";
 }

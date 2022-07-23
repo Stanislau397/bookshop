@@ -14,7 +14,7 @@ import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_USER_REVIEWED_GIVEN
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_AVERAGE_SCORE_BY_BOOK_ID;
 import static edu.epam.bookshop.repository.SqlQuery.COUNT_REVIEWS_BY_BOOK_ID;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_REVIEWS_BY_BOOK_ID;
-import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_REVIEW;
+import static edu.epam.bookshop.repository.SqlQuery.UPDATE_REVIEW_TEXT_AND_SCORE_BY_REVIEW_ID;
 
 @Repository
 public interface BookReviewRepository extends JpaRepository<BookReview, Long> {
@@ -24,8 +24,8 @@ public interface BookReviewRepository extends JpaRepository<BookReview, Long> {
 
     @Transactional
     @Modifying
-    @Query(UPDATE_BOOK_REVIEW)
-    void updateByTextAndScoreAndReviewId(String updatedText, Double updatedScore, Long reviewId);
+    @Query(UPDATE_REVIEW_TEXT_AND_SCORE_BY_REVIEW_ID)
+    void updateTextAndScoreByReviewId(String updatedText, Double updatedScore, Long reviewId);
 
     @Query(SELECT_AVERAGE_SCORE_BY_BOOK_ID)
     Double selectAverageScoreByBookId(Long bookId);

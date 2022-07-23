@@ -13,6 +13,7 @@ import java.util.List;
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_GENRE_EXISTS_FOR_BOOK;
 import static edu.epam.bookshop.repository.SqlQuery.DELETE_GENRE_FROM_BOOK;
 import static edu.epam.bookshop.repository.SqlQuery.INSERT_GENRE_TO_BOOK;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_DISTINCT_GENRES_FOR_AUTHOR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_GENRE_BY_BOOK_ID;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_GENRE_TITLE_BY_ID;
 
@@ -26,30 +27,25 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 
     @Transactional
     @Modifying
-    @Query(
-            value = INSERT_GENRE_TO_BOOK,
-            nativeQuery = true
-    )
+    @Query(value = INSERT_GENRE_TO_BOOK,
+            nativeQuery = true)
     void insertGenreToBookByGenreIdAndBookId(Long genreId, Long bookId);
 
     @Transactional
     @Modifying
-    @Query(
-            value = DELETE_GENRE_FROM_BOOK,
-            nativeQuery = true
-    )
+    @Query(value = DELETE_GENRE_FROM_BOOK,
+            nativeQuery = true)
     void deleteGenreFromBookByGenreIdAndBookId(Long genreId, Long bookId);
 
-    @Query(
-            value = CHECK_IF_GENRE_EXISTS_FOR_BOOK,
-            nativeQuery = true
-    )
+    @Query(value = CHECK_IF_GENRE_EXISTS_FOR_BOOK,
+            nativeQuery = true)
     boolean genreExistsForBook(Long genreId, Long bookId);
 
-    boolean existsByTitle(String genreTitle);
-
-    @Transactional
-    @Modifying
     @Query(value = SELECT_GENRE_BY_BOOK_ID)
     List<Genre> findByBookId(Long bookId);
+
+    @Query(value = SELECT_DISTINCT_GENRES_FOR_AUTHOR)
+    List<Genre> selectDistinctGenresForAuthorByAuthorId(Long authorId);
+
+    boolean existsByTitle(String genreTitle);
 }

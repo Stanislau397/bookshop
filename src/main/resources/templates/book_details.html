@@ -5,10 +5,64 @@
     <title id="title">Title</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/book_details.css}"/>
     <script type="text/javascript" th:src="@{/js/general/book_details.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <div th:replace="fragment/header"></div>
+
+<div class="modal fade" id="editReviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-m">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="hidden" id="review_id" value="">
+                <div class="stars">
+                    <span>Оценка</span>
+                    <form action="">
+                        <input class="star star-5" id="5" value="5.0" type="radio" name="edit_star"/>
+
+                        <label class="star star-5" for="5"></label>
+
+                        <input class="star star-4" id="4" value="4.0" type="radio" name="edit_star"/>
+
+                        <label class="star star-4" for="4"></label>
+
+                        <input class="star star-3" id="3" value="3.0" type="radio" name="edit_star"/>
+
+                        <label class="star star-3" for="3"></label>
+
+                        <input class="star star-2" id="2" value="2.0" type="radio" name="edit_star"/>
+
+                        <label class="star star-2" for="2"></label>
+
+                        <input class="star star-1" id="1" value="1.0" type="radio" name="edit_star"/>
+
+                        <label class="star star-1" for="1"></label>
+
+                    </form>
+                </div>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group mt-1">
+                    <textarea class="form-control shadow-none mt-1" id="text_to_edit" rows="5"></textarea>
+                </div>
+            </div>
+            <input type="hidden" id="user_name_input" value="">
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="editReview()"
+                        th:text="#{edit}">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="main-container">
+    <input type="hidden" id="edit" th:value="#{edit}">
+
     <div class="book-image-container">
         <div class="book-average-score" id="average_score">
 
@@ -83,30 +137,30 @@
                 </div>
                 <div class="right-side">
                     <h2 class="user-name" id="user_name_h2" sec:authentication="name"></h2>
-                            <div class="stars">
-                                <form action="">
-                                    <input class="star star-5" id="star-5" value="5.0" type="radio" name="star"/>
+                    <div class="stars">
+                        <form action="">
+                            <input class="star star-5" id="star-5" value="5.0" type="radio" name="star"/>
 
-                                    <label class="star star-5" for="star-5"></label>
+                            <label class="star star-5" for="star-5"></label>
 
-                                    <input class="star star-4" id="star-4" value="4.0" type="radio" name="star"/>
+                            <input class="star star-4" id="star-4" value="4.0" type="radio" name="star"/>
 
-                                    <label class="star star-4" for="star-4"></label>
+                            <label class="star star-4" for="star-4"></label>
 
-                                    <input class="star star-3" id="star-3" value="3.0" type="radio" name="star"/>
+                            <input class="star star-3" id="star-3" value="3.0" type="radio" name="star"/>
 
-                                    <label class="star star-3" for="star-3"></label>
+                            <label class="star star-3" for="star-3"></label>
 
-                                    <input class="star star-2" id="star-2" value="2.0" type="radio" name="star"/>
+                            <input class="star star-2" id="star-2" value="2.0" type="radio" name="star"/>
 
-                                    <label class="star star-2" for="star-2"></label>
+                            <label class="star star-2" for="star-2"></label>
 
-                                    <input class="star star-1" id="star-1" value="1.0" type="radio" name="star"/>
+                            <input class="star star-1" id="star-1" value="1.0" type="radio" name="star"/>
 
-                                    <label class="star star-1" for="star-1"></label>
+                            <label class="star star-1" for="star-1"></label>
 
-                                </form>
-                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="book-review-bottom">

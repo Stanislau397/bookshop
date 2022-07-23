@@ -189,8 +189,16 @@ span {
     margin-top: -10px;
 }
 
+
 input.star {
     display: none;
+}
+
+.stars span {
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c293b;
 }
 
 
@@ -293,7 +301,6 @@ label.star:before {
 .review-score {
     width: 35px;
     height: 35px;
-    border: 1px solid black;
     border-radius: 5px;
     float: right;
     margin-right: 5px;
@@ -303,13 +310,14 @@ label.star:before {
     padding: 3px 0;
     font-size: 19px;
     font-weight: bold;
+    color: white;
 }
 
-.review-bottom {
+.review-middle {
     width: 100%;
 }
 
-.review-bottom .review-text {
+.review-middle .review-text {
     width: 96%;
     margin-left: 2%;
     margin-top: 2%;
@@ -318,7 +326,16 @@ label.star:before {
     padding: 8px 8px;
     font-family: IBM Plex Sans, sans-serif;
     font-size: 18px;
+    word-wrap: break-word;
 }
+
+.book-reviews-container .edit-icon {
+    position: absolute;
+    margin-top: -20px;
+    cursor: pointer;
+    font-size: 23px;
+}
+
 
 .page-item {
     margin-left: 5px;

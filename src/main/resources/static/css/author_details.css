@@ -1,11 +1,10 @@
 .main-container {
     width: 65%;
-    height: fit-content;
-    margin: auto;
+    margin-left: 17.5%;
+    display: flow-root;
 }
 
 .main-container .author-info {
-    overflow: hidden;
     margin-top: 3%;
     width: 100%;
 }
@@ -26,7 +25,6 @@
 .author-info .info {
     float: left;
     width: 80%;
-    height: 270px;
 }
 
 .author-info .info .author-name {
@@ -52,7 +50,7 @@
 }
 
 .author-info .info ul .name {
-    width: 150px;
+    width: 140px;
     position: relative;
 }
 
@@ -62,14 +60,26 @@
     margin-left: 5%;
 }
 
+.author-info .info ul .genres {
+    font-family: IBM Plex Sans, sans-serif;
+    width: 70%;
+    margin-left: 5%;
+    display: inline-block;
+}
+
 .author-info .info .birth-date,
-.author-info .info .biography {
+.author-info .info .biography,
+.author-info .info .author-genres {
     margin-top: -1.5%;
+}
+.author-info .info .author-genres .books-by-genre {
+    color: #573ba3;
+    text-decoration: none;
 }
 
 .author-books {
-    height: fit-content;
-    margin-top: -7%;
+    margin-left: 17.5%;
+    width: 65%;
 }
 
 .author-books-h2 {
@@ -80,9 +90,8 @@
 }
 
 .author-books .book-container {
-    margin-top: 14%;
+    margin-top: 7%;
     width: 18%;
-    height: 300px;
     float: left;
     margin-left: 24px;
 }
@@ -92,7 +101,7 @@
 }
 
 .book-container:nth-child(5n) {
-    margin-right : 0;
+    margin-right: 0;
 }
 
 .author-books .book-container .book-image-container {

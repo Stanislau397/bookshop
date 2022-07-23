@@ -1,6 +1,9 @@
 window.addEventListener('DOMContentLoaded', function () {
-    let user_name = document.getElementById('user-name-h1').innerText;
-    getUserByUsername(user_name);
+    if (document.getElementById('user-name-h1') !== null) {
+        let user_name = document.getElementById('user-name-h1').innerText;
+        getUserByUsername(user_name);
+    }
+    getAllGenresForDropDown();
 });
 
 function getBooksByKeyWord(key_word) {
@@ -19,6 +22,15 @@ function getBooksByKeyWord(key_word) {
         let search_result_container = document.getElementById('search_result');
         search_result_container.innerHTML = '';
     }
+}
+
+function getAllGenresForDropDown() {
+    $.ajax({
+        url: '/findAllGenres',
+        success: function (allGenres) {
+            displayAllGenresInDropDown(allGenres);
+        }
+    })
 }
 
 function getUserByUsername(user_name) {
@@ -55,6 +67,17 @@ function displaySearchResults(booksByKeyWord) {
             '<div class="book-info">' +
             '<div class="book-name">' + book.title + '</div>' +
             '<div class="book-year">' + year + '</div>' + '</div>' + '</a>';
+    }
+}
+
+function displayAllGenresInDropDown(all_genres) {
+    let genres_ul = document.getElementById('genres_ul');
+    for (let genre of all_genres) {
+        let title = genre.title;
+        let booksByGenreHref = 'http://localhost:8070/bookshop/booksByGenre?genreTitle=' + title + '&page=1';
+        genres_ul.innerHTML +=
+            '<li class="genre-li">' + '<a class="genre-href" href="' + booksByGenreHref + '">' + title + '</a>' +
+            '</li>';
     }
 }
 

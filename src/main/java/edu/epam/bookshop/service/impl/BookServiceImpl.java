@@ -410,6 +410,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<Genre> findDistinctGenresForAuthorByAuthorId(Long authorId) { //todo test
+        List<Genre> genresByAuthorId =
+                genreRepository.selectDistinctGenresForAuthorByAuthorId(authorId);
+        if (genresByAuthorId.isEmpty()) {
+            log.info(NOTHING_WAS_FOUND_MSG);
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return genresByAuthorId;
+    }
+
+    @Override
     public List<Genre> findAllGenres() {
         List<Genre> allGenres = genreRepository.findAll();
         if (allGenres.isEmpty()) {
@@ -573,12 +584,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Publisher> findPublishersByBookId(Long bookId) { //todo test
-        if (!bookRepository.existsById(bookId)) {
-            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
-            throw new EntityNotFoundException(
-                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
-            );
-        }
         List<Publisher> publishersByBookId = publisherRepository.findByBookId(bookId);
         if (publishersByBookId.isEmpty()) {
             log.info(String.format(PUBLISHERS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
@@ -783,14 +788,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public void editBookReview(String newText, Double newScore, Long userId, Long reviewId) { //todo test
         BookReview oldReview = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new EntityNotFoundException("Not found"));
+                .orElseThrow(() -> new EntityNotFoundException("not found"));
         User userFromRequest = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(USER_WITH_GIVEN_ID_NOT_FOUND, userId)
                 ));
         User userInOldReview = oldReview.getUser();
         if (userFromRequest.equals(userInOldReview)) {
-            reviewRepository.updateByTextAndScoreAndReviewId(newText, newScore, reviewId);
+            reviewRepository.updateTextAndScoreByReviewId(newText, newScore, reviewId);
         }
     }
 

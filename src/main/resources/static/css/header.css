@@ -127,6 +127,7 @@ nav {
     width: 100%;
     height: 60px;
     object-fit: cover;
+    border-radius: 3px;
 }
 
 .search-result .book-container .book-info {
@@ -156,4 +157,47 @@ nav {
     font-weight: bold;
     font-size: 20px;
     font-family: IBM Plex Sans, sans-serif;
+}
+
+.books-drop-down {
+    width: 600px;
+}
+
+.books-drop-down .left-side {
+    float: left;
+    border-right: 1px solid silver;
+}
+
+.books-drop-down .right-side {
+    float: left;
+    font-family: IBM Plex Sans, sans-serif;
+}
+
+.books-drop-down .right-side h3 {
+    font-size: 17px;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+.right-side .genres-container {
+    width: 450px;
+    margin-top: 10px;
+    margin-left: -30px;
+}
+
+.right-side .genres-container .genre-li {
+    padding: 6px 15px;
+    display: inline-block;
+    width: 104px;
+}
+
+.right-side .genres-container .genre-li:hover {
+    background: silver;
+    cursor: pointer;
+}
+
+.genre-li .genre-href {
+    text-decoration: none;
+    color: #2c293b;
+    font-weight: normal;
 }

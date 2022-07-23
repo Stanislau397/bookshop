@@ -13,6 +13,7 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.CHECK_IF_USER_
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AVERAGE_BOOK_REVIEW_SCORE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_REVIEW_TO_BOOK_URN;
+import static edu.epam.bookshop.controller.constant.PostMappingURN.EDIT_REVIEW_URN;
 
 @RestController
 @AllArgsConstructor
@@ -23,6 +24,13 @@ public class ReviewController {
     @PostMapping(ADD_REVIEW_TO_BOOK_URN)
     public ResponseEntity<Void> addReview(BookReview review, Long bookId, Long userId) {
         bookService.addReviewToBook(review, bookId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(EDIT_REVIEW_URN)
+    public ResponseEntity<Void> editReview(String newText, Double newScore,
+                                           Long userId, Long reviewId) {
+        bookService.editBookReview(newText, newScore, userId, reviewId);
         return ResponseEntity.ok().build();
     }
 

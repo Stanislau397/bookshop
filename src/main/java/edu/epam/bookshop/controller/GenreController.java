@@ -13,6 +13,7 @@ import java.util.List;
 
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_BOOK_ID_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_KEYWORD_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_FOR_AUTHOR_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.GENRE_EXISTS_BY_TITLE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_GENRES_URN;
@@ -87,5 +88,11 @@ public class GenreController {
     public ResponseEntity<List<Genre>> displayGenresByBookId(Long bookId) {
         List<Genre> genresByBookId = bookService.findGenresByBookId(bookId);
         return ResponseEntity.ok(genresByBookId);
+    }
+
+    @GetMapping(FIND_GENRES_FOR_AUTHOR_URN)
+    public ResponseEntity<List<Genre>> displayGenresForAuthor(Long authorId) {
+        List<Genre> genresByAuthorId = bookService.findDistinctGenresForAuthorByAuthorId(authorId);
+        return ResponseEntity.ok(genresByAuthorId);
     }
 }

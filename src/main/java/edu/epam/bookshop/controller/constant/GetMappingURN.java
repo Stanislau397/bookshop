@@ -27,6 +27,7 @@ public class GetMappingURN {
     public static final String FIND_GENRES_BY_PAGE_URN = "/findGenresByPage";
     public static final String FIND_GENRES_BY_KEYWORD_URN = "/findGenresByKeyword";
     public static final String FIND_GENRES_BY_BOOK_ID_URN = "/findGenresByBookId";
+    public static final String FIND_GENRES_FOR_AUTHOR_URN = "/findGenresForAuthor";
 
     //publisher
     public static final String PUBLISHER_EXISTS_BY_NAME_URN = "/isPublisherExistsByName";

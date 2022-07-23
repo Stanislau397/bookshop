@@ -77,20 +77,22 @@ function getGenresByBookId(id) {
 }
 
 function getUserByUserName() {
-    let user_name_h2 = document.getElementById('user_name_h2');
-    let userToReturn = null;
-    if (user_name_h2.innerText !== '') {
-        $.ajax({
-            url: '/findUserByUsername',
-            async: false,
-            data: {username: user_name_h2.innerText},
-            success: function (user) {
-                userToReturn = user;
-                checkIfUserReviewedBook(user.userId, book.bookId);
-                setUserImageInReview(user);
-                return userToReturn;
-            }
-        })
+    if (document.getElementById('user-name-h1') !== null) {
+        let user_name_h2 = document.getElementById('user-name-h1');
+        let userToReturn = null;
+        if (user_name_h2.innerText !== '') {
+            $.ajax({
+                url: '/findUserByUsername',
+                async: false,
+                data: {username: user_name_h2.innerText},
+                success: function (user) {
+                    userToReturn = user;
+                    checkIfUserReviewedBook(user.userId, book.bookId);
+                    setUserImageInReview(user);
+                    return userToReturn;
+                }
+            })
+        }
         return userToReturn;
     }
 }
@@ -124,14 +126,15 @@ function getUserByReviewId(review_id) {
 }
 
 function getAverageBookReviewScoreByBookId(book_id) {
+    let score_div = document.getElementById('average_score');
     $.ajax({
         url: '/findAverageBookReviewScore',
         data: {bookId: book_id},
         success: function (averageScore) {
-            setBookAverageScore(averageScore);
+            setBookReviewScore(averageScore, score_div);
         },
         error: function () {
-            setBookAverageScore(0);
+            setBookReviewScore(0, score_div);
         }
     })
 }
@@ -175,26 +178,51 @@ function addReview() {
             checkIfUserReviewedBook(userInfo.userId, book.bookId);
         },
         error: function (exception) {
+        }
+    })
+}
+
+function editReview() {
+    let review_text_to_edit = document.getElementById('text_to_edit').value;
+    let edited_review_score = document.querySelector('input[name="edit_star"]:checked').value;
+    let review_id = document.getElementById('review_id').value;
+    let review_form = new FormData();
+    review_form.append('newText', review_text_to_edit);
+    review_form.append('newScore', edited_review_score);
+    review_form.append('userId', userInfo.userId);
+    review_form.append('reviewId', review_id);
+
+    $.ajax({
+        method: 'POST',
+        url: '/editReview',
+        cache: false,
+        processData: false,
+        contentType: false,
+        data: review_form,
+        success: function () {
+            hideEditReviewModal();
+            getBookReviews(book.bookId, 1);
+            getAverageBookReviewScoreByBookId(book.bookId);
+        },
+        error: function (exception) {
             console.log('false');
         }
     })
 }
 
-function setBookAverageScore(average_score) {
-    let average_score_div = document.getElementById('average_score');
-    average_score_div.innerText = '';
-    if (average_score > 0 && average_score < 3) {
-        average_score_div.style.backgroundColor = 'red';
-        average_score_div.innerText = average_score;
-    } else if (average_score >= 3 && average_score < 4) {
-        average_score_div.style.backgroundColor = '#fc3';
-        average_score_div.innerText = average_score;
-    } else if (average_score >= 4) {
-        average_score_div.style.backgroundColor = '#6c3';
-        average_score_div.innerText = average_score;
+function setBookReviewScore(score, score_div) {
+    if (score > 0 && score < 3) {
+        score_div.style.backgroundColor = 'red';
+        score_div.innerText = score;
+    } else if (score >= 3 && score < 4) {
+        score_div.style.backgroundColor = '#fc3';
+        score_div.innerText = score;
+    } else if (score >= 4) {
+        score_div.style.backgroundColor = '#6c3';
+        score_div.innerText = score;
     } else {
-        average_score_div.style.backgroundColor = 'silver';
-        average_score_div.innerText = 'tbh';
+        score_div.style.backgroundColor = 'silver';
+        score_div.innerText = 'tbh';
     }
 }
 
@@ -320,12 +348,19 @@ function setBookGenres(genres) {
 }
 
 function displayBookReviews(bookReviews) {
+    let edit = document.getElementById('edit').value;
     let book_reviews_container = document.getElementById('book_reviews_container');
     book_reviews_container.innerHTML = '';
+    let userNameFromSecurity = '';
+    if (document.getElementById('user-name-h1') !== null) {
+        userNameFromSecurity = document.getElementById('user-name-h1').innerText;
+    }
+    let counter = 0;
     for (let review of bookReviews) {
         let user = getUserByReviewId(review.bookReviewId);
         let publishDate = review.publishDate;
         let reversedDate = publishDate.split('-').reverse().join('-');
+        counter = counter + 1;
         book_reviews_container.innerHTML +=
             '<div class="review-container bg-light">' +
             '<div class="review-head">' +
@@ -335,10 +370,40 @@ function displayBookReviews(bookReviews) {
             '<p class="review-head-user-name">' + user.userName + '</p>' +
             '<p class="review-head-post-date">' + reversedDate + '</p>' + '</div>' +
             '<div class="review-head-score-container">' +
-            '<div class="review-score">' + review.score + '</div>' + '</div>' + '</div>' +
-            '<div class="review-bottom">' + '<div class="review-text">' + review.reviewText + '</div>' +
-            '</div>' + '</div>';
+            '<div class="review-score" id="review_score' + counter + '">' + '' + '</div>' + '</div>' + '</div>' +
+            '<div class="review-middle">' + '<div class="review-text">' + review.reviewText + '</div>' + '</div>' + '</div>';
+        let userRelatesToReview =
+            checkIfUserRelatesToReviewByUserName(userNameFromSecurity, user.userName);
+        if (userRelatesToReview) {
+            book_reviews_container.innerHTML +=
+                '<i class="fa fa-edit edit-icon" ' +
+                'data-bs-toggle="modal" ' +
+                'onclick="setUserReviewForEdit(\'' + review.score + '\',\'' + review.reviewText + '\',\'' + review.bookReviewId + '\')" ' +
+                'data-bs-target="#editReviewModal">';
+        }
+        let score_div = document.getElementById('review_score' + counter + '');
+        setBookReviewScore(review.score, score_div);
     }
+}
+
+function checkIfUserRelatesToReviewByUserName(userNameFromSecurity, userNameFromReview) {
+    return userNameFromReview === userNameFromSecurity;
+}
+
+function setUserReviewForEdit(score, text, review_id) {
+    if (score === '1') {
+        $("#1").prop("checked", true);
+    } else if (score === '2') {
+        $("#2").prop("checked", true);
+    } else if (score === '3') {
+        $("#3").prop("checked", true);
+    } else if (score === '4') {
+        $("#4").prop("checked", true);
+    } else {
+        $("#5").prop("checked", true);
+    }
+    $('#text_to_edit').val(text);
+    $('#review_id').val(review_id);
 }
 
 function resetRadioInput() {
@@ -369,4 +434,8 @@ function buildPaginationForBookReviews(pages) {
 function hideAddReviewContainer() {
     $('#h1-for-add-review').hide();
     $('#add_review_container').hide();
+}
+
+function hideEditReviewModal() {
+    $('#editReviewModal').modal('hide');
 }

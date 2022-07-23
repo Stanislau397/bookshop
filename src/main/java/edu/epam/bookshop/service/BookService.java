@@ -49,6 +49,8 @@ public interface BookService {
 
     List<Genre> findGenresByKeyword(String keyWord);
 
+    List<Genre> findDistinctGenresForAuthorByAuthorId(Long authorId);
+
     List<Genre> findAllGenres();
 
     void addPublisher(Publisher publisher, MultipartFile image);

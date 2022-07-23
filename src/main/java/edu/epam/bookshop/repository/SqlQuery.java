@@ -97,6 +97,11 @@ public class SqlQuery {
             "SELECT g FROM Genre g " +
                     "LEFT JOIN g.books b " +
                     "WHERE b.bookId = :bookId";
+    public static final String SELECT_DISTINCT_GENRES_FOR_AUTHOR =
+            "SELECT DISTINCT g FROM Genre g " +
+                    "JOIN g.books b " +
+                    "JOIN b.authors a " +
+                    "WHERE a.authorId = :authorId";
 
     //book
     public static final String DELETE_BOOK_FROM_AUTHOR =
@@ -145,7 +150,7 @@ public class SqlQuery {
                     "LEFT JOIN br.reviewedBook rb " +
                     "LEFT JOIN br.user u " +
                     "WHERE rb.bookId = :bookId AND u.userId = :userId";
-    public static final String UPDATE_BOOK_REVIEW =
+    public static final String UPDATE_REVIEW_TEXT_AND_SCORE_BY_REVIEW_ID =
             "UPDATE BookReview br " +
                     "SET br.reviewText = :updatedText, " +
                     "br.score = :updatedScore " +
