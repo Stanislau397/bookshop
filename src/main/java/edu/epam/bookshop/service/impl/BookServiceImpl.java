@@ -38,6 +38,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.AUTHORS_BY_GIVEN_BOOK_
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_BY_GIVEN_YEAR_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_TITLE_NOT_FOUND;
@@ -85,6 +86,10 @@ import static edu.epam.bookshop.constant.ImageStoragePath.PUBLISHERS_DIRECTORY_P
 import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_BOOK_IMAGE_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_LOCALHOST_PATH;
+
+import static edu.epam.bookshop.service.BookScore.FOUR;
+import static edu.epam.bookshop.service.ItemsLimit.FIFTEEN;
+import static edu.epam.bookshop.service.ItemsLimit.TWENTY_FIVE;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -191,17 +196,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void removeBookForAuthorByAuthorIdAndBookId(Long authorId, Long bookId) {
-        if (!bookRepository.bookExistsForAuthor(authorId, bookId)) {
-            log.info(String.format(BOOK_DOES_NOT_EXIST_FOR_AUTHOR, bookId, authorId));
-            throw new EntityNotFoundException(
-                    String.format(BOOK_DOES_NOT_EXIST_FOR_AUTHOR, bookId, authorId)
-            );
-        }
-        bookRepository.deleteBookFromAuthorByAuthorIdAndBookId(authorId, bookId);
-    }
-
-    @Override
     public Book findBookDetailsByTitle(String bookTitle) {
         return bookRepository.findByTitle(bookTitle)
                 .orElseThrow(() -> {
@@ -226,6 +220,22 @@ public class BookServiceImpl implements BookService {
             );
         }
         return booksByKeyWord;
+    }
+
+    @Override
+    public List<Book> findTop15BooksHavingAverageScoreGreaterThan(Double score) { //todo test
+        List<Book> booksWithHighScore =
+                bookRepository.selectBooksHavingAverageScoreGreaterThan(score)
+                        .stream()
+                        .limit(FIFTEEN)
+                        .toList();
+        if (booksWithHighScore.isEmpty()) {
+            log.info(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score);
+            throw new NothingFoundException(
+                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score)
+            );
+        }
+        return booksWithHighScore;
     }
 
     @Override
@@ -278,6 +288,33 @@ public class BookServiceImpl implements BookService {
             );
         }
         return booksByGenreTitle;
+    }
+
+    @Override
+    public Page<Book> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber) { //todo test
+        Pageable pageWithBooks = PageRequest.of(pageNumber - 1, FIFTEEN);
+        Page<Book> booksWithAvgScoreGreaterThan =
+                bookRepository.selectBooksByPageHavingAverageScoreGreaterThan(score, pageWithBooks);
+        if (booksWithAvgScoreGreaterThan.isEmpty()) {
+            log.info(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score);
+            throw new NothingFoundException(
+                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score)
+            );
+        }
+        return booksWithAvgScoreGreaterThan;
+    }
+
+    @Override
+    public Integer findNumberOfBooksWithAverageScoreGreaterThan(Double score) { //todo test
+        int numberOfBooks =
+                bookRepository.selectBooksCountHavingAverageScoreGreaterThan(score);
+        if (numberOfBooks == 0) {
+            log.info(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score);
+            throw new NothingFoundException(
+                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score)
+            );
+        }
+        return numberOfBooks;
     }
 
     @Override
@@ -800,8 +837,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void removeReviewFromBook(BookReview bookReview, User user) {
-
+    public void removeReviewFromBookByReviewIdAndUserId(Long reviewId, Long userId) { //todo test
+        BookReview bookReview = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("not found"));
+        User userFromRequest = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(USER_WITH_GIVEN_ID_NOT_FOUND, userId))
+                );
+        User userFromReview = bookReview.getUser();
+        if (userFromRequest.equals(userFromReview)) {
+            reviewRepository.delete(bookReview);
+        }
     }
 
     @Override

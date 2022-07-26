@@ -55,6 +55,7 @@ public class GetMappingURN {
     public static final String BOOKS_BY_GENRE_TITLE_URN = "/bookshop/booksByGenre";
     public static final String BOOKS_BY_YEAR_URN = "/bookshop/booksByYear";
     public static final String BOOKS_BY_KEYWORD_PAGE_URN = "/bookshop/booksByKeyWord";
+    public static final String BOOKS_WITH_HIGH_SCORE_PAGE_URN = "/bookshop/booksWithHighScore";
 
     //book
     public static final String FIND_BOOKS_BY_KEYWORD = "/findBooksByKeyword";
@@ -64,6 +65,9 @@ public class GetMappingURN {
     public static final String FIND_BOOKS_BY_YEAR_AND_PAGE_URN = "/findBooksByYearAndPageNumber";
     public static final String FIND_EXISTING_YEARS_IN_BOOKS_URN = "/findExistingYearsInBooks";
     public static final String FIND_BOOKS_BY_KEYWORD_AND_PAGE = "/findBooksByKeyWordAndPage";
+    public static final String FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15 = "/findBooksWithHighScoreLimit15";
+    public static final String FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN = "/findBooksByPageHavingAvgScoreGreaterThan";
+    public static final String COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN = "/countBooksWithScoreGreaterThan";
 
     //reviews
     public static final String FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN = "/findBookReviewsByBookIdAndPage";

@@ -186,13 +186,12 @@ nav {
 }
 
 .right-side .genres-container .genre-li {
-    padding: 6px 15px;
+    padding: 5px 15px;
     display: inline-block;
-    width: 104px;
 }
 
 .right-side .genres-container .genre-li:hover {
-    background: silver;
+    background: lightgrey;
     cursor: pointer;
 }
 

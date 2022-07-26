@@ -167,4 +167,15 @@ public class SqlQuery {
             "SELECT AVG(br.score) FROM BookReview br " +
                     "LEFT JOIN br.reviewedBook rb " +
                     "WHERE rb.bookId = :bookId";
+    public static final String SELECT_BOOKS_BY_AVG_SCORE_GREATER_THAN =
+            "SELECT b FROM Book b " +
+                    "LEFT JOIN b.bookReviews br " +
+                    "GROUP BY b.bookId " +
+                    "HAVING AVG(br.score) > :score ORDER BY AVG(br.score) DESC";
+    public static final String SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN =
+            "SELECT COUNT(*) AS counter " +
+                    "FROM (SELECT br.book_id_fk AS bookId " +
+                    "FROM book_reviews br " +
+                    "GROUP BY br.book_id_fk " +
+                    "HAVING AVG(br.score) > (?)) as averageScore";
 }

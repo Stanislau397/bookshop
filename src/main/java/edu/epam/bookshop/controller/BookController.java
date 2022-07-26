@@ -12,16 +12,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static edu.epam.bookshop.controller.constant.GetMappingURN.COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD_AND_PAGE;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_YEAR_AND_PAGE_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_DETAILS;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_EXISTING_YEARS_IN_BOOKS_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_TO_AUTHOR_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.REMOVE_BOOK_FROM_AUTHOR_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_BOOK_INFO_URN;
 
 @AllArgsConstructor
@@ -45,12 +47,6 @@ public class BookController {
     @PostMapping(ADD_BOOK_TO_AUTHOR_URN)
     public ResponseEntity<Void> addBookToAuthor(Long authorId, Long bookId) {
         bookService.addAuthorToBook(bookId, authorId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping(REMOVE_BOOK_FROM_AUTHOR_URN)
-    public ResponseEntity<Void> removeBookFromAuthor(Long authorId, Long bookId) {
-        bookService.removeBookForAuthorByAuthorIdAndBookId(authorId, bookId);
         return ResponseEntity.ok().build();
     }
 
@@ -91,9 +87,30 @@ public class BookController {
         return ResponseEntity.ok(booksByKeyWordAndPage);
     }
 
+    @GetMapping(FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15)
+    public ResponseEntity<List<Book>> displayBooksWithHighScoreLimit15(Double score) {
+        List<Book> booksWithHighScoreLimit15 =
+                bookService.findTop15BooksHavingAverageScoreGreaterThan(score);
+        return ResponseEntity.ok(booksWithHighScoreLimit15);
+    }
+
+    @GetMapping(FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN)
+    public ResponseEntity<Page<Book>> displayBooksByPageHavingAvgScoreGreaterThan(Double score, Integer pageNumber) {
+        Page<Book> booksWithAvgScoreGreaterThan =
+                bookService.findBooksByPageHavingAverageScoreGreaterThan(score, pageNumber);
+        return ResponseEntity.ok(booksWithAvgScoreGreaterThan);
+    }
+
     @GetMapping(FIND_EXISTING_YEARS_IN_BOOKS_URN)
     public ResponseEntity<List<Integer>> displayExistingYears() {
         List<Integer> existingYears = bookService.findExistingYearsInBooks();
         return ResponseEntity.ok(existingYears);
+    }
+
+    @GetMapping(COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN)
+    public ResponseEntity<Integer> displayNumberOfBooksWithScoreGreaterThan(Double score) {
+        Integer amountOfBooksWithHighScore =
+                bookService.findNumberOfBooksWithAverageScoreGreaterThan(score);
+        return ResponseEntity.ok(amountOfBooksWithHighScore);
     }
 }

@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -312,36 +313,6 @@ class BookServiceTest {
         assertThatThrownBy(() -> bookService.addAuthorToBook(bookId, authorId))
                 .isInstanceOf(EntityAlreadyExistsException.class)
                 .hasMessageContaining(AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK);
-    }
-
-    @Test
-    void willRemoveBookFromAuthor() {
-        //given
-        long authorId = 1;
-        long bookId = 1;
-        //when
-        when(bookRepository.bookExistsForAuthor(authorId, bookId))
-                .thenReturn(true);
-        bookService.removeBookForAuthorByAuthorIdAndBookId(authorId, bookId);
-        //then
-        verify(bookRepository, times(1))
-                .deleteBookFromAuthorByAuthorIdAndBookId(authorId, bookId);
-    }
-
-    @Test
-    void removeBookFromAuthorWillThrowExceptionWhenAuthorDoesNotExistForBook() {
-        //given
-        long authorId = 1;
-        long bookId = 1;
-        //when
-        when(bookRepository.bookExistsForAuthor(authorId, bookId))
-                .thenReturn(false);
-        //then
-        assertThatThrownBy(() -> bookService.removeBookForAuthorByAuthorIdAndBookId(authorId, bookId))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining(
-                        String.format(BOOK_DOES_NOT_EXIST_FOR_AUTHOR, bookId, authorId)
-                );
     }
 
     @Test

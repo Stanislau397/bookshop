@@ -3,16 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
+    <script type="text/javascript" th:src="@{/js/general/home.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/header"></div>
-<div sec:authorize="hasAuthority('ADMIN')">
-    Админ контент
-</div>
-<div sec:authorize="hasAuthority('ADMIN')">
-    <p sec:authentication="name"></p>
-    <p sec:authentication="principal.authorities"></p>
-</div>
+<div id="high_score_books_wrapper">
+    <h1>
+        <a class="article"
+           th:text="#{books_with_high_score}"
+           href="http://localhost:8070/bookshop/booksWithHighScore?page=1"></a>
+    </h1>
+    <a class="amount"
+       href="http://localhost:8070/bookshop/booksWithHighScore?page=1"
+       id="high_score_books_number"
+       th:text="#{total}"></a>
+    <div id="high_score_books_carousel">
+        <div id="high_score_books_content">
 
+        </div>
+    </div>
+    <button id="prev_item_for_high_score_books">
+        <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+        >
+            <path fill="none" d="M0 0h24v24H0V0z"/>
+            <path d="M15.61 7.41L14.2 6l-6 6 6 6 1.41-1.41L11.03 12l4.58-4.59z"/>
+        </svg>
+    </button>
+    <button id="next_item_for_high_score_books">
+        <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+        >
+            <path fill="none" d="M0 0h24v24H0V0z"/>
+            <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z"/>
+        </svg>
+    </button>
+</div>
 </body>
 </html>

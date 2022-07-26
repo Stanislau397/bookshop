@@ -27,4 +27,5 @@ public class HtmlPage {
     public static final String BOOKS_BY_GENRE_TITLE_HTML = "books_by_genre_title.html";
     public static final String BOOKS_BY_YEAR_HTML = "books_by_year.html";
     public static final String BOOKS_BY_KEYWORD_HTML = "books_by_keyword.html";
+    public static final String BOOKS_WITH_HIGH_SCORE_HTML = "books_with_high_score.html";
 }

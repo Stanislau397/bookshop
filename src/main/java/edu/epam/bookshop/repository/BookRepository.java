@@ -18,11 +18,11 @@ import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_FOR_AUT
 import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_GENRE_TITLE;
 import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_YEAR;
-import static edu.epam.bookshop.repository.SqlQuery.DELETE_BOOK_FROM_AUTHOR;
-import static edu.epam.bookshop.repository.SqlQuery.INSERT_AUTHOR_TO_BOOK;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_GENRE_TITLE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_YEAR;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_AVG_SCORE_GREATER_THAN;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_EXISTING_YEARS_FOR_BOOKS;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_INFO_BY_ID;
 
@@ -35,21 +35,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
                         Integer pages, String isbn, String imagePath,
                         CoverType coverType, LocalDate publishDate, Long bookId);
 
-    @Modifying
-    @Transactional
-    @Query(value = DELETE_BOOK_FROM_AUTHOR,
-            nativeQuery = true)
-    void deleteBookFromAuthorByAuthorIdAndBookId(Long authorId, Long bookId);
-
     @Query(value = CHECK_IF_BOOK_EXISTS_FOR_AUTHOR,
             nativeQuery = true)
     Boolean bookExistsForAuthor(Long authorId, Long bookId);
-
-    @Transactional
-    @Modifying
-    @Query(value = INSERT_AUTHOR_TO_BOOK,
-            nativeQuery = true)
-    void insertAuthorToBookByAuthorIdAndBookId(Long authorId, Long bookId);
 
     @Query(value = SELECT_BOOKS_BY_KEYWORD,
             countQuery = COUNT_BOOKS_BY_KEYWORD)
@@ -63,8 +51,18 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             countQuery = COUNT_BOOKS_BY_GENRE_TITLE)
     Page<Book> selectBooksByGenreTitleAndPage(String genreTitle, Pageable page);
 
+    @Query(value = SELECT_BOOKS_BY_AVG_SCORE_GREATER_THAN)
+    List<Book> selectBooksHavingAverageScoreGreaterThan(Double score);
+
+    @Query(value = SELECT_BOOKS_BY_AVG_SCORE_GREATER_THAN)
+    Page<Book> selectBooksByPageHavingAverageScoreGreaterThan(Double score, Pageable page);
+
     @Query(value = SELECT_EXISTING_YEARS_FOR_BOOKS)
     List<Integer> selectExistingYearsInBooksOrderedByYearAsc();
+
+    @Query(value = SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN,
+            nativeQuery = true)
+    Integer selectBooksCountHavingAverageScoreGreaterThan(Double score);
 
     Optional<Book> findByTitle(String bookTitle);
 }

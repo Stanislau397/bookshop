@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{books_with_high_score}"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/books_list.css}"/>
+    <script type="text/javascript" th:src="@{/js/general/books_with_high_score.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/header"></div>
+
+<input type="hidden" id="add_to_wishlist" th:value="#{add_to_wishlist}">
+<div class="content">
+    <div class="content-head">
+        <h1 id="books_with_high_score_title" th:text="#{books_with_high_score}"></h1>
+    </div>
+    <div class="books-with-high-score"
+         id="high_score_books">
+    </div>
+</div>
+
+<nav aria-label="Books navigation">
+    <input type="hidden" id="pages_title" th:value="#{page}">
+    <ul class="pagination" id="high_score_books_pagination">
+
+    </ul>
+</nav>
+</body>
+</html>

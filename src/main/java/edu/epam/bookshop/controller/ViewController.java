@@ -13,6 +13,7 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.AUTHOR_DETAILS
 import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOKS_BY_GENRE_TITLE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOKS_BY_KEYWORD_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOKS_BY_YEAR_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOKS_WITH_HIGH_SCORE_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.BOOK_DETAILS_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.EDIT_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.HtmlPage.ALL_BOOKS_HTML;
@@ -22,6 +23,7 @@ import static edu.epam.bookshop.controller.constant.HtmlPage.AUTHOR_DETAILS_HTML
 import static edu.epam.bookshop.controller.constant.HtmlPage.BOOKS_BY_GENRE_TITLE_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.BOOKS_BY_KEYWORD_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.BOOKS_BY_YEAR_HTML;
+import static edu.epam.bookshop.controller.constant.HtmlPage.BOOKS_WITH_HIGH_SCORE_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.BOOK_DETAILS_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.EDIT_BOOK_HTML;
 import static edu.epam.bookshop.controller.constant.HtmlPage.SIGN_UP_HTML;
@@ -149,5 +151,11 @@ public class ViewController {
     public ModelAndView openBooksByKeyWordAndPage(ModelAndView booksByKeyWordAndPageView) {
         booksByKeyWordAndPageView.setViewName(BOOKS_BY_KEYWORD_HTML);
         return booksByKeyWordAndPageView;
+    }
+
+    @GetMapping(BOOKS_WITH_HIGH_SCORE_PAGE_URN)
+    public ModelAndView openBooksWithHighScorePage(ModelAndView booksWithHighScoreView) {
+        booksWithHighScoreView.setViewName(BOOKS_WITH_HIGH_SCORE_HTML);
+        return booksWithHighScoreView;
     }
 }

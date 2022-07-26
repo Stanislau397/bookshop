@@ -5,7 +5,6 @@ import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
-import edu.epam.bookshop.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,11 +16,11 @@ public interface BookService {
 
     boolean updateBookInfo(Book book, MultipartFile newBookImage);
 
-    void removeBookForAuthorByAuthorIdAndBookId(Long authorId, Long bookId);
-
     Book findBookDetailsByTitle(String bookTitle);
 
     List<Book> findBooksByKeyWord(String keyWord);
+
+    List<Book> findTop15BooksHavingAverageScoreGreaterThan(Double score);
 
     Page<Book> findBooksByKeyWordAndPageNumber(String keyWord, Integer pageNumber);
 
@@ -30,6 +29,10 @@ public interface BookService {
     Page<Book> findBooksByYearAndPageNumber(Integer year, Integer pageNumber);
 
     Page<Book> findBooksByGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
+
+    Page<Book> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber);
+
+    Integer findNumberOfBooksWithAverageScoreGreaterThan(Double score);
 
     void addGenre(Genre genre);
 
@@ -101,7 +104,7 @@ public interface BookService {
 
     void editBookReview(String newText, Double newScore, Long userId, Long reviewId);
 
-    void removeReviewFromBook(BookReview bookReview, User user);
+    void removeReviewFromBookByReviewIdAndUserId(Long reviewId, Long userId);
 
     boolean checkIfUserAlreadyReviewedGivenBook(Long bookId, Long userId);
 
