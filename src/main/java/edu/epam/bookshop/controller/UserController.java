@@ -20,6 +20,7 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USER_BY_R
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USER_BY_USERNAME;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_ROLES;
 
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USER_ROLES_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.REGISTER_USER_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_STATUS_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_AVATAR_URN;
@@ -104,5 +105,11 @@ public class UserController {
     public ResponseEntity<Set<Role>> getAllRoles() {
         Set<Role> allRoles = userService.findAllRoles();
         return ResponseEntity.ok(allRoles);
+    }
+
+    @GetMapping(FIND_USER_ROLES_URN)
+    public ResponseEntity<List<Role>> displayUserRolesByUserName(String userName) {
+        List<Role> userRoles = userService.findUserRolesByUserName(userName);
+        return ResponseEntity.ok(userRoles);
     }
 }

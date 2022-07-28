@@ -40,6 +40,7 @@ function getUserByUsername(user_name) {
         success: function (userByUsername) {
             let avatar_scr = userByUsername.avatarName;
             setUserAvatarInHeader(avatar_scr);
+            setPathToUserProfileInHeader(user_name);
         },
         error: function (exception) {
 
@@ -92,4 +93,10 @@ function openSearchResultsPage() {
     let key_word = document.getElementById('key_word').value;
     let search_by_keyword_a = document.getElementById('search_by_keyword');
     search_by_keyword_a.href = 'http://localhost:8070/bookshop/booksByKeyWord?keyWord=' + key_word + '&page=1';
+}
+
+function setPathToUserProfileInHeader(user_name) {
+    let path = 'http://localhost:8070/user/profile?username=' + user_name;
+    let profile_a = document.getElementById('profile_path');
+    profile_a.href = path;
 }

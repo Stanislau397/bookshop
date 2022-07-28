@@ -49,6 +49,12 @@ public class ExceptionMessage {
     public static final String USER_WITH_GIVEN_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("user_with_this_id_not_found");
 
+    public static final String ROLES_BY_USERNAME_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("roles_by_username_not_found");
+
+    public static final String ENUM_NOT_FOUND_MSG = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("enum_not_found");
+
     //author
     public static final String FIRST_NAME_IS_NOT_VALID_MSG = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("first_name_is_invalid");
@@ -155,4 +161,8 @@ public class ExceptionMessage {
     //review
     public static final String REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("not_reviews_found_by_book_id");
+
+    //shelve
+    public static final String SHELVE_WITH_GIVEN_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("shelve_with_given_id_not_found");
 }

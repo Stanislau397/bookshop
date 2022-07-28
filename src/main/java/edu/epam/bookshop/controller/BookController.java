@@ -1,6 +1,7 @@
 package edu.epam.bookshop.controller;
 
 import edu.epam.bookshop.entity.Book;
+import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD_AND_PAGE;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_YEAR_AND_PAGE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_DETAILS;
@@ -99,6 +101,14 @@ public class BookController {
         Page<Book> booksWithAvgScoreGreaterThan =
                 bookService.findBooksByPageHavingAverageScoreGreaterThan(score, pageNumber);
         return ResponseEntity.ok(booksWithAvgScoreGreaterThan);
+    }
+
+    @GetMapping(FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS)
+    public ResponseEntity<Page<Book>> displayBooksByShelveIdAndStatus(Long shelveId, BookStatus status,
+                                                                      Integer pageNumber) {
+        Page<Book> booksByShelveIdAndStatus =
+                bookService.findBooksByPageAndShelveIdAndBookStatus(pageNumber, shelveId, status);
+        return ResponseEntity.ok(booksByShelveIdAndStatus);
     }
 
     @GetMapping(FIND_EXISTING_YEARS_IN_BOOKS_URN)

@@ -101,8 +101,8 @@
     position: absolute;
     font-family: IBM Plex Sans, sans-serif;
     font-size: 18px;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     margin-left: 143px;
     margin-top: 20px;
     border-radius: 5px;
@@ -136,7 +136,7 @@
 .books-by-keyword .book-info,
 .books-with-high-score .book-info {
     margin-top: 10px;
-    height: 150px;
+    height: 155px;
 }
 
 .books-by-genre-title .book-title,

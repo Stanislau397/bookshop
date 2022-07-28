@@ -6,7 +6,6 @@ import edu.epam.bookshop.exception.*;
 import edu.epam.bookshop.repository.RoleRepository;
 import edu.epam.bookshop.repository.UserRepository;
 import edu.epam.bookshop.service.impl.UserServiceImpl;
-import edu.epam.bookshop.util.PasswordEncoder;
 import edu.epam.bookshop.validator.ImageValidator;
 import edu.epam.bookshop.validator.UserValidator;
 import lombok.SneakyThrows;
@@ -14,15 +13,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.*;
@@ -45,6 +41,7 @@ class UserServiceTest {
     private BCryptPasswordEncoder passwordEncoder;
     @Mock
     private UserValidator userValidator;
+
     @Mock
     private ImageValidator imageValidator;
     private UserService userService;

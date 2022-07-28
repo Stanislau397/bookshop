@@ -11,6 +11,7 @@ import edu.epam.bookshop.exception.NothingFoundException;
 import edu.epam.bookshop.repository.AuthorRepository;
 import edu.epam.bookshop.repository.BookRepository;
 import edu.epam.bookshop.repository.BookReviewRepository;
+import edu.epam.bookshop.repository.BookShelveRepository;
 import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.repository.UserRepository;
@@ -78,6 +79,9 @@ class BookServiceTest {
     private UserRepository userRepository;
 
     @Mock
+    private BookShelveRepository shelveRepository;
+
+    @Mock
     private BookReviewRepository reviewRepository;
 
     private BookService bookService;
@@ -91,6 +95,7 @@ class BookServiceTest {
                 publisherRepository,
                 genreRepository,
                 userRepository,
+                shelveRepository,
                 bookValidator,
                 genreValidator,
                 publisherValidator,

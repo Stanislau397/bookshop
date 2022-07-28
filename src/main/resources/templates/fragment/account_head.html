@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/account_head.css}"/>
+    <script type="text/javascript" th:src="@{/js/user/profile_head.js}"></script>
+</head>
+<body>
+<div class="account-head">
+    <div class="account-info">
+        <div class="account-image-container">
+            <img src="#"
+                 class="account-image"
+                 id="account_image">
+        </div>
+        <div class="middle-content">
+            <div class="user-name" id="user_name">
+
+            </div>
+            <div class="user-role" id="user_roles">
+                <input type="hidden" id="admin_role" th:value="#{admin}">
+                <input type="hidden" id="user_role" th:value="#{user}">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

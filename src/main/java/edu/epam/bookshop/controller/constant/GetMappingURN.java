@@ -13,6 +13,7 @@ public class GetMappingURN {
     public static final String FIND_USER_BY_USERNAME = "/findUserByUsername";
     public static final String FIND_USER_BY_REVIEW_ID = "/findUserByReviewId";
     public static final String FIND_ALL_ROLES = "/findAllRoles";
+    public static final String FIND_USER_ROLES_URN = "/findUserRoles";
 
     //author
     public static final String FIND_AUTHORS_BY_PAGE_URN = "/findAuthorsByPage";
@@ -56,6 +57,7 @@ public class GetMappingURN {
     public static final String BOOKS_BY_YEAR_URN = "/bookshop/booksByYear";
     public static final String BOOKS_BY_KEYWORD_PAGE_URN = "/bookshop/booksByKeyWord";
     public static final String BOOKS_WITH_HIGH_SCORE_PAGE_URN = "/bookshop/booksWithHighScore";
+    public static final String USER_PROFILE_PAGE_URN = "/user/profile";
 
     //book
     public static final String FIND_BOOKS_BY_KEYWORD = "/findBooksByKeyword";
@@ -68,6 +70,7 @@ public class GetMappingURN {
     public static final String FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15 = "/findBooksWithHighScoreLimit15";
     public static final String FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN = "/findBooksByPageHavingAvgScoreGreaterThan";
     public static final String COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN = "/countBooksWithScoreGreaterThan";
+    public static final String FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS = "/findBooksByShelveIdAndBookStatus";
 
     //reviews
     public static final String FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN = "/findBookReviewsByBookIdAndPage";

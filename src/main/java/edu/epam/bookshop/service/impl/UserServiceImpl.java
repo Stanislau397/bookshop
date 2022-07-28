@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static edu.epam.bookshop.constant.ExceptionMessage.ROLES_BY_USERNAME_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.USER_NAME_TAKEN;
 import static edu.epam.bookshop.constant.ExceptionMessage.EMAIL_TAKEN;
 import static edu.epam.bookshop.constant.ExceptionMessage.INVALID_USER_NAME_MSG;
@@ -97,6 +98,7 @@ public class UserServiceImpl implements UserService {
                 .roles(new HashSet<>(List.of(role)))
                 .locked(false)
                 .build();
+
         userRepository.save(userToSave);
     }
 
@@ -251,6 +253,18 @@ public class UserServiceImpl implements UserService {
             );
         }
         return usersByKeyword;
+    }
+
+    @Override
+    public List<Role> findUserRolesByUserName(String userName) { //todo test
+        List<Role> userRoles = roleRepository.selectByUserName(userName);
+        if (userRoles.isEmpty()) {
+            log.info(ROLES_BY_USERNAME_NOT_FOUND, userName);
+            throw new NothingFoundException(
+                    String.format(ROLES_BY_USERNAME_NOT_FOUND, userName)
+            );
+        }
+        return userRoles;
     }
 
     @Override

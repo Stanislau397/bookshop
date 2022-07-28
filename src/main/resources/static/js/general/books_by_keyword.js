@@ -31,6 +31,20 @@ function getAuthorsForBookByBookId(book_id, counter) {
     })
 }
 
+function getAverageScoreForBookByKeyWord(book_id) {
+    let average_book_score = 0;
+    $.ajax({
+        url: '/findAverageBookReviewScore',
+        data: {bookId: book_id},
+        async: false,
+        success: function (averageScore) {
+            average_book_score = averageScore;
+            return average_book_score;
+        }
+    })
+    return average_book_score;
+}
+
 function displayBooksByKeyWordAndPage(booksByKeyWordAndPage) {
     let books_by_keyword_container = document.getElementById('books_by_keyword');
     let add_to_wishlist = document.getElementById('add_to_wishlist').value;
@@ -38,12 +52,14 @@ function displayBooksByKeyWordAndPage(booksByKeyWordAndPage) {
     let counter = 0;
     for (let book of booksByKeyWordAndPage) {
         counter = counter + 1;
+        let averageScore = getAverageScoreForBookByKeyWord(book.bookId);
         let book_price = '$' + book.price;
         let book_href = 'http://localhost:8070/bookshop/book?title=' + book.title;
         let book_href_with_under_scores = book_href.replace(/ /g, "_")
         books_by_keyword_container.innerHTML +=
             '<div class="book-container">' +
             '<div class="book-image-container">' +
+            '<div class="book-score" id="book_score' + counter + '">' + '</div>' +
             '<a href="' + book_href_with_under_scores + '">' + '<img class="book-image" src="' + book.imagePath + '"/>' + '</a>' +
             '</div>' +
             '<div class="book-info">' +
@@ -54,7 +70,9 @@ function displayBooksByKeyWordAndPage(booksByKeyWordAndPage) {
             '<button type="button" ' +
             'class="add-to-wishlist-btn">' + add_to_wishlist + '</button>' +
             '</div>';
+        let score_div = document.getElementById('book_score' + counter);
         getAuthorsForBookByBookId(book.bookId, counter);
+        setBooksByKeyWordScore(averageScore, score_div)
     }
 }
 
@@ -83,4 +101,20 @@ function displayErrorMessage(exception) {
 function addNumberOfElementsToSearchResults(key_word) {
     let search_results = document.getElementById('result_title');
     search_results.innerText += ' (' + key_word + ')';
+}
+
+function setBooksByKeyWordScore(score, score_div) {
+    if (score > 0 && score < 3) {
+        score_div.style.backgroundColor = 'red';
+        score_div.innerText = score;
+    } else if (score >= 3 && score < 4) {
+        score_div.style.backgroundColor = '#fc3';
+        score_div.innerText = score;
+    } else if (score >= 4) {
+        score_div.style.backgroundColor = '#6c3';
+        score_div.innerText = score;
+    } else {
+        score_div.style.backgroundColor = 'silver';
+        score_div.innerText = 'tbh';
+    }
 }

@@ -22,4 +22,7 @@ public class TableName {
     public static final String BOOKS = "books";
 
     public static final String BOOK_REVIEWS = "book_reviews";
+
+    public static final String BOOK_SHELVE = "book_shelve";
+    public static final String SHELVE_BOOKS = "shelve_books";
 }

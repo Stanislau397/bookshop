@@ -244,13 +244,11 @@ label.star:before {
     margin-top: 10px;
     width: 100%;
     border-radius: 5px;
-    border: 1px solid silver;
 }
 
 .review-container .review-head {
     width: 100%;
     height: 50px;
-    border-bottom: 1px solid silver;
 }
 
 .review-head .review-head-image-container {
@@ -276,16 +274,17 @@ label.star:before {
 }
 
 .review-head-user-info .review-head-user-name {
-    margin-top: 2px;
+    margin-top: 5px;
     font-family: IBM Plex Sans, sans-serif;
     font-size: 17px;
     font-weight: bold;
     margin-left: 3px;
     color: #2c293b;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .review-head-user-info .review-head-post-date {
-    margin-top: -20px;
     font-family: IBM Plex Sans, sans-serif;
     font-size: 14px;
     margin-left: 3px;
@@ -315,17 +314,18 @@ label.star:before {
 
 .review-middle {
     width: 100%;
+    border-bottom: 1px solid silver;
 }
 
 .review-middle .review-text {
+    padding-bottom: 10px;
     width: 96%;
     margin-left: 2%;
     margin-top: 2%;
     margin-bottom: 2%;
     border-radius: 5px;
-    padding: 8px 8px;
     font-family: IBM Plex Sans, sans-serif;
-    font-size: 18px;
+    font-size: 17px;
     word-wrap: break-word;
 }
 

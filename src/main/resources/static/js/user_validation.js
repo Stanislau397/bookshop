@@ -7,21 +7,35 @@ function registerUser() {
     userForm.append('email', email_input);
     userForm.append('password', password_input);
     $.ajax({
-        method : 'POST',
-        url : '/register_user',
+        method: 'POST',
+        url: '/register_user',
         cache: false,
         contentType: false,
         processData: false,
         data: userForm,
-        success : function (response) {
-            console.log(response);
+        success: function () {
+            addShelveToUser(user_name_input);
         },
-        error : function (errorMessage) {
+        error: function (errorMessage) {
             console.log(errorMessage.responseText);
         }
     })
 }
 
+function addShelveToUser(user_name) {
+    $.ajax({
+        method: 'POST',
+        url: '/createShelveForUser',
+        data: {userName: user_name},
+        success: function () {
+            console.log('ok')
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    })
+
+}
 
 function validateUsername() {
     let user_name_input = document.getElementById('user_name');

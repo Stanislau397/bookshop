@@ -3,6 +3,8 @@ package edu.epam.bookshop.service.impl;
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
+import edu.epam.bookshop.entity.BookShelve;
+import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
@@ -14,6 +16,7 @@ import edu.epam.bookshop.exception.NothingFoundException;
 import edu.epam.bookshop.repository.AuthorRepository;
 import edu.epam.bookshop.repository.BookRepository;
 import edu.epam.bookshop.repository.BookReviewRepository;
+import edu.epam.bookshop.repository.BookShelveRepository;
 import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.repository.UserRepository;
@@ -22,6 +25,7 @@ import edu.epam.bookshop.util.ImageUploaderUtil;
 import edu.epam.bookshop.validator.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +46,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_SCORE_GREAT
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_TITLE_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.ENUM_NOT_FOUND_MSG;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_NOT_FOUND_FOR_GIVEN_BOOK;
@@ -74,7 +79,9 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PRICE_IS_NOT_VALI
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_ISBN_IS_NOT_VALID;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.SHELVE_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.USER_WITH_GIVEN_ID_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.USER_WITH_GIVEN_NAME_NOT_FOUND_MSG;
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_LOCALHOST_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.AUTHORS_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_AUTHOR_IMAGE_PATH;
@@ -87,7 +94,6 @@ import static edu.epam.bookshop.constant.ImageStoragePath.DEFAULT_BOOK_IMAGE_PAT
 import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_LOCALHOST_PATH;
 
-import static edu.epam.bookshop.service.BookScore.FOUR;
 import static edu.epam.bookshop.service.ItemsLimit.FIFTEEN;
 import static edu.epam.bookshop.service.ItemsLimit.TWENTY_FIVE;
 import static java.util.Objects.nonNull;
@@ -105,6 +111,7 @@ public class BookServiceImpl implements BookService {
     private final PublisherRepository publisherRepository;
     private final GenreRepository genreRepository;
     private final UserRepository userRepository;
+    private final BookShelveRepository shelveRepository;
 
     private BookValidator bookValidator;
     private GenreValidator genreValidator;
@@ -302,6 +309,29 @@ public class BookServiceImpl implements BookService {
             );
         }
         return booksWithAvgScoreGreaterThan;
+    }
+
+    @Override
+    public Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId,
+                                                              BookStatus bookStatus) { //todo test
+        if (!shelveRepository.existsByShelveId(shelveId)) {
+            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
+            throw new EntityNotFoundException(
+                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
+            );
+        }
+        if (!EnumUtils.isValidEnum(BookStatus.class, String.valueOf(bookStatus))) {
+            log.info(ENUM_NOT_FOUND_MSG, bookStatus);
+            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, bookStatus));
+        }
+        Pageable pageWithBooks = PageRequest.of(pageNumber - 1, TWENTY_FIVE);
+        Page<Book> booksByShelveIdAndStatus =
+                bookRepository.selectBooksByPageAndShelveIdAndBookStatus(shelveId, bookStatus, pageWithBooks);
+        if (booksByShelveIdAndStatus.isEmpty()) {
+            log.info(NOTHING_WAS_FOUND_MSG);
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return booksByShelveIdAndStatus;
     }
 
     @Override
@@ -889,5 +919,38 @@ public class BookServiceImpl implements BookService {
             );
         }
         return bookReviewsByBookIdAndPage;
+    }
+
+    @Override
+    public void createBookShelveByUsername(String userName) {
+        User userForShelve = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(USER_WITH_GIVEN_NAME_NOT_FOUND_MSG, userName)
+                ));
+        BookShelve bookShelveForUser = BookShelve.builder()
+                .userRelatedToShelve(userForShelve)
+                .build();
+        shelveRepository.save(bookShelveForUser);
+    }
+
+    @Override
+    public void addBookToShelve(Long shelveId, Long bookId, BookStatus bookStatus) {
+        if (!shelveRepository.existsByShelveId(shelveId)) {
+            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
+            throw new EntityNotFoundException(
+                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
+            );
+        }
+        if (!bookRepository.existsById(bookId)) {
+            log.info(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId);
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+        shelveRepository.insertBookToShelveByShelveIdAndBookIdAndBookStatus(
+                shelveId,
+                bookId,
+                String.valueOf(bookStatus)
+        );
     }
 }

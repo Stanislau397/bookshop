@@ -178,4 +178,25 @@ public class SqlQuery {
                     "FROM book_reviews br " +
                     "GROUP BY br.book_id_fk " +
                     "HAVING AVG(br.score) > (?)) as averageScore";
+
+    //role
+    public static final String SELECT_ROLES_BY_USERNAME =
+            "SELECT r FROM Role r " +
+                    "JOIN r.users u " +
+                    "WHERE u.userName = :userName";
+
+    //shelve
+    public static final String INSERT_BOOK_TO_SHELVE =
+            "INSERT INTO shelve_books (shelve_id_fk, book_id_fk, book_status) " +
+                    "VALUES(?, ?, ?)";
+    public static final String CHECK_IF_SHELVE_EXISTS_BY_ID =
+            "SELECT CASE WHEN COUNT(bs.bookShelveId) > 0 " +
+                    "THEN 'true' ELSE 'false' END " +
+                    "FROM BookShelve bs " +
+                    "WHERE bs.bookShelveId = :shelveId";
+    public static final String SELECT_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS =
+            "SELECT b FROM Book b " +
+                    "LEFT JOIN b.bookShelves bs " +
+                    "WHERE bs.bookShelveId = :shelveId " +
+                    "AND bs.bookStatus = :bookStatus";
 }

@@ -32,13 +32,20 @@ window.addEventListener('DOMContentLoaded', function () {
     getAmountOfBooksWithHighScore();
 });
 
-function get() {
+function addBookToShelve() {
     $.ajax({
-        url : '/findBooksByPageHavingAvgScoreGreaterThan',
-        data : {score : 4,
-        pageNumber : 1},
-        success : function (books) {
-            console.log(books);
+        method: 'POST',
+        url: '/addBookToShelve',
+        data: {
+            bookId: 8,
+            shelveId : 1,
+            bookStatus: 'WANT_TO_READ'
+        },
+        success: function () {
+            console.log(1)
+        },
+        error: function (error) {
+            console.log(error.responseText);
         }
     })
 }
@@ -96,6 +103,7 @@ function getAmountOfBooksWithHighScore() {
 }
 
 function displayHighScoreBooks(highScoreBooks) {
+    let add_btn = document.getElementById('add').value;
     let highScoreBooksContent = document.getElementById('high_score_books_content');
     for (let book of highScoreBooks) {
         let author = getAuthorByBookId(book.bookId);
@@ -119,7 +127,7 @@ function displayHighScoreBooks(highScoreBooks) {
             '<div class="author-container">' +
             '<a id="book_author" href="' + authorHref + '">' + firstName + ' ' + lastName + '</a>' + '</div>' +
             '<div class="price">' + book.price + '</div>' + '</div>' +
-            '<button type="button" class="add-to-wishlist-btn">' + 'Add' + '</button>' + '</div>';
+            '<button type="button" class="add-to-wishlist-btn">' + add_btn + '</button>' + '</div>';
     }
 }
 

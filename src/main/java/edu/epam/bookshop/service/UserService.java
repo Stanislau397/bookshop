@@ -37,6 +37,8 @@ public interface UserService {
 
     List<User> findUsersByKeyword(String keyword);
 
+    List<Role> findUserRolesByUserName(String userName);
+
     Role findRoleByName(String roleName);
 
     Set<Role> findAllRoles();

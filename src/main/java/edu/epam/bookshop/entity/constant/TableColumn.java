@@ -47,4 +47,8 @@ public class TableColumn {
     public static final String BOOK_REVIEW_ID = "book_review_id";
     public static final String REVIEW_TEXT = "review_text";
     public static final String SCORE = "score";
+
+    public static final String BOOK_STATUS = "book_status";
+    public static final String SHELVE_ID = "shelve_id";
+    public static final String SHELVE_ID_FK = "shelve_id_fk";
 }

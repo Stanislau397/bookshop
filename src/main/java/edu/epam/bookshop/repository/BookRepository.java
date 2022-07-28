@@ -1,6 +1,7 @@
 package edu.epam.bookshop.repository;
 
 import edu.epam.bookshop.entity.Book;
+import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.CoverType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_YEAR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_GENRE_TITLE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_KEYWORD;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_YEAR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN;
@@ -53,6 +55,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(value = SELECT_BOOKS_BY_AVG_SCORE_GREATER_THAN)
     List<Book> selectBooksHavingAverageScoreGreaterThan(Double score);
+
+    @Query(value = SELECT_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS)
+    Page<Book> selectBooksByPageAndShelveIdAndBookStatus(Long shelveId, BookStatus bookStatus, Pageable page);
 
     @Query(value = SELECT_BOOKS_BY_AVG_SCORE_GREATER_THAN)
     Page<Book> selectBooksByPageHavingAverageScoreGreaterThan(Double score, Pageable page);

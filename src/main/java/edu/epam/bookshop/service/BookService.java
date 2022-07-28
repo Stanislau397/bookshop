@@ -3,9 +3,12 @@ package edu.epam.bookshop.service;
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
+import edu.epam.bookshop.entity.BookShelve;
+import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -31,6 +34,8 @@ public interface BookService {
     Page<Book> findBooksByGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
 
     Page<Book> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber);
+
+    Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId, BookStatus bookStatus);
 
     Integer findNumberOfBooksWithAverageScoreGreaterThan(Double score);
 
@@ -111,4 +116,8 @@ public interface BookService {
     Double findAverageBookReviewScoreByBookId(Long bookId);
 
     Page<BookReview> findBookReviewsByBookIdAndPageNumber(Long bookId, Integer pageNumber);
+
+    void createBookShelveByUsername(String userName);
+
+    void addBookToShelve(Long shelveId, Long bookId, BookStatus bookStatus);
 }

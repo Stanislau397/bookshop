@@ -68,6 +68,7 @@ public class User {
     @Column(name = PASSWORD,
             unique = true,
             nullable = false)
+    @JsonIgnore
     private String password;
 
     @Column(name = AVATAR)

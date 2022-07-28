@@ -358,16 +358,19 @@ function displayBookReviews(bookReviews) {
     let counter = 0;
     for (let review of bookReviews) {
         let user = getUserByReviewId(review.bookReviewId);
+        let userProfileHref = 'http://localhost:8070/user/profile?username=' + user.userName;
         let publishDate = review.publishDate;
         let reversedDate = publishDate.split('-').reverse().join('-');
         counter = counter + 1;
+        console.log(review.bookReviewId)
         book_reviews_container.innerHTML +=
             '<div class="review-container bg-light">' +
             '<div class="review-head">' +
             '<div class="review-head-image-container">' +
-            '<img class="review-head-user-image" src="' + user.avatarName + '">' + '</div>' +
+            '<a href="' + userProfileHref + '">' +
+            '<img class="review-head-user-image" src="' + user.avatarName + '">' + '</a>' + '</div>' +
             '<div class="review-head-user-info">' +
-            '<p class="review-head-user-name">' + user.userName + '</p>' +
+            '<a class="review-head-user-name" href="' + userProfileHref + '">' + user.userName + '</a>' +
             '<p class="review-head-post-date">' + reversedDate + '</p>' + '</div>' +
             '<div class="review-head-score-container">' +
             '<div class="review-score" id="review_score' + counter + '">' + '' + '</div>' + '</div>' + '</div>' +
