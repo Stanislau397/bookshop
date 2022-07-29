@@ -313,17 +313,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId,
-                                                              BookStatus bookStatus) { //todo test
+                                                              String status) { //todo test
         if (!shelveRepository.existsByShelveId(shelveId)) {
             log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
             throw new EntityNotFoundException(
                     String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
             );
         }
-        if (!EnumUtils.isValidEnum(BookStatus.class, String.valueOf(bookStatus))) {
-            log.info(ENUM_NOT_FOUND_MSG, bookStatus);
-            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, bookStatus));
+        if (!EnumUtils.isValidEnum(BookStatus.class, status)) {
+            log.info(ENUM_NOT_FOUND_MSG, status);
+            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, status));
         }
+        BookStatus bookStatus = BookStatus.valueOf(status);
         Pageable pageWithBooks = PageRequest.of(pageNumber - 1, TWENTY_FIVE);
         Page<Book> booksByShelveIdAndStatus =
                 bookRepository.selectBooksByPageAndShelveIdAndBookStatus(shelveId, bookStatus, pageWithBooks);
@@ -952,5 +953,40 @@ public class BookServiceImpl implements BookService {
                 bookId,
                 String.valueOf(bookStatus)
         );
+    }
+
+    @Override
+    public boolean checkIfBookExistsInBookShelve(Long shelveId, Long bookId) { //todo test
+        if (!shelveRepository.existsByShelveId(shelveId)) {
+            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
+            throw new EntityNotFoundException(
+                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
+            );
+        }
+        if (!bookRepository.existsById(bookId)) {
+            log.info(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId);
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+            );
+        }
+        return shelveRepository.bookExistsByShelveIdAndBookId(shelveId, bookId);
+    }
+
+    @Override
+    public Integer findNumberOfBooksOnShelve(Long shelveId, String status) { //todo test
+        if (!shelveRepository.existsByShelveId(shelveId)) {
+            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
+            throw new EntityNotFoundException(
+                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
+            );
+        }
+        if (!EnumUtils.isValidEnum(BookStatus.class, status)) {
+            log.info(ENUM_NOT_FOUND_MSG, status);
+            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, status));
+        }
+        BookStatus givenStatus = BookStatus.valueOf(status);
+        return shelveRepository
+                .selectCountBooksOnShelveByShelveIdAndBookStatus(shelveId, givenStatus)
+                .orElse(0);
     }
 }

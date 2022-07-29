@@ -160,3 +160,8 @@
     font-size: 18px;
     color: white;
 }
+
+.add-to-wishlist-btn .fa {
+    transform: translateX(-7px);
+    font-size: 15px;
+}

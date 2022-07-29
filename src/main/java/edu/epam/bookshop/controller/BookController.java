@@ -104,10 +104,10 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS)
-    public ResponseEntity<Page<Book>> displayBooksByShelveIdAndStatus(Long shelveId, BookStatus status,
+    public ResponseEntity<Page<Book>> displayBooksByShelveIdAndStatus(Long shelveId, String bookStatus,
                                                                       Integer pageNumber) {
         Page<Book> booksByShelveIdAndStatus =
-                bookService.findBooksByPageAndShelveIdAndBookStatus(pageNumber, shelveId, status);
+                bookService.findBooksByPageAndShelveIdAndBookStatus(pageNumber, shelveId, bookStatus);
         return ResponseEntity.ok(booksByShelveIdAndStatus);
     }
 

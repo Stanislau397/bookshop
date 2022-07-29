@@ -35,7 +35,7 @@ public interface BookService {
 
     Page<Book> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber);
 
-    Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId, BookStatus bookStatus);
+    Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId, String bookStatus);
 
     Integer findNumberOfBooksWithAverageScoreGreaterThan(Double score);
 
@@ -120,4 +120,8 @@ public interface BookService {
     void createBookShelveByUsername(String userName);
 
     void addBookToShelve(Long shelveId, Long bookId, BookStatus bookStatus);
+
+    boolean checkIfBookExistsInBookShelve(Long shelveId, Long bookId);
+
+    Integer findNumberOfBooksOnShelve(Long shelveId, String bookStatus);
 }

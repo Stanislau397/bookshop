@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -42,7 +43,6 @@ import static edu.epam.bookshop.entity.constant.TableName.USERS_ROLES;
 @Setter
 @Getter
 @EqualsAndHashCode
-@ToString
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = USER_ID_PROPERTY)
@@ -88,4 +88,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<BookReview> bookReviews;
+
+    @OneToOne(mappedBy = "userRelatedToShelve")
+    private BookShelve bookShelve;
 }

@@ -5,10 +5,12 @@
     <title>Home</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
     <script type="text/javascript" th:src="@{/js/general/home.js}"></script>
+    <script type="text/javascript" th:src="@{/js/post/book_shelve.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/header"></div>
 <input type="hidden" id="add" th:value="#{add}">
+<input type="hidden" id="change" th:value="#{change}">
 <div id="high_score_books_wrapper">
     <h1>
         <a class="article"
@@ -47,7 +49,5 @@
         </svg>
     </button>
 </div>
-
-<button id="add_to_shelve" onclick="addBookToShelve()"></button>
 </body>
 </html>

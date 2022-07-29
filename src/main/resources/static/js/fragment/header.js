@@ -1,7 +1,9 @@
+let user;
+
 window.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('user-name-h1') !== null) {
         let user_name = document.getElementById('user-name-h1').innerText;
-        getUserByUsername(user_name);
+        user = getUserByUsername(user_name);
     }
     getAllGenresForDropDown();
 });
@@ -34,18 +36,24 @@ function getAllGenresForDropDown() {
 }
 
 function getUserByUsername(user_name) {
+    let user_by_username;
     $.ajax({
         url: '/findUserByUsername',
         data: {username: user_name},
+        async: false,
         success: function (userByUsername) {
             let avatar_scr = userByUsername.avatarName;
             setUserAvatarInHeader(avatar_scr);
             setPathToUserProfileInHeader(user_name);
+            setShelveId(userByUsername);
+            user_by_username = userByUsername;
+            return user_by_username;
         },
         error: function (exception) {
 
         }
     });
+    return user_by_username;
 }
 
 function setUserAvatarInHeader(avatar_src) {
@@ -99,4 +107,9 @@ function setPathToUserProfileInHeader(user_name) {
     let path = 'http://localhost:8070/user/profile?username=' + user_name;
     let profile_a = document.getElementById('profile_path');
     profile_a.href = path;
+}
+
+function setShelveId(user) {
+    let shelve_id_input = document.getElementById('shelve_id');
+    shelve_id_input.value = user.bookShelve.bookShelveId;
 }

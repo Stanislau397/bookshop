@@ -71,6 +71,8 @@ public class GetMappingURN {
     public static final String FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN = "/findBooksByPageHavingAvgScoreGreaterThan";
     public static final String COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN = "/countBooksWithScoreGreaterThan";
     public static final String FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS = "/findBooksByShelveIdAndBookStatus";
+    public static final String CHECK_IF_BOOK_EXISTS_IN_SHELVE = "/isBookExistsInShelve";
+    public static final String FIND_NUMBER_OF_BOOKS_ON_SHELVE = "/findNumberOfBooksOnShelve";
 
     //reviews
     public static final String FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN = "/findBookReviewsByBookIdAndPage";

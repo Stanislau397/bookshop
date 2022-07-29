@@ -28,6 +28,7 @@ import java.util.List;
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_STATUS;
 import static edu.epam.bookshop.entity.constant.TableColumn.SHELVE_ID;
 import static edu.epam.bookshop.entity.constant.TableColumn.SHELVE_ID_FK;
+import static edu.epam.bookshop.entity.constant.TableColumn.USER_ID;
 import static edu.epam.bookshop.entity.constant.TableColumn.USER_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableName.BOOK_SHELVE;
 import static edu.epam.bookshop.entity.constant.TableName.SHELVE_BOOKS;
@@ -54,16 +55,18 @@ public class BookShelve {
 
     @Column(name = BOOK_STATUS, table = SHELVE_BOOKS)
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private BookStatus bookStatus;
 
     @ManyToMany(
             mappedBy = "bookShelves",
             targetEntity = Book.class,
             cascade = CascadeType.MERGE)
+    @JsonIgnore
     private List<Book> shelveBooks;
 
     @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = USER_ID_FK)
+    @JoinColumn(name = USER_ID_FK, referencedColumnName = USER_ID)
     @JsonIgnore
     private User userRelatedToShelve;
 }

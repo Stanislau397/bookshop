@@ -194,9 +194,18 @@ public class SqlQuery {
                     "THEN 'true' ELSE 'false' END " +
                     "FROM BookShelve bs " +
                     "WHERE bs.bookShelveId = :shelveId";
+    public static final String CHECK_IF_BOOK_EXISTS_IN_BOOK_SHELVE =
+            "SELECT CASE WHEN COUNT(bs.bookShelveId) > 0 " +
+                    "THEN 'true' ELSE 'false' END " +
+                    "FROM BookShelve bs " +
+                    "LEFT JOIN bs.shelveBooks b " +
+                    "WHERE bs.bookShelveId = :shelveId AND b.bookId = :bookId";
     public static final String SELECT_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS =
             "SELECT b FROM Book b " +
                     "LEFT JOIN b.bookShelves bs " +
                     "WHERE bs.bookShelveId = :shelveId " +
                     "AND bs.bookStatus = :bookStatus";
+    public static final String COUNT_BOOKS_ON_SHELVE =
+            "SELECT COUNT(bs.bookShelveId) FROM BookShelve bs " +
+                    "WHERE bs.bookShelveId = :shelveId AND bs.bookStatus = :bookStatus";
 }

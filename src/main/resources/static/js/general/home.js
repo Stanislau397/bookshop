@@ -32,24 +32,6 @@ window.addEventListener('DOMContentLoaded', function () {
     getAmountOfBooksWithHighScore();
 });
 
-function addBookToShelve() {
-    $.ajax({
-        method: 'POST',
-        url: '/addBookToShelve',
-        data: {
-            bookId: 8,
-            shelveId : 1,
-            bookStatus: 'WANT_TO_READ'
-        },
-        success: function () {
-            console.log(1)
-        },
-        error: function (error) {
-            console.log(error.responseText);
-        }
-    })
-}
-
 
 function getBooksWithHighScoreLimit15() {
     let book_score = 4;
@@ -102,9 +84,30 @@ function getAmountOfBooksWithHighScore() {
     })
 }
 
+function checkIfBookExistsInShelve(book_id, shelve_id) {
+    let result;
+    $.ajax({
+        url: '/isBookExistsInShelve',
+        data: {
+            bookId: book_id,
+            shelveId: shelve_id
+        },
+        async: false,
+        success: function (bookExists) {
+            result = bookExists;
+            return result;
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    })
+    return result;
+}
+
 function displayHighScoreBooks(highScoreBooks) {
     let add_btn = document.getElementById('add').value;
     let highScoreBooksContent = document.getElementById('high_score_books_content');
+    let counter = 0;
     for (let book of highScoreBooks) {
         let author = getAuthorByBookId(book.bookId);
         let averageScore = getAverageBookScoreByBookId(book.bookId);
@@ -112,6 +115,7 @@ function displayHighScoreBooks(highScoreBooks) {
         let authorHref = '';
         let firstName = '';
         let lastName = '';
+        counter = counter + 1;
         if (author !== '') {
             firstName = author[0].firstName;
             lastName = author[0].lastName;
@@ -127,11 +131,30 @@ function displayHighScoreBooks(highScoreBooks) {
             '<div class="author-container">' +
             '<a id="book_author" href="' + authorHref + '">' + firstName + ' ' + lastName + '</a>' + '</div>' +
             '<div class="price">' + book.price + '</div>' + '</div>' +
-            '<button type="button" class="add-to-wishlist-btn">' + add_btn + '</button>' + '</div>';
+            '<button type="button" ' +
+            'onclick="addBookToShelve(\'' + book.bookId + '\',\'' + "WANT_TO_READ" + '\')" ' +
+            'class="add-to-wishlist-btn" id="wish_list_btn' + counter + '">' +
+            '<i class="fa fa-plus">' + '</i>' + add_btn + '</button>' + '</div>';
+        if (user != null) {
+            let shelveId = user.bookShelve.bookShelveId;
+            let btn = document.getElementById('wish_list_btn' + counter);
+            changeWishListBtn(book.bookId, shelveId, btn)
+        }
     }
 }
 
 function displayTotalBooksWithHighScore(totalBooks) {
     let total_books_a = document.getElementById('high_score_books_number');
     total_books_a.innerText += ' ' + totalBooks;
+}
+
+function changeWishListBtn(book_id, shelve_id, btn) {
+    let bookExists = checkIfBookExistsInShelve(book_id, shelve_id);
+    if (bookExists) {
+        let change_input_value = document.getElementById('change').value;
+        btn.style.background = 'white';
+        btn.style.color = 'black'
+        btn.innerHTML = '<i class="fa fa-check">' + '</i>' + change_input_value;
+        btn.onclick = '';
+    }
 }
