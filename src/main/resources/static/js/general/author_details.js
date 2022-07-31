@@ -1,13 +1,52 @@
+let author;
+let userForAuthorBooks;
+
 window.addEventListener('DOMContentLoaded', function () {
     let authorId = new URLSearchParams(window.location.search).get('authorId');
     getAuthorDetailsById(authorId);
     getAuthorGenresByAuthorId(authorId);
 });
 
+function addBookToShelve(book_id, book_status) {
+    let shelve_id = document.getElementById('shelve_id').value;
+    $.ajax({
+        method: 'POST',
+        url: '/addBookToShelve',
+        data: {
+            bookId: book_id,
+            shelveId: shelve_id,
+            bookStatus: book_status
+        },
+        success: function () {
+            displayAuthorBooks(author.books);
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    })
+}
+
+function getUserByUsername(user_name) {
+    $.ajax({
+        url: '/findUserByUsername',
+        data: {username: user_name},
+        async: false,
+        success: function (userByUsername) {
+            userForAuthorBooks = userByUsername;
+            return userForAuthorBooks;
+        },
+        error: function (exception) {
+
+        }
+    });
+    return userForAuthorBooks;
+}
+
 function getAuthorDetailsById(id) {
     $.ajax({
         url: '/findAuthorInfoById',
         data: {authorId: id},
+        async: false,
         success: function (authorInfo) {
             setTitle(authorInfo);
             setAuthorImage(authorInfo);
@@ -16,11 +55,14 @@ function getAuthorDetailsById(id) {
             setBirthDate(authorInfo);
             setBiography(authorInfo);
             displayAuthorBooks(authorInfo.books);
+            author = authorInfo;
+            return author;
         },
         error: function (exception) {
 
         }
     })
+    return author;
 }
 
 function getAuthorGenresByAuthorId(author_id) {
@@ -81,11 +123,17 @@ function displayAuthorGenres(authorGenres) {
 }
 
 function displayAuthorBooks(authorBooks) {
+    if (document.getElementById('user-name-h1') !== null) {
+        let user_name = document.getElementById('user-name-h1').innerText;
+        userForAuthorBooks = getUserByUsername(user_name);
+    }
     let author_books_container = document.getElementById('author_books');
     let authorName = document.getElementById('first_name_and_last_name').innerText;
-    let add_to_wishlist = document.getElementById('add_to_wishlist').value;
+    let add_btn = document.getElementById('add').value;
     author_books_container.innerHTML = '';
+    let counter = 0;
     for (let book of authorBooks) {
+        counter = counter + 1;
         let book_price = '$' + book.price;
         let book_href = 'http://localhost:8070/bookshop/book?title=' + book.title;
         let book_href_with_under_scores = book_href.replace(/ /g, "_")
@@ -99,8 +147,17 @@ function displayAuthorBooks(authorBooks) {
             '<p class="book-author-name">' + authorName + '</p>' +
             '<p class="book-price">' + book_price + '</p>' +
             '</div>' +
-            '<button type="button" ' +
-            'class="add-to-wishlist-btn">' + add_to_wishlist + '</button>' +
-            '</div>';
+            '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';
+        let button_container_div = document.getElementById('button_container' + counter);
+        if (userForAuthorBooks != null) {
+            let shelveId = userForAuthorBooks.bookShelve.bookShelveId;
+            displayButton(book.bookId, shelveId, book.title, button_container_div)
+        } else {
+            button_container_div.innerHTML =
+                '<button type="button" ' +
+                'class="book-shelve-btn">' +
+                '<i class="fa fa-plus">' + '</i>' +
+                '<a href="http://localhost:8070/bookshop/login">' + add_btn + '</a>' + '</button>'
+        }
     }
 }

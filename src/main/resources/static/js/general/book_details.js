@@ -4,10 +4,12 @@ let userInfo;
 window.addEventListener('DOMContentLoaded', function () {
     let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
     let title = bookTitleFromParameter.replace(/_/g, ' ');
+    userInfo = getUserByUserName();
     book = getBookDetailsByTitle(decodeURI(title));
     getBookReviews(book.bookId, 1);
     getAverageBookReviewScoreByBookId(book.bookId);
-    userInfo = getUserByUserName();
+    addBookShelveBtn();
+    checkIfUserReviewedBook(userInfo.userId, book.bookId);
 });
 
 function getBookDetailsByTitle(bookTitle) {
@@ -89,6 +91,7 @@ function getUserByUserName() {
                     userToReturn = user;
                     checkIfUserReviewedBook(user.userId, book.bookId);
                     setUserImageInReview(user);
+
                     return userToReturn;
                 }
             })
@@ -150,6 +153,25 @@ function checkIfUserReviewedBook(user_id, book_id) {
             if (userReviewedBook) {
                 hideAddReviewContainer();
             }
+        }
+    })
+}
+
+function addBookToShelve(book_id, book_status) {
+    let shelve_id = document.getElementById('shelve_id').value;
+    $.ajax({
+        method: 'POST',
+        url: '/addBookToShelve',
+        data: {
+            bookId: book_id,
+            shelveId: shelve_id,
+            bookStatus: book_status
+        },
+        success: function () {
+            addBookShelveBtn();
+        },
+        error: function (error) {
+            console.log(error.responseText);
         }
     })
 }
@@ -441,4 +463,19 @@ function hideAddReviewContainer() {
 
 function hideEditReviewModal() {
     $('#editReviewModal').modal('hide');
+}
+
+function addBookShelveBtn() {
+    let button_container = document.getElementById('button_container');
+    let add_btn = document.getElementById('add').value;
+    if (userInfo != null) {
+        let shelveId = userInfo.bookShelve.bookShelveId;
+        displayButton(book.bookId, shelveId, book.title, button_container)
+    } else {
+        button_container.innerHTML =
+            '<button type="button" ' +
+            'class="book-shelve-btn">' +
+            '<i class="fa fa-plus">' + '</i>' +
+            '<a href="http://localhost:8070/bookshop/login">' + add_btn + '</a>' + '</button>'
+    }
 }

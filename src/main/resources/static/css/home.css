@@ -148,7 +148,7 @@
     text-decoration: none;
 }
 
-.wish-list-btn {
+.book-shelve-btn {
     width: 100%;
     background-color: #4099ed;
     border: 0;
@@ -172,10 +172,19 @@
     color: #2c293b;
 }
 
-.wish-list-btn .fa,
+.book-shelve-btn .fa,
 .change-book-status-btn .fa {
     transform: translateX(-7px);
     font-size: 15px;
+}
+
+.book-shelve-btn a {
+    text-decoration: none;
+    color: white;
+}
+.book-shelve-btn a:hover {
+    text-decoration: none;
+    color: white;
 }
 
 .modal-body .choice {
@@ -214,4 +223,8 @@ label:hover {
 .modal-header .book-title-in-header {
     color: #3e3f40;
     font-weight: normal;
+}
+
+a {
+    text-decoration: none;
 }

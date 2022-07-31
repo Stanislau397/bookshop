@@ -1,9 +1,48 @@
+let userForBooksByYear;
+
 window.addEventListener('DOMContentLoaded', function () {
     let bookYear = new URLSearchParams(window.location.search).get('year');
     let pageNumber = new URLSearchParams(window.location.search).get('page');
     getBooksByYearAndPage(bookYear, pageNumber);
     hideBookYears();
 });
+
+function addBookToShelve(book_id, book_status) {
+    let shelve_id = document.getElementById('shelve_id').value;
+    $.ajax({
+        method: 'POST',
+        url: '/addBookToShelve',
+        data: {
+            bookId: book_id,
+            shelveId: shelve_id,
+            bookStatus: book_status
+        },
+        success: function () {
+            let bookYear = new URLSearchParams(window.location.search).get('year');
+            let pageNumber = new URLSearchParams(window.location.search).get('page');
+            getBooksByYearAndPage(bookYear, pageNumber);
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    })
+}
+
+function getUserByUsername(user_name) {
+    $.ajax({
+        url: '/findUserByUsername',
+        data: {username: user_name},
+        async: false,
+        success: function (userByUsername) {
+            userForBooksByYear = userByUsername;
+            return userForBooksByYear;
+        },
+        error: function (exception) {
+
+        }
+    });
+    return userForBooksByYear;
+}
 
 function getBooksByYearAndPage(book_year, page_number) {
     let url = window.location.href.split('?')[0] + "?year=" + book_year + "&page=" + page_number;
@@ -45,7 +84,11 @@ function getExistingYears() {
 
 function displayBooksByYear(booksByYear) {
     let books_by_year_container = document.getElementById('books_by_year');
-    let add_to_wishlist = document.getElementById('add_to_wishlist').value;
+    let add_btn = document.getElementById('add').value;
+    if (document.getElementById('user-name-h1') !== null) {
+        let user_name = document.getElementById('user-name-h1').innerText;
+        userForBooksByYear = getUserByUsername(user_name);
+    }
     books_by_year_container.innerHTML = '';
     let counter = 0;
     for (let book of booksByYear) {
@@ -63,9 +106,18 @@ function displayBooksByYear(booksByYear) {
             '<div class="book-author-name" id="author_name' + counter + '">' + '</div>' +
             '<p class="book-price">' + book_price + '</p>' +
             '</div>' +
-            '<button type="button" ' +
-            'class="add-to-wishlist-btn">' + add_to_wishlist + '</button>' +
-            '</div>';
+            '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';
+        let button_container_div = document.getElementById('button_container' + counter);
+        if (userForBooksByYear != null) {
+            let shelveId = userForBooksByYear.bookShelve.bookShelveId;
+            displayButton(book.bookId, shelveId, book.title, button_container_div)
+        } else {
+            button_container_div.innerHTML =
+                '<button type="button" ' +
+                'class="book-shelve-btn">' +
+                '<i class="fa fa-plus">' + '</i>' +
+                '<a href="http://localhost:8070/bookshop/login">' + add_btn + '</a>' + '</button>'
+        }
         getAuthorsForBookByBookId(book.bookId, counter);
     }
 }

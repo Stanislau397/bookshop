@@ -1,8 +1,46 @@
+let userForBooksByKeyWord;
+
 window.addEventListener('DOMContentLoaded', function () {
     let keyword = new URLSearchParams(window.location.search).get('keyWord');
     let pageNumber = new URLSearchParams(window.location.search).get('page');
     getBooksByKeyWordAndPage(keyword, pageNumber);
 });
+
+function addBookToShelve(book_id, book_status) {
+    let shelve_id = document.getElementById('shelve_id').value;
+    $.ajax({
+        method: 'POST',
+        url: '/addBookToShelve',
+        data: {
+            bookId: book_id,
+            shelveId: shelve_id,
+            bookStatus: book_status
+        },
+        success: function () {
+            let pageNumber = new URLSearchParams(window.location.search).get('page');
+            getBooksByPageWithHighScore(pageNumber);
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    })
+}
+
+function getUserByUsername(user_name) {
+    $.ajax({
+        url: '/findUserByUsername',
+        data: {username: user_name},
+        async: false,
+        success: function (userByUsername) {
+            userForBooksByKeyWord = userByUsername;
+            return userForBooksByKeyWord;
+        },
+        error: function (exception) {
+
+        }
+    });
+    return userForBooksByKeyWord;
+}
 
 function getBooksByKeyWordAndPage(key_word, page_number) {
     $.ajax({
@@ -46,8 +84,12 @@ function getAverageScoreForBookByKeyWord(book_id) {
 }
 
 function displayBooksByKeyWordAndPage(booksByKeyWordAndPage) {
+    if (document.getElementById('user-name-h1') !== null) {
+        let user_name = document.getElementById('user-name-h1').innerText;
+        userForBooksByKeyWord = getUserByUsername(user_name);
+    }
     let books_by_keyword_container = document.getElementById('books_by_keyword');
-    let add_to_wishlist = document.getElementById('add_to_wishlist').value;
+    let add_btn = document.getElementById('add').value;
     books_by_keyword_container.innerHTML = '';
     let counter = 0;
     for (let book of booksByKeyWordAndPage) {
@@ -67,9 +109,18 @@ function displayBooksByKeyWordAndPage(booksByKeyWordAndPage) {
             '<div class="book-author-name" id="author_name' + counter + '">' + '</div>' +
             '<p class="book-price">' + book_price + '</p>' +
             '</div>' +
-            '<button type="button" ' +
-            'class="add-to-wishlist-btn">' + add_to_wishlist + '</button>' +
-            '</div>';
+            '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';
+        let button_container_div = document.getElementById('button_container' + counter);
+        if (userForBooksByKeyWord != null) {
+            let shelveId = userForBooksByKeyWord.bookShelve.bookShelveId;
+            displayButton(book.bookId, shelveId, book.title, button_container_div)
+        } else {
+            button_container_div.innerHTML =
+                '<button type="button" ' +
+                'class="book-shelve-btn">' +
+                '<i class="fa fa-plus">' + '</i>' +
+                '<a href="http://localhost:8070/bookshop/login">' + add_btn + '</a>' + '</button>'
+        }
         let score_div = document.getElementById('book_score' + counter);
         getAuthorsForBookByBookId(book.bookId, counter);
         setBooksByKeyWordScore(averageScore, score_div)

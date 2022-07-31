@@ -1,10 +1,48 @@
 let booksWithHighScore;
+let userForBooksWithHighScore;
 
 window.addEventListener('DOMContentLoaded', function () {
     let pageNumber = new URLSearchParams(window.location.search).get('page');
     booksWithHighScore = getBooksByPageWithHighScore(pageNumber);
     appendTotalElementsToH1(booksWithHighScore.totalElements);
 });
+
+function addBookToShelve(book_id, book_status) {
+    let shelve_id = document.getElementById('shelve_id').value;
+    $.ajax({
+        method: 'POST',
+        url: '/addBookToShelve',
+        data: {
+            bookId: book_id,
+            shelveId: shelve_id,
+            bookStatus: book_status
+        },
+        success: function () {
+            let pageNumber = new URLSearchParams(window.location.search).get('page');
+            getBooksByPageWithHighScore(pageNumber);
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    })
+}
+
+function getUserByUsername(user_name) {
+    let user_by_username;
+    $.ajax({
+        url: '/findUserByUsername',
+        data: {username: user_name},
+        async: false,
+        success: function (userByUsername) {
+            userForBooksWithHighScore = userByUsername;
+            return user_by_username;
+        },
+        error: function (exception) {
+
+        }
+    });
+    return userForBooksWithHighScore;
+}
 
 function getBooksByPageWithHighScore(page_number) {
     let url = window.location.href.split('?')[0] + "?page=" + page_number;
@@ -21,7 +59,6 @@ function getBooksByPageWithHighScore(page_number) {
             booksWithHighScore = highScoreBooks;
             displayBooksWithHighScore(booksWithHighScore.content);
             buildPaginationForBooksWithHighScore(booksWithHighScore.totalPages);
-            console.log(booksWithHighScore)
             return booksWithHighScore;
         }
     })
@@ -69,8 +106,12 @@ function setAverageScoreForBook(averageScore, counter) {
 }
 
 function displayBooksWithHighScore(booksWithHighScore) {
+    if (document.getElementById('user-name-h1') !== null) {
+        let user_name = document.getElementById('user-name-h1').innerText;
+        userForBooksWithHighScore = getUserByUsername(user_name);
+    }
     let books_with_high_score_container = document.getElementById('high_score_books');
-    let add_to_wishlist = document.getElementById('add_to_wishlist').value;
+    let add_btn = document.getElementById('add').value;
     books_with_high_score_container.innerHTML = '';
     let counter = 0;
     for (let book of booksWithHighScore) {
@@ -87,13 +128,21 @@ function displayBooksWithHighScore(booksWithHighScore) {
             '<div class="book-info">' +
             '<a class="book-title" href="' + book_href_with_under_scores + '">' + book.title + '</a>' +
             '<div class="book-author-name" id="author_name' + counter + '">' + '</div>' +
-            '<p class="book-price">' + book_price + '</p>' +
-            '</div>' +
-            '<button type="button" ' +
-            'class="add-to-wishlist-btn">' + add_to_wishlist + '</button>' +
-            '</div>';
+            '<p class="book-price">' + book_price + '</p>' + '</div>' +
+            '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';
+        let button_container_div = document.getElementById('button_container' + counter);
         getAuthorsForHighScoreBook(book.bookId, counter);
         getAverageBookScoreByBookId(book.bookId, counter);
+        if (userForBooksWithHighScore != null) {
+            let shelveId = userForBooksWithHighScore.bookShelve.bookShelveId;
+            displayButton(book.bookId, shelveId, book.title, button_container_div)
+        } else {
+            button_container_div.innerHTML =
+                '<button type="button" ' +
+                'class="book-shelve-btn">' +
+                '<i class="fa fa-plus">' + '</i>' +
+                '<a href="http://localhost:8070/bookshop/login">' + add_btn + '</a>' + '</button>'
+        }
     }
 }
 
