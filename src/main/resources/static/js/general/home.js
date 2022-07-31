@@ -32,6 +32,27 @@ window.addEventListener('DOMContentLoaded', function () {
     getAmountOfBooksWithHighScore();
 });
 
+function changeBookStatusOnShelve() {
+    let radio_input = document.querySelector('input[name="choice"]:checked').value;
+    let book_id = document.getElementById('book_id').value;
+    let shelve_id = document.getElementById('shelve_id').value;
+    $.ajax({
+        method: 'POST',
+        url: '/updateBookStatusOnShelve',
+        data: {
+            bookStatus: radio_input,
+            bookId: book_id,
+            shelveId: shelve_id
+        },
+        success: function () {
+            hideEditBookStatusModal();
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    })
+    console.log(radio_input);
+}
 
 function getBooksWithHighScoreLimit15() {
     let book_score = 4;
@@ -104,9 +125,29 @@ function checkIfBookExistsInShelve(book_id, shelve_id) {
     return result;
 }
 
+function getBookStatusOnShelve(book_id, shelve_id) {
+    let foundStatus;
+    $.ajax({
+        url: '/findBookStatusOnShelveByShelveIdAndBookId',
+        data: {
+            bookId: book_id,
+            shelveId: shelve_id
+        },
+        async: false,
+        success: function (bookStatus) {
+            foundStatus = bookStatus;
+            return foundStatus;
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    })
+    return foundStatus;
+}
+
 function displayHighScoreBooks(highScoreBooks) {
-    let add_btn = document.getElementById('add').value;
     let highScoreBooksContent = document.getElementById('high_score_books_content');
+    let add_btn = document.getElementById('add').value;
     let counter = 0;
     for (let book of highScoreBooks) {
         let author = getAuthorByBookId(book.bookId);
@@ -131,14 +172,16 @@ function displayHighScoreBooks(highScoreBooks) {
             '<div class="author-container">' +
             '<a id="book_author" href="' + authorHref + '">' + firstName + ' ' + lastName + '</a>' + '</div>' +
             '<div class="price">' + book.price + '</div>' + '</div>' +
-            '<button type="button" ' +
-            'onclick="addBookToShelve(\'' + book.bookId + '\',\'' + "WANT_TO_READ" + '\')" ' +
-            'class="add-to-wishlist-btn" id="wish_list_btn' + counter + '">' +
-            '<i class="fa fa-plus">' + '</i>' + add_btn + '</button>' + '</div>';
+            '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';
+        let button_container_div = document.getElementById('button_container' + counter);
         if (user != null) {
             let shelveId = user.bookShelve.bookShelveId;
-            let btn = document.getElementById('wish_list_btn' + counter);
-            changeWishListBtn(book.bookId, shelveId, btn)
+            displayButton(book.bookId, shelveId, book.title, button_container_div)
+        } else {
+            button_container_div.innerHTML =
+                '<button type="button" ' +
+                'class="wish-list-btn" id="wish_list_btn">' +
+                '<i class="fa fa-plus">' + '</i>' + add_btn + '</button>'
         }
     }
 }
@@ -148,13 +191,38 @@ function displayTotalBooksWithHighScore(totalBooks) {
     total_books_a.innerText += ' ' + totalBooks;
 }
 
-function changeWishListBtn(book_id, shelve_id, btn) {
+function displayButton(book_id, shelve_id, book_title, button_container) {
+    let add_btn = document.getElementById('add').value;
+    let change_btn = document.getElementById('change').value;
     let bookExists = checkIfBookExistsInShelve(book_id, shelve_id);
     if (bookExists) {
-        let change_input_value = document.getElementById('change').value;
-        btn.style.background = 'white';
-        btn.style.color = 'black'
-        btn.innerHTML = '<i class="fa fa-check">' + '</i>' + change_input_value;
-        btn.onclick = '';
+        button_container.innerHTML =
+            '<button type="button" ' +
+            'data-bs-toggle="modal" ' +
+            'data-bs-target="#editBookStatusModal" ' +
+            'onclick="setBookShelveInfoInModalHeader(\'' + shelve_id + '\',\'' + book_id + '\',\'' + book_title + '\')" ' +
+            'class="change-book-status-btn" id="change_book_status_btn"> ' +
+            '<i class="fa fa-check">' + '</i>' + change_btn + '</button>'
+    } else {
+        button_container.innerHTML =
+            '<button type="button" ' +
+            'onclick="addBookToShelve(\'' + book_id + '\',\'' + "WANT_TO_READ" + '\')" ' +
+            'class="wish-list-btn" id="wish_list_btn">' +
+            '<i class="fa fa-plus">' + '</i>' + add_btn + '</button>'
     }
+}
+
+function setBookShelveInfoInModalHeader(shelve_id, book_id, book_title) {
+    let book_title_h5 = document.getElementById('book_title_in_modal_header');
+    book_title_h5.innerText = book_title;
+    let shelve_id_input = document.getElementById('shelve_id');
+    shelve_id_input.value = shelve_id;
+    let book_id_input = document.getElementById('book_id');
+    book_id_input.value = book_id;
+    let book_status = getBookStatusOnShelve(book_id, shelve_id);
+    $("input[name=choice][value=" + book_status + "]").prop('checked', true);
+}
+
+function hideEditBookStatusModal() {
+    $('#editBookStatusModal').modal('hide');
 }

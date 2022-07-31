@@ -73,6 +73,7 @@ public class GetMappingURN {
     public static final String FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS = "/findBooksByShelveIdAndBookStatus";
     public static final String CHECK_IF_BOOK_EXISTS_IN_SHELVE = "/isBookExistsInShelve";
     public static final String FIND_NUMBER_OF_BOOKS_ON_SHELVE = "/findNumberOfBooksOnShelve";
+    public static final String FIND_BOOK_STATUS_ON_SHELVE = "/findBookStatusOnShelveByShelveIdAndBookId";
 
     //reviews
     public static final String FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN = "/findBookReviewsByBookIdAndPage";

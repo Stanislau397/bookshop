@@ -45,4 +45,5 @@ public class PostMappingURN {
     //bookShelve
     public static final String ADD_BOOK_TO_SHELVE = "/addBookToShelve";
     public static final String CREATE_SHELVE_FOR_USER = "/createShelveForUser";
+    public static final String UPDATE_BOOK_STATUS_ON_SHELVE = "/updateBookStatusOnShelve";
 }

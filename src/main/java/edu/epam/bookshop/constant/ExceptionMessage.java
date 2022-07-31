@@ -165,4 +165,7 @@ public class ExceptionMessage {
     //shelve
     public static final String SHELVE_WITH_GIVEN_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("shelve_with_given_id_not_found");
+
+    public static final String BOOK_NOT_FOUND_ON_SHELVE = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("book_not_found_on_shelve");
 }

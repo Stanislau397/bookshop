@@ -3,12 +3,10 @@ package edu.epam.bookshop.service;
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
-import edu.epam.bookshop.entity.BookShelve;
 import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -121,7 +119,11 @@ public interface BookService {
 
     void addBookToShelve(Long shelveId, Long bookId, BookStatus bookStatus);
 
+    void changeBookStatusOnShelve(String newStatus, Long shelveId, Long bookId);
+
     boolean checkIfBookExistsInBookShelve(Long shelveId, Long bookId);
 
-    Integer findNumberOfBooksOnShelve(Long shelveId, String bookStatus);
+    Integer findNumberOfBooksOnBookShelve(Long shelveId, String bookStatus);
+
+    BookStatus findBookStatusOnBookShelve(Long shelveId, Long bookId);
 }

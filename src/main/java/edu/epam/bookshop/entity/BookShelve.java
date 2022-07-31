@@ -58,10 +58,7 @@ public class BookShelve {
     @JsonIgnore
     private BookStatus bookStatus;
 
-    @ManyToMany(
-            mappedBy = "bookShelves",
-            targetEntity = Book.class,
-            cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "bookShelves")
     @JsonIgnore
     private List<Book> shelveBooks;
 

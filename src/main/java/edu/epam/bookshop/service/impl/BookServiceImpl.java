@@ -44,6 +44,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_GENRE
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_NOT_FOUND_ON_SHELVE;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_TITLE_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.ENUM_NOT_FOUND_MSG;
@@ -956,6 +957,21 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public void changeBookStatusOnShelve(String newStatus, Long shelveId, Long bookId) { //todo test
+        if (!shelveRepository.bookExistsByShelveIdAndBookId(shelveId, bookId)) {
+            log.info(BOOK_NOT_FOUND_ON_SHELVE, bookId, shelveId);
+            throw new NothingFoundException(
+                    String.format(BOOK_NOT_FOUND_ON_SHELVE, bookId, shelveId)
+            );
+        }
+        if (!EnumUtils.isValidEnum(BookStatus.class, newStatus)) {
+            log.info(ENUM_NOT_FOUND_MSG, newStatus);
+            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, newStatus));
+        }
+        shelveRepository.updateBookStatusByShelveIdAndBookId(newStatus, shelveId, bookId);
+    }
+
+    @Override
     public boolean checkIfBookExistsInBookShelve(Long shelveId, Long bookId) { //todo test
         if (!shelveRepository.existsByShelveId(shelveId)) {
             log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
@@ -973,7 +989,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Integer findNumberOfBooksOnShelve(Long shelveId, String status) { //todo test
+    public Integer findNumberOfBooksOnBookShelve(Long shelveId, String status) { //todo test
         if (!shelveRepository.existsByShelveId(shelveId)) {
             log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
             throw new EntityNotFoundException(
@@ -988,5 +1004,13 @@ public class BookServiceImpl implements BookService {
         return shelveRepository
                 .selectCountBooksOnShelveByShelveIdAndBookStatus(shelveId, givenStatus)
                 .orElse(0);
+    }
+
+    @Override
+    public BookStatus findBookStatusOnBookShelve(Long shelveId, Long bookId) { //todo test
+        return BookStatus.valueOf(shelveRepository.selectBookStatusByShelveIdAndBookId(shelveId, bookId)
+                .orElseThrow(() -> new NothingFoundException(
+                        String.format(BOOK_NOT_FOUND_ON_SHELVE, bookId, shelveId)
+                )));
     }
 }

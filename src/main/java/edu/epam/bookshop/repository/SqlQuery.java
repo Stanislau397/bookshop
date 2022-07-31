@@ -104,9 +104,6 @@ public class SqlQuery {
                     "WHERE a.authorId = :authorId";
 
     //book
-    public static final String DELETE_BOOK_FROM_AUTHOR =
-            "DELETE FROM author_books " +
-                    "WHERE author_id_fk = 1? AND book_id_fk = 2?";
     public static final String UPDATE_BOOK_INFO_BY_ID =
             "UPDATE Book b " +
                     "SET b.title = :title, " +
@@ -207,5 +204,15 @@ public class SqlQuery {
                     "AND bs.bookStatus = :bookStatus";
     public static final String COUNT_BOOKS_ON_SHELVE =
             "SELECT COUNT(bs.bookShelveId) FROM BookShelve bs " +
-                    "WHERE bs.bookShelveId = :shelveId AND bs.bookStatus = :bookStatus";
+                    "WHERE bs.bookShelveId = :shelveId " +
+                    "AND bs.bookStatus = :bookStatus";
+    public static final String UPDATE_BOOK_STATUS_ON_SHELVE =
+            "UPDATE shelve_books sb SET sb.book_status = (?) " +
+                    "WHERE sb.shelve_id_fk = (?) " +
+                    "AND sb.book_id_fk = (?)";
+    public static final String SELECT_BOOK_STATUS_ON_SHELVE =
+            "SELECT sb.book_status FROM shelve_books sb " +
+                    "JOIN book_shelve bs ON sb.shelve_id_fk = bs.shelve_id " +
+                    "JOIN books b ON sb.book_id_fk = b.book_id " +
+                    "WHERE bs.shelve_id = (?) AND b.book_id = (?)";
 }
