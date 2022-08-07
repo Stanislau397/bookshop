@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_IN_BOOK_SHELVE;
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_SHELVE_EXISTS_BY_ID;
-import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_ON_SHELVE;
+import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_ON_SHELVE_BY_BOOK_ID_AND_BOOK_STATUS;
 import static edu.epam.bookshop.repository.SqlQuery.INSERT_BOOK_TO_SHELVE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOK_STATUS_ON_SHELVE;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_STATUS_ON_SHELVE;
@@ -39,7 +39,7 @@ public interface BookShelveRepository extends JpaRepository<BookShelve, Long> {
     @Query(value = CHECK_IF_BOOK_EXISTS_IN_BOOK_SHELVE)
     boolean bookExistsByShelveIdAndBookId(Long shelveId, Long bookId);
 
-    @Query(value = COUNT_BOOKS_ON_SHELVE)
+    @Query(value = COUNT_BOOKS_ON_SHELVE_BY_BOOK_ID_AND_BOOK_STATUS)
     Optional<Integer> selectCountBooksOnShelveByShelveIdAndBookStatus(Long shelveId, BookStatus bookStatus);
 
     @Query(value = SELECT_BOOK_STATUS_ON_SHELVE, nativeQuery = true)

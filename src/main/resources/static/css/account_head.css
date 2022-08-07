@@ -1,5 +1,4 @@
 
-
 .account-head {
     width: 76%;
     margin-left: 12%;
@@ -12,7 +11,7 @@
     margin-left: 7%;
     height: 120px;
     border-radius: 2px;
-    background: rgb(245,245,245);
+    background: rgb(245, 245, 245);
     font-family: IBM Plex Sans, sans-serif;
 }
 
@@ -40,4 +39,23 @@
     margin-top: 18%;
     font-size: 20px;
     font-weight: bold;
+}
+
+.account-head .items {
+    width: 86%;
+    margin-left: 7%;
+    height: 30px;
+    background: rgb(248, 248, 248);
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    font-family: IBM Plex Sans, sans-serif;
+}
+
+.account-head .books-link {
+    display: inline-block;
+    text-decoration: none;
+    border: 0;
+    background: inherit;
+    color: black;
+    font-size: 18px;
 }

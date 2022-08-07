@@ -24,6 +24,15 @@
             </div>
         </div>
     </div>
+    <div class="items">
+        <button class="books-link"
+                id="want_to_read_link"
+                value="WANT_TO_READ"
+                onclick="displayBooksByStatus(this.value)"
+                th:text="#{want_to_read}"></button>
+        <button class="books-link" id="read_link" th:text="#{read}"></button>
+        <button class="books-link" id="currently_reading_link" th:text="#{currently_reading}"></button>
+    </div>
 </div>
 </body>
 </html>

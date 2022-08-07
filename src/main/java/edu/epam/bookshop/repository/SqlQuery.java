@@ -199,10 +199,11 @@ public class SqlQuery {
                     "WHERE bs.bookShelveId = :shelveId AND b.bookId = :bookId";
     public static final String SELECT_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS =
             "SELECT b FROM Book b " +
-                    "LEFT JOIN b.bookShelves bs " +
+                    "JOIN b.bookShelves bs " +
                     "WHERE bs.bookShelveId = :shelveId " +
-                    "AND bs.bookStatus = :bookStatus";
-    public static final String COUNT_BOOKS_ON_SHELVE =
+                    "AND bs.bookStatus = :bookStatus " +
+                    "GROUP BY b.bookId";
+    public static final String COUNT_BOOKS_ON_SHELVE_BY_BOOK_ID_AND_BOOK_STATUS =
             "SELECT COUNT(bs.bookShelveId) FROM BookShelve bs " +
                     "WHERE bs.bookShelveId = :shelveId " +
                     "AND bs.bookStatus = :bookStatus";
