@@ -14,6 +14,7 @@ import java.util.Locale;
 public class LocaleConfig implements WebMvcConfigurer {
 
     private static final String LANGUAGE = "language";
+    privat static final String TEST = "Test";
 
     @Bean
     public LocaleResolver localeResolver() {
