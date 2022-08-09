@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/shelve_books.css}"/>
+    <script type="text/javascript" th:src="@{/js/user/shelve_books.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/book_service.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/book_review_service.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/header"></div>
 <div th:replace="fragment/account_head"></div>
+<input type="hidden" id="score" th:value="#{score}">
+<input type="hidden" id="my_score" th:value="#{my_score}">
+<div class="shelve-books-container" id="shelve_books_container">
+
+</div>
 </body>
 </html>

@@ -51,4 +51,5 @@ public class TableColumn {
     public static final String BOOK_STATUS = "book_status";
     public static final String SHELVE_ID = "shelve_id";
     public static final String SHELVE_ID_FK = "shelve_id_fk";
+    public static final String SHELVE_BOOK_ID = "shelve_book_id";
 }

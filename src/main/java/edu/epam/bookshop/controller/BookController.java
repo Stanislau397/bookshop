@@ -2,6 +2,7 @@ package edu.epam.bookshop.controller;
 
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookStatus;
+import edu.epam.bookshop.entity.ShelveBook;
 import edu.epam.bookshop.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -104,10 +105,10 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS)
-    public ResponseEntity<Page<Book>> displayBooksByShelveIdAndStatus(Long shelveId, String bookStatus,
-                                                                      Integer pageNumber) {
-        Page<Book> booksByShelveIdAndStatus =
-                bookService.findBooksByPageAndShelveIdAndBookStatus(pageNumber, shelveId, bookStatus);
+    public ResponseEntity<List<ShelveBook>> displayBooksByShelveIdAndStatus(Long shelveId, String bookStatus,
+                                                                            Integer pageNumber) {
+        List<ShelveBook> booksByShelveIdAndStatus =
+                bookService.findShelveBooks(shelveId, BookStatus.valueOf(bookStatus));
         return ResponseEntity.ok(booksByShelveIdAndStatus);
     }
 

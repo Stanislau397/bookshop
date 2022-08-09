@@ -44,24 +44,6 @@ function countBooksByShelveIdAndBookStatus(shelve_id, book_status) {
     return number_of_books;
 }
 
-function getBooksByStatusAndShelveId(book_status, shelve_id) {
-    let found_books_by_status_and_shelve_id;
-    $.ajax({
-        url: '/findBooksByShelveIdAndBookStatus',
-        data: {
-            shelveId: shelve_id,
-            bookStatus: book_status,
-            pageNumber : 1
-        },
-        async : false,
-        success : function (booksByShelveIdAndStatus) {
-            found_books_by_status_and_shelve_id = booksByShelveIdAndStatus;
-            return found_books_by_status_and_shelve_id;
-        }
-    })
-    return found_books_by_status_and_shelve_id;
-}
-
 function getUserRolesByUsername(user_name) {
     $.ajax({
         url: '/findUserRoles',
@@ -109,12 +91,6 @@ function setUserRolesInProfile(roles) {
         }
         role_div.innerHTML += roleName;
     }
-}
-
-function displayBooksByStatus(book_status) {
-    let shelve_id = profileUser.bookShelve.bookShelveId;
-    let books = getBooksByStatusAndShelveId(book_status, shelve_id);
-    console.log(books);
 }
 
 function displayNumberOfWantToReadBooks(shelve_id, book_status) {

@@ -6,6 +6,7 @@ import edu.epam.bookshop.entity.BookReview;
 import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
+import edu.epam.bookshop.entity.ShelveBook;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -113,17 +114,15 @@ public interface BookService {
 
     Double findAverageBookReviewScoreByBookId(Long bookId);
 
+    Double findBookScoreForUser(Long userId, Long bookId);
+
     Page<BookReview> findBookReviewsByBookIdAndPageNumber(Long bookId, Integer pageNumber);
 
     void createBookShelveByUsername(String userName);
 
     void addBookToShelve(Long shelveId, Long bookId, BookStatus bookStatus);
 
-    void changeBookStatusOnShelve(String newStatus, Long shelveId, Long bookId);
-
-    boolean checkIfBookExistsInBookShelve(Long shelveId, Long bookId);
-
-    Integer findNumberOfBooksOnBookShelve(Long shelveId, String bookStatus);
-
     BookStatus findBookStatusOnBookShelve(Long shelveId, Long bookId);
+
+    List<ShelveBook> findShelveBooks(Long shelveId, BookStatus bookStatus);
 }

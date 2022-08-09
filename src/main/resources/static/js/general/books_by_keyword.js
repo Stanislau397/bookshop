@@ -17,8 +17,9 @@ function addBookToShelve(book_id, book_status) {
             bookStatus: book_status
         },
         success: function () {
+            let keyword = new URLSearchParams(window.location.search).get('keyWord');
             let pageNumber = new URLSearchParams(window.location.search).get('page');
-            getBooksByPageWithHighScore(pageNumber);
+            getBooksByKeyWordAndPage(keyword, pageNumber);
         },
         error: function (error) {
             console.log(error.responseText);
@@ -149,9 +150,11 @@ function displayErrorMessage(exception) {
     books_by_genre_container.innerHTML += '<p class="error-message">' + jsonResponse['message'] + '</p>';
 }
 
-function addNumberOfElementsToSearchResults(key_word) {
+function addNumberOfElementsToSearchResults(number_of_elements) {
     let search_results = document.getElementById('result_title');
-    search_results.innerText += ' (' + key_word + ')';
+    let search = document.getElementById('search_results').value;
+    search_results.innerText = search;
+    search_results.innerText += ' (' + number_of_elements + ')';
 }
 
 function setBooksByKeyWordScore(score, score_div) {

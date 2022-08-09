@@ -136,7 +136,7 @@
 .books-by-keyword .book-info,
 .books-with-high-score .book-info {
     margin-top: 10px;
-    height: 155px;
+    height: 180px;
 }
 
 .books-by-genre-title .book-title,
@@ -174,20 +174,6 @@
 
 .book-author:hover {
     color: #573ba3;
-}
-
-.add-to-wishlist-btn {
-    width: 100%;
-    margin-top: 13%;
-    border-width: 1px;
-    background-color: #de2454;
-    border-color: #de2454;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-    font-family: IBM Plex Sans, sans-serif;
-    font-size: 18px;
-    color: white;
 }
 
 .error-message {

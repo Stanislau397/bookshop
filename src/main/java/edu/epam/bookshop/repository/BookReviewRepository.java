@@ -10,9 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
+import java.util.Optional;
+
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_USER_REVIEWED_GIVEN_BOOK;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_AVERAGE_SCORE_BY_BOOK_ID;
 import static edu.epam.bookshop.repository.SqlQuery.COUNT_REVIEWS_BY_BOOK_ID;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOK_SCORE_FOR_USER;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_REVIEWS_BY_BOOK_ID;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_REVIEW_TEXT_AND_SCORE_BY_REVIEW_ID;
 
@@ -33,4 +36,7 @@ public interface BookReviewRepository extends JpaRepository<BookReview, Long> {
     @Query(value = SELECT_REVIEWS_BY_BOOK_ID,
             countQuery = COUNT_REVIEWS_BY_BOOK_ID)
     Page<BookReview> selectByBookIdAndPage(Long bookId, Pageable page);
+
+    @Query(SELECT_BOOK_SCORE_FOR_USER)
+    Optional<Double> selectBookScoreByUserIdAndBookId(Long userId, Long bookId);
 }

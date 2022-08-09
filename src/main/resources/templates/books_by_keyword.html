@@ -10,6 +10,7 @@
 <div th:replace="fragment/header"></div>
 <input type="hidden" id="add" th:value="#{add}">
 <input type="hidden" id="change" th:value="#{change}">
+<input type="hidden" id="search_results" th:value="#{search_results}">
 
 <div class="modal fade" id="editBookStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -65,7 +66,7 @@
 
 <div class="content">
     <div class="content-head">
-        <h1 id="result_title" th:text="#{search_results}"></h1>
+        <h1 id="result_title"></h1>
     </div>
     <div class="books-by-keyword"
          id="books_by_keyword">

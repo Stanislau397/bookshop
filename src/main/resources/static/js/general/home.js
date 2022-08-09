@@ -31,15 +31,14 @@ window.addEventListener('DOMContentLoaded', function () {
     getAmountOfBooksWithHighScore();
 });
 
-function addBookToShelve(book_id, book_status) {
+function addBookToShelve(book_id) {
     let shelve_id = document.getElementById('shelve_id').value;
     $.ajax({
         method: 'POST',
         url: '/addBookToShelve',
         data: {
             bookId: book_id,
-            shelveId: shelve_id,
-            bookStatus: book_status
+            shelveId: shelve_id
         },
         success: function () {
             getBooksWithHighScoreLimit15();
@@ -103,6 +102,7 @@ function getAmountOfBooksWithHighScore() {
 
 function displayHighScoreBooks(highScoreBooks) {
     let highScoreBooksContent = document.getElementById('high_score_books_content');
+    highScoreBooksContent.innerHTML = '';
     let add_btn = document.getElementById('add').value;
     let counter = 0;
     for (let book of highScoreBooks) {

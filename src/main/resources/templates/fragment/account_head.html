@@ -30,8 +30,16 @@
                 value="WANT_TO_READ"
                 onclick="displayBooksByStatus(this.value)"
                 th:text="#{want_to_read}"></button>
-        <button class="books-link" id="read_link" th:text="#{read}"></button>
-        <button class="books-link" id="currently_reading_link" th:text="#{currently_reading}"></button>
+        <button class="books-link"
+                id="read_link"
+                value="READ"
+                onclick="displayBooksByStatus(this.value)"
+                th:text="#{read}"></button>
+        <button class="books-link"
+                id="currently_reading_link"
+                value="CURRENTLY_READING"
+                onclick="displayBooksByStatus(this.value)"
+                th:text="#{currently_reading}"></button>
     </div>
 </div>
 </body>

@@ -100,7 +100,7 @@
     transition: transform .4s;
     border-radius: 5px;
     box-shadow: 0 6px 12px rgb(0 0 0 / 30%);
-    object-fit: cover;
+    object-fit: fill;
     cursor: pointer;
     z-index: 9;
 }

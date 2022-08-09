@@ -175,6 +175,12 @@ public class SqlQuery {
                     "FROM book_reviews br " +
                     "GROUP BY br.book_id_fk " +
                     "HAVING AVG(br.score) > (?)) as averageScore";
+    public static final String SELECT_BOOK_SCORE_FOR_USER =
+            "SELECT br.score FROM BookReview br " +
+                    "JOIN br.user u " +
+                    "JOIN br.reviewedBook rb " +
+                    "WHERE u.userId = :userId " +
+                    "AND rb.bookId = :bookId";
 
     //role
     public static final String SELECT_ROLES_BY_USERNAME =
@@ -195,25 +201,28 @@ public class SqlQuery {
             "SELECT CASE WHEN COUNT(bs.bookShelveId) > 0 " +
                     "THEN 'true' ELSE 'false' END " +
                     "FROM BookShelve bs " +
-                    "LEFT JOIN bs.shelveBooks b " +
+                    "LEFT JOIN bs.shelveBooks sb " +
+                    "LEFT JOIN sb.book b " +
                     "WHERE bs.bookShelveId = :shelveId AND b.bookId = :bookId";
-    public static final String SELECT_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS =
-            "SELECT b FROM Book b " +
-                    "JOIN b.bookShelves bs " +
+    public static final String COUNT_BOOKS_ON_SHELVE_BY_SHELVE_ID_AND_BOOK_STATUS =
+            "SELECT COUNT(sb.book) FROM ShelveBook sb " +
+                    "JOIN sb.bookShelve bs " +
                     "WHERE bs.bookShelveId = :shelveId " +
-                    "AND bs.bookStatus = :bookStatus " +
-                    "GROUP BY b.bookId";
-    public static final String COUNT_BOOKS_ON_SHELVE_BY_BOOK_ID_AND_BOOK_STATUS =
-            "SELECT COUNT(bs.bookShelveId) FROM BookShelve bs " +
-                    "WHERE bs.bookShelveId = :shelveId " +
-                    "AND bs.bookStatus = :bookStatus";
+                    "AND sb.bookStatus = :bookStatus";
     public static final String UPDATE_BOOK_STATUS_ON_SHELVE =
             "UPDATE shelve_books sb SET sb.book_status = (?) " +
                     "WHERE sb.shelve_id_fk = (?) " +
                     "AND sb.book_id_fk = (?)";
     public static final String SELECT_BOOK_STATUS_ON_SHELVE =
-            "SELECT sb.book_status FROM shelve_books sb " +
-                    "JOIN book_shelve bs ON sb.shelve_id_fk = bs.shelve_id " +
-                    "JOIN books b ON sb.book_id_fk = b.book_id " +
-                    "WHERE bs.shelve_id = (?) AND b.book_id = (?)";
+            "SELECT sb.bookStatus FROM ShelveBook sb " +
+                    "JOIN sb.bookShelve bs " +
+                    "JOIN sb.book b " +
+                    "WHERE bs.bookShelveId = :shelveId " +
+                    "AND b.bookId = :bookId";
+
+    public static final String SELECT =
+            "SELECT DISTINCT sb FROM ShelveBook sb " +
+                    "JOIN sb.bookShelve bs " +
+                    "WHERE bs.bookShelveId = :shelveId " +
+                    "AND sb.bookStatus = :bookStatus";
 }

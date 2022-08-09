@@ -8,6 +8,7 @@ import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Publisher;
+import edu.epam.bookshop.entity.ShelveBook;
 import edu.epam.bookshop.entity.User;
 import edu.epam.bookshop.exception.EntityAlreadyExistsException;
 import edu.epam.bookshop.exception.EntityNotFoundException;
@@ -96,7 +97,6 @@ import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_LOCALHOST_PATH;
 
 import static edu.epam.bookshop.service.ItemsLimit.FIFTEEN;
-import static edu.epam.bookshop.service.ItemsLimit.TWENTY_FIVE;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -315,25 +315,26 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId,
                                                               String status) { //todo test
-        if (!shelveRepository.existsByShelveId(shelveId)) {
-            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
-            throw new EntityNotFoundException(
-                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
-            );
-        }
-        if (!EnumUtils.isValidEnum(BookStatus.class, status)) {
-            log.info(ENUM_NOT_FOUND_MSG, status);
-            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, status));
-        }
-        BookStatus bookStatus = BookStatus.valueOf(status);
-        Pageable pageWithBooks = PageRequest.of(pageNumber - 1, TWENTY_FIVE);
-        Page<Book> booksByShelveIdAndStatus =
-                bookRepository.selectBooksByPageAndShelveIdAndBookStatus(shelveId, bookStatus, pageWithBooks);
-        if (booksByShelveIdAndStatus.isEmpty()) {
-            log.info(NOTHING_WAS_FOUND_MSG);
-            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
-        }
-        return booksByShelveIdAndStatus;
+//        if (!shelveRepository.existsByShelveId(shelveId)) {
+//            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
+//            throw new EntityNotFoundException(
+//                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
+//            );
+//        }
+//        if (!EnumUtils.isValidEnum(BookStatus.class, status)) {
+//            log.info(ENUM_NOT_FOUND_MSG, status);
+//            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, status));
+//        }
+//        BookStatus bookStatus = BookStatus.valueOf(status);
+//        Pageable pageWithBooks = PageRequest.of(pageNumber - 1, TWENTY_FIVE);
+//        Page<Book> booksByShelveIdAndStatus =
+//                bookRepository.selectBooksByPageAndShelveIdAndBookStatus(shelveId, bookStatus, pageWithBooks);
+//        if (booksByShelveIdAndStatus.isEmpty()) {
+//            log.info(NOTHING_WAS_FOUND_MSG);
+//            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+//        }
+//        return booksByShelveIdAndStatus;
+        return null;
     }
 
     @Override
@@ -905,9 +906,20 @@ public class BookServiceImpl implements BookService {
                     String.format(REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
             );
         }
-        averageBookReviewScore = BigDecimal.valueOf(averageBookReviewScore)
-                .setScale(1, RoundingMode.HALF_UP).doubleValue();
-        return averageBookReviewScore;
+        return BigDecimal.valueOf(averageBookReviewScore)
+                .setScale(1, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
+
+    @Override
+    public Double findBookScoreForUser(Long userId, Long bookId) { //todo test
+        Double bookScoreOfUser = reviewRepository
+                .selectBookScoreByUserIdAndBookId(userId, bookId)
+                .orElseThrow(() -> new NothingFoundException(NOTHING_WAS_FOUND_MSG));
+
+        return BigDecimal.valueOf(bookScoreOfUser)
+                .setScale(1, RoundingMode.HALF_EVEN)
+                .doubleValue();
     }
 
     @Override
@@ -957,60 +969,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void changeBookStatusOnShelve(String newStatus, Long shelveId, Long bookId) { //todo test
-        if (!shelveRepository.bookExistsByShelveIdAndBookId(shelveId, bookId)) {
-            log.info(BOOK_NOT_FOUND_ON_SHELVE, bookId, shelveId);
-            throw new NothingFoundException(
-                    String.format(BOOK_NOT_FOUND_ON_SHELVE, bookId, shelveId)
-            );
-        }
-        if (!EnumUtils.isValidEnum(BookStatus.class, newStatus)) {
-            log.info(ENUM_NOT_FOUND_MSG, newStatus);
-            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, newStatus));
-        }
-        shelveRepository.updateBookStatusByShelveIdAndBookId(newStatus, shelveId, bookId);
-    }
-
-    @Override
-    public boolean checkIfBookExistsInBookShelve(Long shelveId, Long bookId) { //todo test
-        if (!shelveRepository.existsByShelveId(shelveId)) {
-            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
-            throw new EntityNotFoundException(
-                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
-            );
-        }
-        if (!bookRepository.existsById(bookId)) {
-            log.info(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId);
-            throw new EntityNotFoundException(
-                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
-            );
-        }
-        return shelveRepository.bookExistsByShelveIdAndBookId(shelveId, bookId);
-    }
-
-    @Override
-    public Integer findNumberOfBooksOnBookShelve(Long shelveId, String status) { //todo test
-        if (!shelveRepository.existsByShelveId(shelveId)) {
-            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
-            throw new EntityNotFoundException(
-                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
-            );
-        }
-        if (!EnumUtils.isValidEnum(BookStatus.class, status)) {
-            log.info(ENUM_NOT_FOUND_MSG, status);
-            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, status));
-        }
-        BookStatus givenStatus = BookStatus.valueOf(status);
-        return shelveRepository
-                .selectCountBooksOnShelveByShelveIdAndBookStatus(shelveId, givenStatus)
-                .orElse(0);
-    }
-
-    @Override
     public BookStatus findBookStatusOnBookShelve(Long shelveId, Long bookId) { //todo test
-        return BookStatus.valueOf(shelveRepository.selectBookStatusByShelveIdAndBookId(shelveId, bookId)
+        return shelveRepository.selectBookStatusByShelveIdAndBookId(shelveId, bookId)
                 .orElseThrow(() -> new NothingFoundException(
                         String.format(BOOK_NOT_FOUND_ON_SHELVE, bookId, shelveId)
-                )));
+                ));
+    }
+
+    @Override
+    public List<ShelveBook> findShelveBooks(Long shelveId, BookStatus bookStatus) {
+        return shelveRepository.selectShelveBooks(shelveId, bookStatus);
     }
 }

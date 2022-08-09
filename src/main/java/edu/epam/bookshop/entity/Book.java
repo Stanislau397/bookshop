@@ -50,7 +50,6 @@ import static edu.epam.bookshop.entity.constant.TableName.BOOKS;
 import static edu.epam.bookshop.entity.constant.TableName.AUTHOR_BOOKS;
 import static edu.epam.bookshop.entity.constant.TableName.BOOK_GENRES;
 import static edu.epam.bookshop.entity.constant.TableName.PUBLISHER_BOOKS;
-import static edu.epam.bookshop.entity.constant.TableName.SHELVE_BOOKS;
 
 @Entity
 @Table(name = BOOKS)
@@ -117,13 +116,6 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = AUTHOR_ID_FK))
     @JsonIgnore
     private Set<Author> authors;
-
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = SHELVE_BOOKS,
-            joinColumns = @JoinColumn(name = BOOK_ID_FK),
-            inverseJoinColumns = @JoinColumn(name = SHELVE_ID_FK))
-    @JsonIgnore
-    private Set<BookShelve> bookShelves;
 
     @OneToMany(mappedBy = "reviewedBook")
     @JsonIgnore

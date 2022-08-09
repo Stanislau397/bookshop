@@ -2,6 +2,7 @@ package edu.epam.bookshop.controller;
 
 import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.service.BookService;
+import edu.epam.bookshop.service.BookShelveService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_BOOK_S
 public class BookShelveController {
 
     private BookService bookService;
+    private BookShelveService bookShelveService;
 
     @PostMapping(CREATE_SHELVE_FOR_USER)
     public ResponseEntity<Void> createShelve(String userName) {
@@ -28,26 +30,27 @@ public class BookShelveController {
     }
 
     @PostMapping(ADD_BOOK_TO_SHELVE)
-    public ResponseEntity<Void> saveBookToUserShelve(Long shelveId, Long bookId, BookStatus bookStatus) {
-        bookService.addBookToShelve(shelveId, bookId, bookStatus);
+    public ResponseEntity<Void> saveBookToUserShelve(Long shelveId, Long bookId) {
+        bookShelveService.addBookToShelve(shelveId, bookId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(UPDATE_BOOK_STATUS_ON_SHELVE)
     public ResponseEntity<Void> changeBookStatus(String bookStatus, Long bookId, Long shelveId) {
-        bookService.changeBookStatusOnShelve(bookStatus, shelveId, bookId);
+        bookShelveService.changeBookStatusByBookIdAndShelveId(bookStatus, bookId, shelveId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(CHECK_IF_BOOK_EXISTS_IN_SHELVE)
     public ResponseEntity<Boolean> isBookExistsInShelve(Long shelveId, Long bookId) {
-        Boolean bookExistsInShelve = bookService.checkIfBookExistsInBookShelve(shelveId, bookId);
+        Boolean bookExistsInShelve = bookShelveService.checkIfBookExistsInBookShelve(shelveId, bookId);
         return ResponseEntity.ok(bookExistsInShelve);
     }
 
     @GetMapping(FIND_NUMBER_OF_BOOKS_ON_SHELVE)
     public ResponseEntity<Integer> displayNumberOfBooksOnShelve(Long shelveId, String bookStatus) {
-        Integer numberOfBooksByStatus = bookService.findNumberOfBooksOnBookShelve(shelveId, bookStatus);
+        Integer numberOfBooksByStatus =
+                bookShelveService.findNumberOfBooksOnShelveByShelveIdAndBookStatus(shelveId, bookStatus);
         return ResponseEntity.ok(numberOfBooksByStatus);
     }
 

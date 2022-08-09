@@ -33,7 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +79,7 @@ class BookServiceTest {
 
     @Mock
     private BookShelveRepository shelveRepository;
+
 
     @Mock
     private BookReviewRepository reviewRepository;
