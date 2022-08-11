@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.CHECK_IF_USER_REVIEWED_GIVEN_BOOK;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AVERAGE_BOOK_REVIEW_SCORE_URN;
 import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN;
+import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_SCORE_FOR_USER_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_REVIEW_TO_BOOK_URN;
 import static edu.epam.bookshop.controller.constant.PostMappingURN.EDIT_REVIEW_URN;
 
@@ -52,5 +53,11 @@ public class ReviewController {
     public ResponseEntity<Double> displayAverageBookReviewScore(Long bookId) {
         Double averageBookReviewScore = bookService.findAverageBookReviewScoreByBookId(bookId);
         return ResponseEntity.ok(averageBookReviewScore);
+    }
+
+    @GetMapping(FIND_BOOK_SCORE_FOR_USER_URN)
+    public ResponseEntity<Double> displayBookScoreForUser(Long userId, Long bookId) {
+        Double bookScoreOfUser = bookService.findBookScoreOfUser(userId, bookId);
+        return ResponseEntity.ok(bookScoreOfUser);
     }
 }

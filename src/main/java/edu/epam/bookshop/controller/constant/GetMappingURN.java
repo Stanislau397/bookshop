@@ -79,4 +79,5 @@ public class GetMappingURN {
     public static final String FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN = "/findBookReviewsByBookIdAndPage";
     public static final String FIND_AVERAGE_BOOK_REVIEW_SCORE_URN = "/findAverageBookReviewScore";
     public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK = "/isUserReviewedGivenBook";
+    public static final String FIND_BOOK_SCORE_FOR_USER_URN = "/findBookScoreForUser";
 }

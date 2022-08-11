@@ -114,7 +114,7 @@ public interface BookService {
 
     Double findAverageBookReviewScoreByBookId(Long bookId);
 
-    Double findBookScoreForUser(Long userId, Long bookId);
+    Double findBookScoreOfUser(Long userId, Long bookId);
 
     Page<BookReview> findBookReviewsByBookIdAndPageNumber(Long bookId, Integer pageNumber);
 

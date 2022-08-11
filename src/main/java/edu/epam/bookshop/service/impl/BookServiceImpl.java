@@ -912,7 +912,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Double findBookScoreForUser(Long userId, Long bookId) { //todo test
+    public Double findBookScoreOfUser(Long userId, Long bookId) { //todo test
         Double bookScoreOfUser = reviewRepository
                 .selectBookScoreByUserIdAndBookId(userId, bookId)
                 .orElseThrow(() -> new NothingFoundException(NOTHING_WAS_FOUND_MSG));

@@ -6,13 +6,66 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/shelve_books.css}"/>
     <script type="text/javascript" th:src="@{/js/user/shelve_books.js}"></script>
     <script type="text/javascript" th:src="@{/js/service/book_service.js}"></script>
-    <script type="text/javascript" th:src="@{/js/service/book_review_service.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/header"></div>
 <div th:replace="fragment/account_head"></div>
+
+<div class="modal fade" id="editBookStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="right-side">
+                    <h5 class="modal-title"
+                        th:text="#{action_choice}"></h5>
+                    <h5 id="book_title_in_modal_header"
+                        class="book-title-in-header"></h5>
+                </div>
+                <div class="left-side">
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="book_id" value="">
+                <input type="hidden" id="shelve_id" value="">
+                <div class="choice">
+                    <input type="radio" name="choice" value="WANT_TO_READ" id="want_to_read">
+                    <label for="want_to_read" th:text="#{want_to_read}" id="label1"></label>
+                </div>
+                <div class="choice">
+                    <input type="radio" name="choice" value="READ" id="read">
+                    <label for="read" th:text="#{read}" id="label2"></label>
+                </div>
+                <div class="choice">
+                    <input type="radio" name="choice" value="CURRENTLY_READING" id="currently_reading">
+                    <label for="currently_reading" th:text="#{currently_reading}" id="label3"></label>
+                </div>
+                <div class="choice">
+                    <input type="radio" name="choice" value="DIDNT_FINISH" id="didnt_finish">
+                    <label for="didnt_finish" th:text="#{didnt_finish}" id="label4"></label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        th:text="#{close}">
+
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="editBookStatusOnShelve()"
+                        th:text="#{change}">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <input type="hidden" id="score" th:value="#{score}">
 <input type="hidden" id="my_score" th:value="#{my_score}">
+<input type="hidden" id="users_score_text" th:value="#{users_score}">
 <div class="shelve-books-container" id="shelve_books_container">
 
 </div>

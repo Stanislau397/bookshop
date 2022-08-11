@@ -25,21 +25,21 @@
         </div>
     </div>
     <div class="items">
+        <input type="hidden" id="want_to_read_text" th:value="#{want_to_read}">
+        <input type="hidden" id="read_text" th:value="#{read}">
+        <input type="hidden" id="currently_reading_text" th:value="#{currently_reading}">
         <button class="books-link"
                 id="want_to_read_link"
                 value="WANT_TO_READ"
-                onclick="displayBooksByStatus(this.value)"
-                th:text="#{want_to_read}"></button>
+                onclick="displayBooksByStatus(this.value)"></button>
         <button class="books-link"
                 id="read_link"
                 value="READ"
-                onclick="displayBooksByStatus(this.value)"
-                th:text="#{read}"></button>
+                onclick="displayBooksByStatus(this.value)"></button>
         <button class="books-link"
                 id="currently_reading_link"
                 value="CURRENTLY_READING"
-                onclick="displayBooksByStatus(this.value)"
-                th:text="#{currently_reading}"></button>
+                onclick="displayBooksByStatus(this.value)"></button>
     </div>
 </div>
 </body>
