@@ -11,27 +11,27 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.MAIN_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.REGISTRATION_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.LOGIN_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.ADMIN_CABINET_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_USERS_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USERS_WITH_PAGINATION_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.ACCOUNT_SETTINGS_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.ALL_AUTHORS_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHOR_INFO_BY_ID_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_KEYWORD_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_PAGE_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.EDIT_AUTHOR_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.MAIN_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.REGISTRATION_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.LOGIN_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.ADMIN_CABINET_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.ALL_USERS_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_USERS_WITH_PAGINATION_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.ACCOUNT_SETTINGS_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.ALL_AUTHORS_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_AUTHOR_INFO_BY_ID_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_AUTHORS_BY_KEYWORD_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_AUTHORS_BY_PAGE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.EDIT_AUTHOR_URN;
 
-import static edu.epam.bookshop.controller.constant.PostMappingURN.REGISTER_USER_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_STATUS_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_AVATAR_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_PASSWORD_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_ROLE_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_AUTHOR_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_AUTHOR_INFO_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_AUTHOR_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.REGISTER_USER_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_USER_STATUS_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_USER_AVATAR_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_USER_PASSWORD_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_USER_ROLE_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_AUTHOR_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_AUTHOR_INFO_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.DELETE_AUTHOR_URN;
 
 @Configuration
 @AllArgsConstructor

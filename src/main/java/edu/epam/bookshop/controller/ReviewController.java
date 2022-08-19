@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.CHECK_IF_USER_REVIEWED_GIVEN_BOOK;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AVERAGE_BOOK_REVIEW_SCORE_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_SCORE_FOR_USER_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_REVIEW_TO_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.EDIT_REVIEW_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.CHECK_IF_USER_REVIEWED_GIVEN_BOOK;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_AVERAGE_BOOK_REVIEW_SCORE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOK_REVIEWS_BY_BOOK_ID_AND_PAGE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOK_SCORE_FOR_USER_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_REVIEW_TO_BOOK_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.EDIT_REVIEW_URN;
 
 @RestController
 @AllArgsConstructor

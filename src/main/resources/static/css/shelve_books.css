@@ -1,0 +1,175 @@
+.shelve-books-container {
+    margin-left: 12%;
+    overflow: hidden;
+    width: 76%;
+    padding-bottom: 20px;
+    font-family: IBM Plex Sans, sans-serif;
+}
+
+.shelve-books-container .shelve-book {
+    margin-left: 7%;
+    margin-top: 2%;
+    padding-bottom: 10px;
+    width: 60%;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+
+.shelve-book .shelve-book-image-container {
+    float: left;
+    overflow: hidden;
+    width: 100px;
+}
+
+.shelve-book-image-container .shelve-book-image {
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 90px;
+    height: 125px;
+    object-fit: fill;
+    border-radius: 2px;
+}
+
+.shelve-book .shelve-book-info {
+    float: left;
+    margin-left: 10px;
+    width: 83%;
+}
+
+.shelve-book-info .shelve-book-info-head {
+    margin-top: 5px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.shelve-book-info-head .shelve-book-title {
+    float: left;
+    width: 85%;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.shelve-book-title a {
+    text-decoration: none;
+    color: black;
+}
+
+.shelve-book-info-head .shelve-book-actions {
+    margin-left: 5%;
+    width: 10%;
+    float: left;
+}
+
+.shelve-book-actions .delete-from-shelve-btn {
+    width: 25px;
+    height: 25px;
+    margin-left: 2px;
+    border: 1px solid crimson;
+    align-items: center;
+}
+
+.shelve-book-actions .delete-from-shelve-btn i {
+    font-size: 22px;
+    color: crimson;
+    margin-left: -8.5px;
+    transform: translateY(-6px);
+}
+
+.shelve-book-actions .edit-book-on-shelve-btn {
+    width: 25px;
+    height: 25px;
+    border: 1px solid dodgerblue;
+    align-items: center;
+}
+
+.shelve-book-actions .edit-book-on-shelve-btn i {
+    font-size: 22px;
+    color: dodgerblue;
+    margin-left: -10px;
+    transform: translateY(-5px);
+}
+
+.shelve-book-info .shelve-book-author,
+.shelve-book-info .shelve-book-genres,
+.shelve-book-info .shelve-book-my-score {
+    width: 100%;
+    overflow: hidden;
+}
+
+.shelve-book-author a {
+    color: #2c293b;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.shelve-book-genres a {
+    text-decoration: none;
+    color: #573ba3;
+    border: 1px solid #573ba3;
+    font-size: 16px;
+    padding: 2px 2px;
+}
+
+.shelve-book-my-score .my-score-btn {
+    margin-left: -12px;
+}
+
+.shelve-book-info .shelve-book-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 17px;
+}
+
+.shelve-book-info .arrow-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.shelve-book-info .arrow-container .fa-angle-down,
+.shelve-book-info .arrow-container .fa-angle-up {
+    float: right;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.modal-body .choice {
+    width: 100%;
+    height: 40px;
+    padding: 5px 5px;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 19px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #4099ed;
+    display: inline-block;
+}
+
+.modal-body .choice label {
+    width: 95%;
+}
+
+label:hover {
+    cursor: pointer;
+}
+
+.modal-body .choice:hover {
+    color: #0f5699;
+}
+
+.modal-header .right-side {
+    float: left;
+}
+
+.modal-header .left-side {
+    float: left;
+    margin-top: -30px;
+}
+
+.modal-header .book-title-in-header {
+    color: #3e3f40;
+    font-weight: normal;
+}
+

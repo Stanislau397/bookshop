@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.CHECK_IF_BOOK_EXISTS_IN_SHELVE;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_STATUS_ON_SHELVE;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_NUMBER_OF_BOOKS_ON_SHELVE;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_TO_SHELVE;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.CREATE_SHELVE_FOR_USER;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_BOOK_STATUS_ON_SHELVE;
+import static edu.epam.bookshop.constant.GetMappingURN.CHECK_IF_BOOK_EXISTS_IN_SHELVE;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOK_STATUS_ON_SHELVE;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_NUMBER_OF_BOOKS_ON_SHELVE;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_BOOK_TO_SHELVE;
+import static edu.epam.bookshop.constant.PostMappingURN.CREATE_SHELVE_FOR_USER;
+import static edu.epam.bookshop.constant.PostMappingURN.DELETE_SHELVE_BOOK_FROM_BOOK_SHELVE;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_BOOK_STATUS_ON_SHELVE;
 
 @RestController
 @AllArgsConstructor
@@ -32,6 +33,12 @@ public class BookShelveController {
     @PostMapping(ADD_BOOK_TO_SHELVE)
     public ResponseEntity<Void> saveBookToUserShelve(Long shelveId, Long bookId) {
         bookShelveService.addBookToShelve(shelveId, bookId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(DELETE_SHELVE_BOOK_FROM_BOOK_SHELVE)
+    public ResponseEntity<Void> deleteShelveBookFromBookShelve(Long shelveId, Long bookId) {
+        bookShelveService.removeShelveBookFromBookShelve(shelveId, bookId);
         return ResponseEntity.ok().build();
     }
 

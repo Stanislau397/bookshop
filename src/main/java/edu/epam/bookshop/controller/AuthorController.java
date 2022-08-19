@@ -12,17 +12,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_AUTHORS_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_BOOK_ID_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHOR_INFO_BY_ID_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_KEYWORD_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_AUTHORS_BY_PAGE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_ALL_AUTHORS_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_AUTHORS_BY_BOOK_ID_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_AUTHOR_INFO_BY_ID_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_AUTHORS_BY_KEYWORD_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_AUTHORS_BY_PAGE_URN;
 
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_AUTHOR_TO_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_AUTHOR_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_AUTHOR_FROM_BOOK;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_AUTHOR_INFO_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_AUTHOR_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_AUTHOR_TO_BOOK_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_AUTHOR_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.DELETE_AUTHOR_FROM_BOOK;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_AUTHOR_INFO_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.DELETE_AUTHOR_URN;
 
 @RestController
 @AllArgsConstructor

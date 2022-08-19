@@ -12,18 +12,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHERS_BY_BOOK_ID_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.PUBLISHER_EXISTS_BY_NAME_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_PUBLISHERS_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHERS_BY_KEYWORD_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHER_BY_NAME_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_PUBLISHERS_BY_PAGE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_PUBLISHERS_BY_BOOK_ID_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.PUBLISHER_EXISTS_BY_NAME_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_ALL_PUBLISHERS_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_PUBLISHERS_BY_KEYWORD_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_PUBLISHER_BY_NAME_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_PUBLISHERS_BY_PAGE_URN;
 
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_PUBLISHER_TO_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_PUBLISHER_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_PUBLISHER_FROM_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_PUBLISHER_INFO_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_PUBLISHER_BY_ID;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_PUBLISHER_TO_BOOK_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_PUBLISHER_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.DELETE_PUBLISHER_FROM_BOOK_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_PUBLISHER_INFO_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.DELETE_PUBLISHER_BY_ID;
 
 @AllArgsConstructor
 @RestController

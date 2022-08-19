@@ -192,6 +192,10 @@ public class SqlQuery {
     public static final String INSERT_BOOK_TO_SHELVE =
             "INSERT INTO shelve_books (shelve_id_fk, book_id_fk, book_status) " +
                     "VALUES(?, ?, ?)";
+    public static final String DELETE_BOOK_FROM_SHELVE =
+            "DELETE FROM shelve_books " +
+                    "WHERE shelve_id_fk = (?) " +
+                    "AND book_id_fk = (?)";
     public static final String CHECK_IF_SHELVE_EXISTS_BY_ID =
             "SELECT CASE WHEN COUNT(bs.bookShelveId) > 0 " +
                     "THEN 'true' ELSE 'false' END " +

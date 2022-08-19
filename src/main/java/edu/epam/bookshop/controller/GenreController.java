@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_BOOK_ID_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_KEYWORD_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_FOR_AUTHOR_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.GENRE_EXISTS_BY_TITLE_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_GENRES_BY_PAGE_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_GENRES_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_GENRES_BY_BOOK_ID_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_GENRES_BY_KEYWORD_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_GENRES_FOR_AUTHOR_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.GENRE_EXISTS_BY_TITLE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_GENRES_BY_PAGE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_ALL_GENRES_URN;
 
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_GENRE_TO_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_GENRE_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.REMOVE_GENRE_FROM_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_GENRE_TITLE_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.DELETE_GENRE_BY_ID_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_GENRE_TO_BOOK_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_GENRE_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.REMOVE_GENRE_FROM_BOOK_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_GENRE_TITLE_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.DELETE_GENRE_BY_ID_URN;
 
 @AllArgsConstructor
 @RestController

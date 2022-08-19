@@ -12,20 +12,20 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Set;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.CHECK_IF_USER_NAME_TAKEN_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.CHECK_IF_EMAIL_TAKEN_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USERS_WITH_PAGINATION_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USERS_BY_KEYWORD;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USER_BY_REVIEW_ID;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USER_BY_USERNAME;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_ALL_ROLES;
+import static edu.epam.bookshop.constant.GetMappingURN.CHECK_IF_USER_NAME_TAKEN_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.CHECK_IF_EMAIL_TAKEN_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_USERS_WITH_PAGINATION_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_USERS_BY_KEYWORD;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_USER_BY_REVIEW_ID;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_USER_BY_USERNAME;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_ALL_ROLES;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_USER_ROLES_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.REGISTER_USER_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_STATUS_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_AVATAR_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_PASSWORD_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_USER_ROLE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_USER_ROLES_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.REGISTER_USER_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_USER_STATUS_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_USER_AVATAR_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_USER_PASSWORD_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_USER_ROLE_URN;
 
 @RestController
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package edu.epam.bookshop.controller.constant;
+package edu.epam.bookshop.constant;
 
 public class HtmlPage {
 

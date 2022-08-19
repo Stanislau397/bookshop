@@ -14,20 +14,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static edu.epam.bookshop.controller.constant.GetMappingURN.COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD_AND_PAGE;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_BY_YEAR_AND_PAGE_URN;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_BOOK_DETAILS;
-import static edu.epam.bookshop.controller.constant.GetMappingURN.FIND_EXISTING_YEARS_IN_BOOKS_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_TO_AUTHOR_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.ADD_BOOK_URN;
-import static edu.epam.bookshop.controller.constant.PostMappingURN.UPDATE_BOOK_INFO_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD_AND_PAGE;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_PAGE;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_YEAR_AND_PAGE_URN;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOK_DETAILS;
+import static edu.epam.bookshop.constant.GetMappingURN.FIND_EXISTING_YEARS_IN_BOOKS_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_BOOK_TO_AUTHOR_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_BOOK_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_BOOK_INFO_URN;
 
 @AllArgsConstructor
 @RestController
