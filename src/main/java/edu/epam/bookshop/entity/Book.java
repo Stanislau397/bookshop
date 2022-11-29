@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import edu.epam.bookshop.annotation.ValidateBookIsbn;
 import edu.epam.bookshop.annotation.ValidateBookPages;
+import edu.epam.bookshop.annotation.ValidateBookPrice;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -26,17 +27,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import static edu.epam.bookshop.constant.InvalidInputMessage.BOOK_PRICE_CAN_NOT_BE_EMPTY_MSG;
-import static edu.epam.bookshop.constant.InvalidInputMessage.INVALID_MAX_VALUE_FOR_BOOK_PRICE_INPUT;
-import static edu.epam.bookshop.constant.InvalidInputMessage.INVALID_MIN_VALUE_FOR_BOOK_PRICE_INPUT;
 import static edu.epam.bookshop.entity.constant.PropertyId.BOOK_ID_PROPERTY;
 
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
@@ -80,11 +75,7 @@ public class Book {
     private String title;
 
     @Column(name = PRICE)
-    @NotNull(message = BOOK_PRICE_CAN_NOT_BE_EMPTY_MSG)
-    @DecimalMin(value = "0.1",
-            message = INVALID_MIN_VALUE_FOR_BOOK_PRICE_INPUT)
-    @DecimalMax(value = "1000",
-            message = INVALID_MAX_VALUE_FOR_BOOK_PRICE_INPUT)
+    @ValidateBookPrice
     private BigDecimal price;
 
     @Column(name = IMAGE_PATH)
