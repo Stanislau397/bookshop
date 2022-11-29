@@ -117,6 +117,10 @@ public class ExceptionMessage {
 
     public static final String GENRE_NOT_FOUND_FOR_GIVEN_BOOK = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("genre_not_found_for_book");
+    public static final String GENRE_WITH_GIVEN_TITLE_AND_LANGUAGE_EXISTS = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genre_by_given_title_and_language_exists");
+    public static final String GENRES_WITH_GIVEN_BOOK_ID_AND_LANGUAGE_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("localized_genres_by_book_id_and_language_not_found");
 
     public static final String GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("genres_by_given_book_id_not_found");
@@ -124,39 +128,30 @@ public class ExceptionMessage {
     //book
     public static final String BOOK_TITLE_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_title_is_invalid");
-
     public static final String BOOK_WITH_GIVEN_TITLE_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_with_given_title_not_found");
-
     public static final String BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("books_with_given_keyword_not_found");
-
     public static final String BOOK_WITH_GIVEN_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_with_given_id_not_found");
-
     public static final String BOOK_DESCRIPTION_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_description_is_invalid");
-
     public static final String BOOK_PRICE_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_price_is_invalid");
-
     public static final String BOOK_PAGES_FIELD_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_pages_is_invalid");
-
     public static final String BOOK_ISBN_IS_NOT_VALID = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("bool_isbn_is_invalid");
-
     public static final String BOOK_DOES_NOT_EXIST_FOR_AUTHOR = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_does_not_exist_for_author");
-
     public static final String BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("books_by_given_genre_title_not_found");
-
     public static final String BOOKS_BY_GIVEN_YEAR_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("books_by_given_year_not_found");
-
     public static final String BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("books_with_score_greater_than_not_found");
+    public static final String BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("localized_book_with_given_title_and_language_not_found");
 
     //review
     public static final String REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
@@ -168,4 +163,11 @@ public class ExceptionMessage {
 
     public static final String BOOK_NOT_FOUND_ON_SHELVE = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("book_not_found_on_shelve");
+
+    //language
+    public static final String GIVEN_LANGUAGE_DOES_NOT_EXIST = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("language_does_not_exist");
+    public static final String GENRES_BY_GIVEN_LANGUAGE_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
+            .getString("genres_by_given_language_not_found");
+
 }

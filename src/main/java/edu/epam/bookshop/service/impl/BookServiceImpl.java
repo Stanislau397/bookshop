@@ -7,6 +7,9 @@ import edu.epam.bookshop.entity.BookShelve;
 import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.Genre;
+import edu.epam.bookshop.entity.Language;
+import edu.epam.bookshop.entity.LocalizedBook;
+import edu.epam.bookshop.entity.LocalizedGenre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.entity.ShelveBook;
 import edu.epam.bookshop.entity.User;
@@ -19,14 +22,15 @@ import edu.epam.bookshop.repository.BookRepository;
 import edu.epam.bookshop.repository.BookReviewRepository;
 import edu.epam.bookshop.repository.BookShelveRepository;
 import edu.epam.bookshop.repository.GenreRepository;
+import edu.epam.bookshop.repository.LocalizedBookRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.repository.UserRepository;
 import edu.epam.bookshop.service.BookService;
+import edu.epam.bookshop.service.LanguageService;
 import edu.epam.bookshop.util.ImageUploaderUtil;
 import edu.epam.bookshop.validator.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.EnumUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,12 +48,11 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_BY_GIVEN_YEAR_NO
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND;
+import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_NOT_FOUND_ON_SHELVE;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_TITLE_NOT_FOUND;
-import static edu.epam.bookshop.constant.ExceptionMessage.ENUM_NOT_FOUND_MSG;
-import static edu.epam.bookshop.constant.ExceptionMessage.GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_NOT_FOUND_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.IMAGE_IS_NOT_VALID_MSG;
@@ -69,16 +72,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_WITH_GIVEN_N
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_DESCRIPTION_IS_INVALID;
 import static edu.epam.bookshop.constant.ExceptionMessage.PUBLISHER_NAME_IS_INVALID;
 
-import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_TITLE_IS_NOT_VALID;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_WITH_GIVEN_ID_NOT_FOUND;
-import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_WITH_GIVEN_TITLE_EXISTS;
-import static edu.epam.bookshop.constant.ExceptionMessage.GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND;
-
-import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_TITLE_IS_NOT_VALID;
-import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DESCRIPTION_IS_NOT_VALID;
-import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PAGES_FIELD_IS_NOT_VALID;
-import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_PRICE_IS_NOT_VALID;
-import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_ISBN_IS_NOT_VALID;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.REVIEWS_BY_GIVEN_BOOK_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.SHELVE_WITH_GIVEN_ID_NOT_FOUND;
@@ -97,6 +91,7 @@ import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_DIRECTORY_PATH;
 import static edu.epam.bookshop.constant.ImageStoragePath.BOOK_LOCALHOST_PATH;
 
 import static edu.epam.bookshop.service.ItemsLimit.FIFTEEN;
+import static edu.epam.bookshop.service.ItemsLimit.SIX;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -105,7 +100,7 @@ import static java.util.Objects.nonNull;
 public class BookServiceImpl implements BookService {
 
     private static final int ELEMENTS_PER_PAGE = 6;
-    private static final int BOOKS_PER_PAGE = 20;
+    private static final int BOOKS_PER_PAGE = 10;
     private final BookRepository bookRepository;
     private final BookReviewRepository reviewRepository;
     private final AuthorRepository authorRepository;
@@ -113,94 +108,101 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
     private final UserRepository userRepository;
     private final BookShelveRepository shelveRepository;
+    private final LocalizedBookRepository localizedBookRepository;
+    private LanguageService languageService;
 
     private BookValidator bookValidator;
     private GenreValidator genreValidator;
     private PublisherValidator publisherValidator;
     private AuthorValidator authorValidator;
     private ImageValidator imageValidator;
+    private LanguageValidator languageValidator;
 
 
     @Override
-    public void addBook(Book book, MultipartFile bookImage) { //todo test
-        if (!bookValidator.isBookTitleValid(book.getTitle())) {
-            log.info(BOOK_TITLE_IS_NOT_VALID);
-            throw new InvalidInputException(BOOK_TITLE_IS_NOT_VALID);
-        }
-        if (!bookValidator.isDescriptionValid(book.getDescription())) {
-            log.info(BOOK_DESCRIPTION_IS_NOT_VALID);
-            throw new InvalidInputException(BOOK_DESCRIPTION_IS_NOT_VALID);
-        }
-        if (!bookValidator.isPagesValid(book.getPages())) {
-            log.info(BOOK_PAGES_FIELD_IS_NOT_VALID);
-            throw new InvalidInputException(BOOK_PAGES_FIELD_IS_NOT_VALID);
-
-        }
-        if (!bookValidator.isIsbnValid(book.getIsbn())) {
-            log.info(BOOK_ISBN_IS_NOT_VALID);
-            throw new InvalidInputException(BOOK_ISBN_IS_NOT_VALID);
-        }
-        if (!bookValidator.isPriceValid(book.getPrice())) {
-            log.info(BOOK_PRICE_IS_NOT_VALID);
-            throw new InvalidInputException(BOOK_PRICE_IS_NOT_VALID);
-        }
-        String imagePathForBook = DEFAULT_BOOK_IMAGE_PATH;
-        if (nonNull(bookImage) && nonNull(bookImage.getOriginalFilename())) {
-            String imageName = bookImage.getOriginalFilename();
-            if (!imageValidator.isImageValid(imageName)) {
-                throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
-            }
-            imagePathForBook = BOOK_LOCALHOST_PATH
-                    .concat(ImageUploaderUtil.save(bookImage, BOOK_DIRECTORY_PATH));
-        }
-
+    public void addBook(Book book, LocalizedBook localizedBook, MultipartFile bookImage, String languageName) { //todo test
+        Language givenLanguage = languageService.findLanguageByName(languageName);
         Book bookToSave = Book.builder()
-                .title(book.getTitle())
-                .description(book.getDescription())
-                .publishDate(book.getPublishDate())
                 .coverType(book.getCoverType())
                 .isbn(book.getIsbn())
-                .imagePath(imagePathForBook)
                 .pages(book.getPages())
                 .price(book.getPrice())
                 .build();
-        bookRepository.save(bookToSave);
+        Book savedBook = bookRepository.save(bookToSave);
+        String imagePathForBook = DEFAULT_BOOK_IMAGE_PATH;
+        if (nonNull(bookImage)) {
+            imagePathForBook = BOOK_LOCALHOST_PATH
+                    .concat(ImageUploaderUtil.save(bookImage, BOOK_DIRECTORY_PATH));
+        }
+        LocalizedBook localizedBookToSave = LocalizedBook.builder()
+                .title(localizedBook.getTitle())
+                .description(localizedBook.getDescription())
+                .imagePath(imagePathForBook)
+                .book(savedBook)
+                .language(givenLanguage)
+                .build();
+        localizedBookRepository.save(localizedBookToSave);
     }
 
     @Override
-    public boolean updateBookInfo(Book book, MultipartFile newBookImage) { //todo test
-        boolean isBookUpdated = false;
-        Long bookId = book.getBookId();
-        String title = book.getTitle();
-        BigDecimal price = book.getPrice();
-        String description = book.getDescription();
-        Integer pages = book.getPages();
-        String isbn = book.getIsbn();
-        CoverType coverType = book.getCoverType();
-        LocalDate publishDate = book.getPublishDate();
-        String imagePath = book.getImagePath();
+    public void addLocalizationToExistingBook(LocalizedBook givenLocalizedBook, MultipartFile localizedImage, String languageName) {
+        Long bookId = givenLocalizedBook.getBook().getBookId();
+        Language givenLanguage = languageService.findLanguageByName(languageName);
+        Book givenBook = findBookById(bookId);
+        String imagePathForBook = givenLocalizedBook.getImagePath();
+        if (nonNull(localizedImage)) {
+            imagePathForBook = BOOK_LOCALHOST_PATH
+                    .concat(ImageUploaderUtil.save(localizedImage, BOOK_DIRECTORY_PATH));
+        }
+        LocalizedBook localizedBookToSave = LocalizedBook.builder()
+                .title(givenLocalizedBook.getTitle())
+                .description(givenLocalizedBook.getDescription())
+                .imagePath(imagePathForBook)
+                .language(givenLanguage)
+                .book(givenBook)
+                .build();
+        localizedBookRepository.save(localizedBookToSave);
+    }
 
-        if (!bookRepository.existsById(bookId)) {
+    @Override
+    public boolean updateBookInfo(Book book, LocalizedBook localizedBook, MultipartFile newBookImage) { //todo test
+        boolean isBookUpdated = false;
+        long localizedBookId = localizedBook.getLocalizedBookId();
+        long bookId = book.getBookId();
+        String updatedTitle = localizedBook.getTitle();
+        String updatedDescription = localizedBook.getDescription();
+        String updatedImagePath = localizedBook.getImagePath();
+        String updatedIsbn = book.getIsbn();
+        int updatedPages = book.getPages();
+        LocalDate updatePublishDate = book.getPublishDate();
+        BigDecimal updatedPrice = book.getPrice();
+        CoverType updatedCoverType = book.getCoverType();
+
+        if (bookValidator.isBookDataValid(updatedTitle, updatedPrice, updatedDescription, updatedPages, updatedIsbn)) {
+            if (imageValidator.isImageNotNull(newBookImage)
+                    && imageValidator.isImageValid(newBookImage.getOriginalFilename())) {
+                updatedImagePath = BOOK_LOCALHOST_PATH
+                        .concat(ImageUploaderUtil
+                                .save(newBookImage, BOOK_DIRECTORY_PATH));
+            }
+            isBookUpdated = true;
+        }
+
+        bookRepository.updateInfoById(updatedPrice, updatedPages, updatedIsbn, updatedCoverType, updatePublishDate, bookId);
+        localizedBookRepository.updateByLocalizedBookId(updatedTitle, updatedImagePath, updatedDescription, localizedBookId);
+        return isBookUpdated;
+    }
+
+    @Override
+    public boolean bookExistsById(Long bookId) {
+        boolean bookExists = bookRepository.existsById(bookId);
+        if (!bookExists) {
             log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
             throw new EntityNotFoundException(
                     String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
             );
         }
-        if (bookValidator.isBookDataValid(title, price, description, pages, isbn)) {
-
-            if (nonNull(newBookImage) && nonNull(newBookImage.getOriginalFilename())) {
-                String bookImageName = newBookImage.getOriginalFilename();
-                if (!imageValidator.isImageValid(bookImageName)) {
-                    throw new InvalidInputException(IMAGE_IS_NOT_VALID_MSG);
-                }
-                imagePath = BOOK_LOCALHOST_PATH
-                        .concat(ImageUploaderUtil.save(newBookImage, BOOK_DIRECTORY_PATH));
-            }
-            bookRepository.updateInfoById(title, price, description, pages,
-                    isbn, imagePath, coverType, publishDate, bookId);
-            isBookUpdated = true;
-        }
-        return isBookUpdated;
+        return bookExists;
     }
 
     @Override
@@ -212,6 +214,52 @@ public class BookServiceImpl implements BookService {
                             String.format(BOOK_WITH_GIVEN_TITLE_NOT_FOUND, bookTitle)
                     );
                 });
+    }
+
+    @Override
+    public Book findBookByLocalizedBookTitle(String title) {
+        return bookRepository.selectBookByLocalizedBookTitle(title)
+                .orElseThrow();
+    }
+
+    @Override
+    public Book findBookById(Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> {
+                    log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
+                    throw new EntityNotFoundException(
+                            String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+                    );
+                });
+    }
+
+    @Override
+    public LocalizedBook findLocalizedBookDetailsByTitleAndLanguage(String title, String languageName) {
+        Language language = languageService.findLanguageByName(languageName);
+        long languageId = language.getLanguageId();
+        LocalizedBook localizedBookDetails = localizedBookRepository
+                .selectLocalizedBookByBookIdAndLanguageId(title, languageId)
+                .orElseThrow(() -> {
+                    log.info(String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, title, languageName));
+                    throw new EntityNotFoundException(
+                            String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, title, languageName)
+                    );
+                });
+        return localizedBookDetails;
+    }
+
+    @Override
+    public Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, int pageNumber) {
+        Pageable pageWithLocalizedBooks = PageRequest.of(pageNumber - 1, SIX);
+        Language selectedLanguage = languageService.findLanguageByName(languageName);
+        long languageId = selectedLanguage.getLanguageId();
+        Page<LocalizedBook> localizedBooksByPage =
+                localizedBookRepository.selectAllLocalizedBooksByLanguageIdAndPage(languageId, pageWithLocalizedBooks);
+        if (localizedBooksByPage.isEmpty()) {
+            log.info(NOTHING_WAS_FOUND_MSG);
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
+        }
+        return localizedBooksByPage;
     }
 
     @Override
@@ -231,19 +279,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findTop15BooksHavingAverageScoreGreaterThan(Double score) { //todo test
-        List<Book> booksWithHighScore =
-                bookRepository.selectBooksHavingAverageScoreGreaterThan(score)
-                        .stream()
-                        .limit(FIFTEEN)
-                        .toList();
-        if (booksWithHighScore.isEmpty()) {
-            log.info(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score);
+    public List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score) {//todo test
+        Language language = languageService.findLanguageByName(languageName);
+        List<LocalizedBook> localizedBooksWithHighScore = localizedBookRepository
+                .selectByLanguageIdAvgScoreGreaterThan(language.getLanguageId(), score)
+                .stream()
+                .limit(FIFTEEN)
+                .toList();
+        if (localizedBooksWithHighScore.isEmpty()) {
             throw new NothingFoundException(
                     String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score)
             );
         }
-        return booksWithHighScore;
+        return localizedBooksWithHighScore;
     }
 
     @Override
@@ -285,10 +333,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findBooksByGenreTitleAndPageNumber(String genreTitle, Integer pageNumber) { //todo test
+    public Page<Book> findBooksByLocalizedGenreTitleAndPageNumber(String genreTitle, Integer pageNumber) { //todo test
         Pageable pageWithBooksByGenreTitle = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
         Page<Book> booksByGenreTitle =
-                bookRepository.selectBooksByGenreTitleAndPage(genreTitle, pageWithBooksByGenreTitle);
+                bookRepository.selectByLocalizedGenreTitleAndPage(genreTitle, pageWithBooksByGenreTitle);
         if (booksByGenreTitle.isEmpty()) {
             log.info(String.format(BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND, genreTitle));
             throw new NothingFoundException(
@@ -352,16 +400,29 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void addGenre(Genre genre) {
-        String genreTitle = genre.getTitle();
-        if (!genreValidator.isTitleValid(genreTitle)) {
-            log.info(GENRE_TITLE_IS_NOT_VALID);
-            throw new InvalidInputException(GENRE_TITLE_IS_NOT_VALID);
-        }
-        if (genreRepository.existsByTitle(genreTitle)) {
-            log.info(String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
-            throw new EntityAlreadyExistsException(
-                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
-        }
+//        String genreTitle = genre.getTitle();
+//        if (!genreValidator.isTitleValid(genreTitle)) {
+//            log.info(GENRE_TITLE_IS_NOT_VALID);
+//            throw new InvalidInputException(GENRE_TITLE_IS_NOT_VALID);
+//        }
+//        if (genreRepository.existsByTitle(genreTitle)) {
+//            log.info(String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
+//            throw new EntityAlreadyExistsException(
+//                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
+//        }
+//        genreRepository.save(genre);
+    }
+
+    @Override
+    public void addGGG(List<LocalizedGenre> localizedGenres) {
+        Genre genre = Genre.builder()
+                .build();
+        localizedGenres.stream()
+                .map(e -> {
+                    e.setGenre(genre);
+                    return e;
+                });
+        genre.setLocalizedGenres(localizedGenres);
         genreRepository.save(genre);
     }
 
@@ -411,31 +472,32 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateGenreTitle(Genre genre) {
-        long genreId = genre.getGenreId();
-        String updatedGenreTitle = genre.getTitle();
-
-        if (!genreRepository.existsById(genreId)) {
-            log.info(String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId));
-            throw new EntityNotFoundException(
-                    String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
-            );
-        }
-        if (!genreValidator.isTitleValid(updatedGenreTitle)) {
-            log.info(GENRE_TITLE_IS_NOT_VALID);
-            throw new InvalidInputException(GENRE_TITLE_IS_NOT_VALID);
-        }
-        genreRepository.updateGenreTitleById(updatedGenreTitle, genreId);
+    public void updateGenreTitles(Genre genre) {
+//        long genreId = genre.getGenreId();
+//        String updatedGenreTitle = genre.getTitle();
+//
+//        if (!genreRepository.existsById(genreId)) {
+//            log.info(String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId));
+//            throw new EntityNotFoundException(
+//                    String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
+//            );
+//        }
+//        if (!genreValidator.isTitleValid(updatedGenreTitle)) {
+//            log.info(GENRE_TITLE_IS_NOT_VALID);
+//            throw new InvalidInputException(GENRE_TITLE_IS_NOT_VALID);
+//        }
+//        genreRepository.updateGenreTitleById(updatedGenreTitle, genreId);
     }
 
     @Override
     public boolean isGenreExistsByTitle(String genreTitle) {
-        boolean genreExists = genreRepository.existsByTitle(genreTitle);
-        if (genreExists) {
-            log.info(
-                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
-        }
-        return genreExists;
+//        boolean genreExists = genreRepository.existsByTitle(genreTitle);
+//        if (genreExists) {
+//            log.info(
+//                    String.format(GENRE_WITH_GIVEN_TITLE_EXISTS, genreTitle));
+//        }
+//        return genreExists;
+        return false;
     }
 
     @Override
@@ -450,33 +512,22 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Genre> findGenresByBookId(Long bookId) { //todo test
-        List<Genre> genresByBookId = genreRepository.findByBookId(bookId);
-        if (genresByBookId.isEmpty()) {
-            log.info(String.format(GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
-            throw new NothingFoundException(
-                    String.format(GENRES_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
-            );
-        }
-        return genresByBookId;
-    }
-
-    @Override
     public List<Genre> findGenresByKeyword(String keyWord) {
-        List<Genre> genresByKeyword = genreRepository.findAll()
-                .stream()
-                .filter(o -> o.getTitle().toLowerCase()
-                        .contains(keyWord.toLowerCase()))
-                .limit(ELEMENTS_PER_PAGE)
-                .toList();
-
-        if (genresByKeyword.isEmpty()) {
-            log.info(
-                    String.format(GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord));
-            throw new NothingFoundException(
-                    String.format(GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord));
-        }
-        return genresByKeyword;
+//        List<Genre> genresByKeyword = genreRepository.findAll()
+//                .stream()
+//                .filter(o -> o.getTitle().toLowerCase()
+//                        .contains(keyWord.toLowerCase()))
+//                .limit(ELEMENTS_PER_PAGE)
+//                .toList();
+//
+//        if (genresByKeyword.isEmpty()) {
+//            log.info(
+//                    String.format(GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord));
+//            throw new NothingFoundException(
+//                    String.format(GENRES_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord));
+//        }
+//        return genresByKeyword;
+        return null;
     }
 
     @Override
@@ -979,5 +1030,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<ShelveBook> findShelveBooks(Long shelveId, BookStatus bookStatus) {
         return shelveRepository.selectShelveBooks(shelveId, bookStatus);
+    }
+
+    @Override
+    public Language findLanguageByName(String name) {
+        return null;
     }
 }

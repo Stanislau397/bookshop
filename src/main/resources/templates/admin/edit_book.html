@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/edit.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
     <script type="text/javascript" th:src="@{/js/admin/edit_book.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/book_service.js}"></script>
     <script type="text/javascript" th:src="@{/js/validation/book_validation.js}"></script>
 </head>
 <body>
@@ -236,6 +237,7 @@
         <input type="hidden" id="hard_cover" th:value="#{hard}">
         <input type="hidden" id="soft_cover" th:value="#{soft}">
         <input type="hidden" id="book_id" value="">
+        <input type="hidden" id="localized_book_id" value="">
         <input type="hidden" id="old_image_path" value="">
         <div class="image-container">
             <label for="file-input">

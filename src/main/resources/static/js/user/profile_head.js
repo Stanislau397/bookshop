@@ -1,6 +1,5 @@
 let profileUser;
 
-
 window.addEventListener('DOMContentLoaded', function () {
     let user_name = findUserName();
     profileUser = getUserProfileInfo(user_name);
@@ -96,29 +95,23 @@ function setUserRolesInProfile(roles) {
 function displayNumberOfWantToReadBooks(shelve_id, book_status) {
     let numberOfWantToReadBooks = countBooksByShelveIdAndBookStatus(shelve_id, book_status);
     let want_to_read_text = document.getElementById('want_to_read_text').value;
-    if (numberOfWantToReadBooks !== 0) {
         let want_to_read_button = document.getElementById('want_to_read_link');
         want_to_read_button.innerText = '';
         want_to_read_button.innerText += want_to_read_text + ' ' + numberOfWantToReadBooks;
-    }
 }
 
 function displayNumberOfReadBooks(shelve_id, book_status) {
     let numberOfReadBooks = countBooksByShelveIdAndBookStatus(shelve_id, book_status);
     let read_text = document.getElementById('read_text').value;
-    if (numberOfReadBooks !== 0) {
         let read_button = document.getElementById('read_link');
         read_button.innerText = '';
         read_button.innerText += read_text + ' ' + numberOfReadBooks;
-    }
 }
 
 function displayNumberOfCurrentlyReadingBooks(shelve_id, book_status) {
     let numberOfCurrentlyReadingBooks = countBooksByShelveIdAndBookStatus(shelve_id, book_status);
     let currently_reading_text = document.getElementById('currently_reading_text').value;
-    if (numberOfCurrentlyReadingBooks !== 0) {
         let currently_reading_button = document.getElementById('currently_reading_link');
         currently_reading_button.innerText = '';
         currently_reading_button.innerText += currently_reading_text + ' ' + numberOfCurrentlyReadingBooks;
-    }
 }

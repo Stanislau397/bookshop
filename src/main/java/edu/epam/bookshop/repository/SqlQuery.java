@@ -79,10 +79,6 @@ public class SqlQuery {
                     "WHERE b.bookId = :bookId";
 
     //genre
-    public static final String UPDATE_GENRE_TITLE_BY_ID =
-            "UPDATE Genre g " +
-                    "SET g.title = ?1 " +
-                    "WHERE g.genreId = ?2";
     public static final String INSERT_GENRE_TO_BOOK =
             "INSERT INTO book_genres (genre_id_fk, book_id_fk) " +
                     "VALUES(?, ?)";
@@ -97,31 +93,64 @@ public class SqlQuery {
             "SELECT g FROM Genre g " +
                     "LEFT JOIN g.books b " +
                     "WHERE b.bookId = :bookId";
+    public static final String SELECT_LOCALIZED_GENRES_BY_BOOK_ID_AND_LOCALE =
+            "SELECT COALESCE(lg1, lg2) FROM Genre g " +
+                    "JOIN g.books b " +
+                    "LEFT JOIN LocalizedGenre lg1 ON lg1.genre.genreId = g.genreId " +
+                    "AND lg1.language.languageId = :languageId " +
+                    "AND b.bookId = :bookId " +
+                    "INNER JOIN LocalizedGenre lg2 ON lg2.genre.genreId = g.genreId " +
+                    "AND lg2.language.languageId = 1 " +
+                    "AND b.bookId = :bookId";
     public static final String SELECT_DISTINCT_GENRES_FOR_AUTHOR =
             "SELECT DISTINCT g FROM Genre g " +
                     "JOIN g.books b " +
                     "JOIN b.authors a " +
                     "WHERE a.authorId = :authorId";
+    public static final String SELECT_LOCALIZED_GENRES_BY_LANGUAGE =
+            "SELECT lg FROM LocalizedGenre lg " +
+                    "JOIN lg.language l " +
+                    "WHERE l.name = :language";
+    public static final String SELECT_LOCALIZED_GENRES_BY_LANGUAGE_ID =
+            "SELECT COALESCE(lg1, lg2) FROM Genre g " +
+                    "LEFT JOIN LocalizedGenre lg1 ON lg1.genre.genreId = g.genreId " +
+                    "AND lg1.language.languageId = :languageId " +
+                    "INNER JOIN LocalizedGenre lg2 ON lg2.genre.genreId = g.genreId " +
+                    "AND lg2.language.languageId = 1";
+    public static final String UPDATE_LOCALIZED_GENRE_BY_GENRE_ID_AND_LANGUAGE =
+            "UPDATE LocalizedGenre lg " +
+                    "SET lg.title = :newGenreTitle " +
+                    "WHERE lg.genre.genreId = :genreId " +
+                    "AND lg.language.languageId = :languageId";
+    public static final String SELECT_LOCALIZED_GENRES_BY_KEYWORD_AND_LANGUAGE =
+            "SELECT lg FROM LocalizedGenre lg " +
+                    "JOIN lg.language l " +
+                    "WHERE l.name = :languageName " +
+                    "AND lg.title LIKE '%'||:keyword||'%' ";
+    public static final String CHECK_IF_LOCALIZED_GENRE_EXISTS_BY_TITLE_AND_LANGUAGE =
+            "SELECT CASE WHEN (COUNT(lg.localizedGenreId) > 0) THEN true ELSE false END " +
+                    "FROM LocalizedGenre lg " +
+                    "JOIN lg.language l " +
+                    "WHERE lg.title = :title " +
+                    "AND l = :language";
 
     //book
     public static final String UPDATE_BOOK_INFO_BY_ID =
             "UPDATE Book b " +
-                    "SET b.title = :title, " +
-                    "b.price = :price, " +
-                    "b.description = :description, " +
+                    "SET b.price = :price, " +
                     "b.pages = :pages, " +
                     "b.isbn = :isbn, " +
-                    "b.imagePath = :imagePath, " +
                     "b.coverType = :coverType, " +
                     "b.publishDate = :publishDate " +
                     "WHERE b.bookId = :bookId";
     public static final String SELECT_BOOKS_BY_KEYWORD =
             "SELECT b FROM Book b " +
                     "WHERE b.title LIKE %:keyWord%";
-    public static final String SELECT_BOOKS_BY_GENRE_TITLE =
+    public static final String SELECT_BOOKS_BY_LOCALIZED_GENRE_TITLE =
             "SELECT b FROM Book b " +
-                    "LEFT JOIN b.genres g " +
-                    "WHERE g.title = :genreTitle";
+                    "JOIN b.genres g " +
+                    "JOIN g.localizedGenres lg " +
+                    "WHERE lg.title = :genreTitle";
     public static final String SELECT_BOOKS_BY_YEAR =
             "SELECT b FROM Book b " +
                     "WHERE YEAR(b.publishDate) = :year";
@@ -138,6 +167,41 @@ public class SqlQuery {
     public static final String COUNT_BOOKS_BY_YEAR =
             "SELECT COUNT(b.bookId) FROM Book b " +
                     "WHERE YEAR(b.publishDate) = :year";
+    public static final String SELECT_BOOK_BY_LOCALIZED_BOOK_TITLE =
+            "SELECT b FROM Book b " +
+                    "JOIN b.localizedBooks lb " +
+                    "WHERE lb.title = :title";
+
+    //localized_book
+    public static final String SELECT_LOCALIZED_BOOK_BY_BOOK_ID_AND_LANGUAGE_ID =
+            "SELECT COALESCE(lb1, lb2) " +
+                    "FROM Book b " +
+                    "LEFT JOIN LocalizedBook lb1 ON lb1.book.bookId = b.bookId " +
+                    "AND lb1.language.languageId = :languageId " +
+                    "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
+                    "AND lb2.language.languageId = 1 " +
+                    "WHERE lb1.title = :title OR lb2.title = :title";
+    public static final String SELECT_ALL_LOCALIZED_BOOKS_BY_LANGUAGE_ID_AND_PAGE =
+            "SELECT COALESCE(lb1, lb2) " +
+                    "FROM Book b " +
+                    "LEFT JOIN LocalizedBook lb1 ON lb1.book.bookId = b.bookId " +
+                    "AND lb1.language.languageId = :languageId " +
+                    "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
+                    "AND lb2.language.languageId = 1";
+    public static final String UPDATE_LOCALIZED_BOOK_INFO_BY_LOCALIZED_BOOK_ID =
+            "UPDATE LocalizedBook lb " +
+                    "SET lb.title = :updatedTitle, lb.imagePath = :updatedImagePath, lb.description = :updatedDescription " +
+                    "WHERE lb.localizedBookId = :localizedBookId";
+    public static final String SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN =
+            "SELECT COALESCE(lb1, lb2) " +
+                    "FROM Book b " +
+                    "LEFT JOIN LocalizedBook lb1 ON lb1.book.bookId = b.bookId " +
+                    "AND lb1.language.languageId = :languageId " +
+                    "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
+                    "AND lb2.language.languageId = 1 " +
+                    "JOIN b.bookReviews br " +
+                    "GROUP BY b.bookId " +
+                    "HAVING AVG(br.score) > :score ORDER BY AVG(br.score) DESC";
 
     //book review
     public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK =
@@ -164,11 +228,6 @@ public class SqlQuery {
             "SELECT AVG(br.score) FROM BookReview br " +
                     "LEFT JOIN br.reviewedBook rb " +
                     "WHERE rb.bookId = :bookId";
-    public static final String SELECT_BOOKS_BY_AVG_SCORE_GREATER_THAN =
-            "SELECT b FROM Book b " +
-                    "LEFT JOIN b.bookReviews br " +
-                    "GROUP BY b.bookId " +
-                    "HAVING AVG(br.score) > :score ORDER BY AVG(br.score) DESC";
     public static final String SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN =
             "SELECT COUNT(*) AS counter " +
                     "FROM (SELECT br.book_id_fk AS bookId " +
@@ -229,4 +288,10 @@ public class SqlQuery {
                     "JOIN sb.bookShelve bs " +
                     "WHERE bs.bookShelveId = :shelveId " +
                     "AND sb.bookStatus = :bookStatus";
+
+    //language
+    public static final String SELECT_LANGUAGE_BY_LOCALIZED_BOOK_TITLE =
+            "SELECT l FROM LocalizedBook lb " +
+                    "JOIN lb.language l " +
+                    "WHERE lb.title = :title";
 }

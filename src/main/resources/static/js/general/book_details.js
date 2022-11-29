@@ -1,16 +1,31 @@
-let book;
+let localized_book;
 let userInfo;
+let book;
 
 window.addEventListener('DOMContentLoaded', function () {
     let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
     let title = bookTitleFromParameter.replace(/_/g, ' ');
     userInfo = getUserByUserName();
-    book = getBookDetailsByTitle(decodeURI(title));
+    localized_book = getLocalizedBookByTitle(decodeURI(title));
+    book = getBookByLocalizedBookTitle(localized_book.title);
+    displayBookDetailsByLocalizedBookAndBook(localized_book, book);
     getBookReviews(book.bookId, 1);
     getAverageBookReviewScoreByBookId(book.bookId);
     addBookShelveBtn();
     checkIfUserReviewedBook(userInfo.userId, book.bookId);
 });
+
+function displayBookDetailsByLocalizedBookAndBook(localized_book, book) {
+    let authors = getAuthorsByBookId(book.bookId);
+    setAuthors(authors)
+    setBookTitle(localized_book);
+    setBookImage(localized_book);
+    setH1Title(localized_book);
+    getPublishersByBookId(book.bookId);
+    getGenresByBookId(book.bookId);
+    setBookDescription(localized_book);
+    setProductDetails(book);
+}
 
 function getBookDetailsByTitle(bookTitle) {
     let bookDetails = null;
@@ -22,7 +37,6 @@ function getBookDetailsByTitle(bookTitle) {
             bookDetails = bookInfo;
             setBookTitle(bookInfo);
             setBookImage(bookInfo);
-            setBookTitle(bookInfo);
             setH1Title(bookInfo);
             getAuthorsByBookId(bookInfo.bookId);
             getPublishersByBookId(bookInfo.bookId);
@@ -32,23 +46,27 @@ function getBookDetailsByTitle(bookTitle) {
             return bookDetails;
         },
         error: function (exception) {
-            console.log(exception.responseText)
+
         }
     })
     return bookDetails;
 }
 
 function getAuthorsByBookId(id) {
+    let authors = '';
     $.ajax({
         url: '/findAuthorsByBookId',
         data: {bookId: id},
-        success: function (authors) {
-            setAuthors(authors);
+        async : false,
+        success: function (found_authors) {
+            authors = found_authors;
+            return authors;
         },
         error: function (exception) {
             console.log(exception.responseText);
         }
     })
+    return authors;
 }
 
 function getPublishersByBookId(id) {

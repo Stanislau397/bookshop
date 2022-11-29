@@ -6,10 +6,13 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/add_book.css}"/>
     <script type="text/javascript" th:src="@{/js/admin/all_books.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/book_service.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/language_service.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/side_bar"></div>
 
+<input type="hidden" id="add_localization_properties" th:value="#{add_localization}">
 
 <div class="modal fade"
      id="addBookModal"

@@ -9,7 +9,6 @@
 
 .users-table {
     margin-left: 5%;
-    margin-top: 2%;
 }
 
 .rounded-circle {
@@ -43,5 +42,25 @@
 .add-btn {
     float: right;
     margin-right: 6%;
+}
+
+.languages {
+    margin-left:2%;
+    margin-top: 1%;
+    height: 30px;
+}
+
+.languages ul {
+    display: inline-block;
+}
+
+.languages ul li {
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 20px;
+    width: 25px;
+    margin-left: 3px;
+    cursor: pointer;
+    border-right: 1px solid silver;
 }
 

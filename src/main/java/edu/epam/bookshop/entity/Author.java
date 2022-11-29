@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -69,6 +70,7 @@ public class Author {
     @ManyToMany(
             mappedBy = "authors",
             targetEntity = Book.class,
-            cascade = CascadeType.MERGE)
+            cascade = CascadeType.MERGE,
+            fetch = FetchType.LAZY)
     private List<Book> books;
 }

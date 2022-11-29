@@ -3,6 +3,8 @@ package edu.epam.bookshop.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import edu.epam.bookshop.annotation.ValidateBookIsbn;
+import edu.epam.bookshop.annotation.ValidateBookPages;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -24,17 +26,22 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import static edu.epam.bookshop.constant.InvalidInputMessage.BOOK_PRICE_CAN_NOT_BE_EMPTY_MSG;
+import static edu.epam.bookshop.constant.InvalidInputMessage.INVALID_MAX_VALUE_FOR_BOOK_PRICE_INPUT;
+import static edu.epam.bookshop.constant.InvalidInputMessage.INVALID_MIN_VALUE_FOR_BOOK_PRICE_INPUT;
 import static edu.epam.bookshop.entity.constant.PropertyId.BOOK_ID_PROPERTY;
 
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID;
 import static edu.epam.bookshop.entity.constant.TableColumn.PUBLISHER_ID_FK;
-import static edu.epam.bookshop.entity.constant.TableColumn.SHELVE_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableColumn.TITLE;
 import static edu.epam.bookshop.entity.constant.TableColumn.DESCRIPTION;
 import static edu.epam.bookshop.entity.constant.TableColumn.IMAGE_PATH;
@@ -69,32 +76,44 @@ public class Book {
     @Column(name = BOOK_ID)
     private Long bookId;
 
-    @Column(name = TITLE,
-            nullable = false)
+    @Column(name = TITLE)
     private String title;
 
     @Column(name = PRICE)
+    @NotNull(message = BOOK_PRICE_CAN_NOT_BE_EMPTY_MSG)
+    @DecimalMin(value = "0.1",
+            message = INVALID_MIN_VALUE_FOR_BOOK_PRICE_INPUT)
+    @DecimalMax(value = "1000",
+            message = INVALID_MAX_VALUE_FOR_BOOK_PRICE_INPUT)
     private BigDecimal price;
 
     @Column(name = IMAGE_PATH)
     private String imagePath;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = PUBLISH_DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishDate;
 
     @Column(name = ISBN)
+    @ValidateBookIsbn
     private String isbn;
 
     @Column(name = DESCRIPTION)
     private String description;
 
     @Column(name = PAGES)
+    @ValidateBookPages
     private Integer pages;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = COVER_TYPE)
+    @Enumerated(EnumType.STRING)
     private CoverType coverType;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JoinColumn(name = BOOK_ID_FK,
+            referencedColumnName = BOOK_ID)
+    private List<LocalizedBook> localizedBooks;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = BOOK_GENRES,

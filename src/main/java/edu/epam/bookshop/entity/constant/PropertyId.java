@@ -13,4 +13,6 @@ public class PropertyId {
     public static final String ROLE_ID_PROPERTY = "roleId";
     public static final String USER_ID_PROPERTY = "userId";
     public static final String REVIEW_ID_PROPERTY = "bookReviewId";
+    public static final String LANGUAGE_ID_PROPERTY = "languageId";
+    public static final String LOCALIZED_GENRE_ID_PROPERTY = "localizedGenreId";
 }

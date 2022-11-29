@@ -30,6 +30,7 @@ function getBookScoreByUserIdAndBookId(user_id, book_id) {
 }
 
 function editBookStatusOnShelveByBookIdAndShelveId(new_book_status, book_id, shelve_id) {
+    let shelveBookStatusChanged = false;
     $.ajax({
         method: 'POST',
         url: '/updateBookStatusOnShelve',
@@ -38,10 +39,13 @@ function editBookStatusOnShelveByBookIdAndShelveId(new_book_status, book_id, she
             bookId: book_id,
             shelveId: shelve_id
         },
+        async: false,
         success: function () {
-
+            shelveBookStatusChanged = true;
+            return shelveBookStatusChanged;
         }
     })
+    return shelveBookStatusChanged;
 }
 
 function deleteShelveBookByShelveIdAndBookId(shelve_id, book_id) {
@@ -74,4 +78,51 @@ function getAverageBookScoreByBookId(book_id) {
         }
     })
     return average_book_score;
+}
+
+function getLocalizedBooksByLanguageAndPage(language_name, page_number) {
+    let localized_books = '';
+    $.ajax({
+        url: '/displayAllLocalizedBooksByLanguageAndPageNumber',
+        data: {
+            languageName: language_name,
+            pageNumber: page_number
+        },
+        async: false,
+        success: function (localizedBooks) {
+            localized_books = localizedBooks;
+            return localized_books;
+        }
+    })
+    return localized_books;
+}
+
+function getBookByLocalizedBookTitle(book_title) {
+    let book = '';
+    $.ajax({
+        url: '/getBookByLocalizedBookTitle',
+        data: {title: book_title},
+        async: false,
+        success: function (found_book) {
+            book = found_book;
+            return book;
+        }
+    })
+    return book;
+}
+
+function getLocalizedBookByTitle(book_title) {
+    let localized_book_details = '';
+    $.ajax({
+        url: '/findLocalizedBookByTitleAndLanguage',
+        data: {
+            title: book_title
+        },
+        async: false,
+        success: function (foundLocalizedBookDetails) {
+            localized_book_details = foundLocalizedBookDetails;
+            return localized_book_details;
+        }
+    })
+    return localized_book_details;
 }

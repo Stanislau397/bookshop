@@ -74,6 +74,10 @@ function getAuthorByBookId(book_id) {
     return author;
 }
 
+function get() {
+    console.log(123);
+}
+
 function getAverageBookScoreByBookId(book_id) {
     let average_book_score = 0;
     $.ajax({
@@ -106,8 +110,9 @@ function displayHighScoreBooks(highScoreBooks) {
     let add_btn = document.getElementById('add').value;
     let counter = 0;
     for (let book of highScoreBooks) {
-        let author = getAuthorByBookId(book.bookId);
-        let averageScore = getAverageBookScoreByBookId(book.bookId);
+        let book_related_to_localized_book = getBookByLocalizedBookTitle(book.title);
+        let author = getAuthorByBookId(book_related_to_localized_book.bookId);
+        let averageScore = getAverageBookScoreByBookId(book_related_to_localized_book.bookId);
         let bookHref = 'http://localhost:8070/bookshop/book?title=' + book.title.replace(/ /g, "_");
         let authorHref = '';
         let firstName = '';
@@ -118,6 +123,7 @@ function displayHighScoreBooks(highScoreBooks) {
             lastName = author[0].lastName;
             authorHref = 'http://localhost:8070/bookshop/author?authorId=' + author[0].authorId;
         }
+
         highScoreBooksContent.innerHTML +=
             '<div class="item">' +
             '<div class="image-container">' +
@@ -127,7 +133,7 @@ function displayHighScoreBooks(highScoreBooks) {
             '<a id="book_title" href="' + bookHref + '">' + book.title + '</a>' + '</div>' +
             '<div class="author-container">' +
             '<a id="book_author" href="' + authorHref + '">' + firstName + ' ' + lastName + '</a>' + '</div>' +
-            '<div class="price">' + book.price + '</div>' + '</div>' +
+            '<div class="price">' + book_related_to_localized_book.price + '</div>' + '</div>' +
             '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';
         let button_container_div = document.getElementById('button_container' + counter);
         if (user != null) {
@@ -142,6 +148,7 @@ function displayHighScoreBooks(highScoreBooks) {
         }
     }
 }
+
 function displayTotalBooksWithHighScore(totalBooks) {
     let total_books_a = document.getElementById('high_score_books_number');
     total_books_a.innerText += ' ' + totalBooks;

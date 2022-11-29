@@ -5,6 +5,9 @@ import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
 import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.Genre;
+import edu.epam.bookshop.entity.Language;
+import edu.epam.bookshop.entity.LocalizedBook;
+import edu.epam.bookshop.entity.LocalizedGenre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.entity.ShelveBook;
 import org.springframework.data.domain.Page;
@@ -14,15 +17,27 @@ import java.util.List;
 
 public interface BookService {
 
-    void addBook(Book book, MultipartFile bookImage);
+    void addBook(Book book, LocalizedBook localizedBook, MultipartFile bookImage, String languageName);
 
-    boolean updateBookInfo(Book book, MultipartFile newBookImage);
+    void addLocalizationToExistingBook(LocalizedBook existingLocalizedBook, MultipartFile localizedImage, String languageName);
+
+    boolean updateBookInfo(Book book, LocalizedBook localizedBook, MultipartFile newBookImage);
+
+    boolean bookExistsById(Long bookId);
 
     Book findBookDetailsByTitle(String bookTitle);
 
+    Book findBookByLocalizedBookTitle(String title);
+
+    Book findBookById(Long bookId);
+
+    LocalizedBook findLocalizedBookDetailsByTitleAndLanguage(String title, String languageName);
+
+    Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, int pageNumber);
+
     List<Book> findBooksByKeyWord(String keyWord);
 
-    List<Book> findTop15BooksHavingAverageScoreGreaterThan(Double score);
+    List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score);
 
     Page<Book> findBooksByKeyWordAndPageNumber(String keyWord, Integer pageNumber);
 
@@ -30,7 +45,7 @@ public interface BookService {
 
     Page<Book> findBooksByYearAndPageNumber(Integer year, Integer pageNumber);
 
-    Page<Book> findBooksByGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
+    Page<Book> findBooksByLocalizedGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
 
     Page<Book> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber);
 
@@ -40,19 +55,19 @@ public interface BookService {
 
     void addGenre(Genre genre);
 
+    void addGGG(List<LocalizedGenre> localizedGenres);
+
     void addGenreToBook(Long genreId, Long bookId);
 
     void removeGenreFromBook(Long genreId, Long bookId);
 
     void deleteGenreById(Long genreId);
 
-    void updateGenreTitle(Genre genre);
+    void updateGenreTitles(Genre genre);
 
     boolean isGenreExistsByTitle(String genreTitle);
 
     Page<Genre> findGenresByPage(int page);
-
-    List<Genre> findGenresByBookId(Long bookId);
 
     List<Genre> findGenresByKeyword(String keyWord);
 
@@ -125,4 +140,6 @@ public interface BookService {
     BookStatus findBookStatusOnBookShelve(Long shelveId, Long bookId);
 
     List<ShelveBook> findShelveBooks(Long shelveId, BookStatus bookStatus);
+
+    Language findLanguageByName(String name);
 }

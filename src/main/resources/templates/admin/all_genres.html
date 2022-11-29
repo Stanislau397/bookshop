@@ -5,6 +5,8 @@
     <title th:text="#{all_genres}"></title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
     <script type="text/javascript" th:src="@{/js/admin/all_genres.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/language_service.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/genre_service.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/side_bar"></div>
@@ -37,12 +39,19 @@
             </div>
             <div class="modal-body">
                 <div class="input-group mb-3">
+                    <label class="input-group-text" for="language" th:text="#{language}"></label>
+                    <select class="form-select shadow-none" id="language">
+                        <option selected value="en" th:text="#{english}"></option>
+                    </select>
+                </div>
+                <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon3" th:text="#{name}"></span>
+                        <span class="input-group-text" id="basic-addon11" th:text="#{name}"></span>
                     </div>
-                    <input type="text" class="form-control shadow-none" id="title" aria-describedby="basic-addon3">
+                    <input type="text" class="form-control shadow-none" id="genre_title"
+                           aria-describedby="basic-addon3">
                 </div>
-                </div>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
                 <button type="button"
@@ -70,15 +79,53 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon4" th:text="#{name}"></span>
                     </div>
-                    <input type="hidden" id="genre-id-for-edit" value="">
-                    <input type="text" class="form-control shadow-none" id="title-to-edit" aria-describedby="basic-addon3">
+                    <input type="hidden" id="genre_id">
+                    <input type="hidden" id="genre_language">
+                    <input type="text" class="form-control shadow-none" id="title_to_edit" onkeyup="checkIfLocalizedGenreExists(this.value)"
+                           aria-describedby="basic-addon3">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
                 <button type="button"
                         class="btn btn-primary"
+                        id="edit_btn"
                         onclick="editGenreTitle()"
+                        th:text="#{save}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="translateGenreModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="hidden" id="translate_text" th:value="#{translate}">
+                <h5 class="modal-title" id="translateGenreModalTitle" th:text="#{translate}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon6" th:text="#{name}"></span>
+                    </div>
+                    <input type="hidden" id="genre_id_for_translation">
+                    <input type="hidden" id="language_name_for_translation">
+                    <input type="text" class="form-control shadow-none" id="title_to_translate"
+                           aria-describedby="basic-addon3">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
+                <button type="button"
+                        class="btn btn-primary"
+                        id="translate_btn"
+                        onclick="addTranslationToGenre()"
                         th:text="#{save}"></button>
             </div>
         </div>
@@ -103,8 +150,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{close}"></button>
                 <button type="button"
-                        class="btn btn-primary"
-                        onclick="deleteGenreById()"
+                        class="save-btn btn-primary"
+                        onclick="deleteLocalizedGenreById()"
                         th:text="#{delete}"></button>
             </div>
         </div>
@@ -118,7 +165,13 @@
                class="form-control rounded shadow-none users-search"
                th:placeholder="#{search}" aria-label="Search"
                aria-describedby="search-addon"
-               onkeyup="getGenresByKeyWord()"/>
+               onkeyup="displayLocalizedGenresByKeywordAndLanguage()"/>
+    </div>
+
+    <div class="languages">
+        <ul id="lang_ul">
+
+        </ul>
     </div>
 
     <table class="table users-table align-middle mb-0 bg-white w-90">

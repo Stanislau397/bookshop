@@ -36,13 +36,16 @@ function removeBookFromShelve(shelve_id, book_id) {
 
 function editBookStatusOnShelve() {
     let shelve_id = profileUser.bookShelve.bookShelveId;
-    let book_status = new URLSearchParams(window.location.search).get('books');
-    changeBookStatusOnShelve();
-
-    displayNumberOfWantToReadBooks(shelve_id, 'WANT_TO_READ');
-    displayNumberOfReadBooks(shelve_id, 'READ');
-    displayNumberOfCurrentlyReadingBooks(shelve_id, 'CURRENTLY_READING');
-    displayBooksByStatus(book_status);
+    let book_status_from_url = new URLSearchParams(window.location.search).get('books');
+    let new_book_status = document.querySelector('input[name="choice"]:checked').value;
+    let book_id = document.getElementById('book_id').value;
+    let book_status_on_shelve_changed = editBookStatusOnShelveByBookIdAndShelveId(new_book_status, book_id, shelve_id);
+    if (book_status_on_shelve_changed) {
+        displayBooksByStatus(book_status_from_url);
+        changeNumberOfBookByStatusAndShelveId(book_status_from_url, shelve_id);
+        changeNumberOfBookByStatusAndShelveId(new_book_status, shelve_id);
+        hideEditBookStatusModal();
+    }
 }
 
 function changeNumberOfBookByStatusAndShelveId(book_status, shelve_id) {

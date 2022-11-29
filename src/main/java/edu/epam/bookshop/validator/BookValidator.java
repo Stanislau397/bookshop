@@ -18,7 +18,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_TITLE_IS_NOT_VALI
 public class BookValidator {
 
     private static final Pattern BOOK_TITLE_PATTERN =
-            Pattern.compile("^[A-Za-z0-9\\s\\-_,\\.:;()''\"\"]+$");
+            Pattern.compile("^[\\p{L}\\s\\-_,\\.:;()''\"\"]+$");
 
     private static final Pattern ISBN_PATTERN =
             Pattern.compile("^(?:ISBN(?:-13)?:?\\ )?" +

@@ -2,17 +2,24 @@ package edu.epam.bookshop.controller;
 
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookStatus;
+import edu.epam.bookshop.entity.LocalizedBook;
 import edu.epam.bookshop.entity.ShelveBook;
 import edu.epam.bookshop.service.BookService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 import static edu.epam.bookshop.constant.GetMappingURN.COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN;
@@ -33,17 +40,23 @@ import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_BOOK_INFO_URN;
 @RestController
 public class BookController {
 
+    private static final String NULL_STRING = "null";
+    private static final String EMPTY_STRING = "";
     private final BookService bookService;
 
-    @PostMapping(ADD_BOOK_URN)
-    public ResponseEntity<Void> insertBook(Book book, MultipartFile bookImage) {
-        bookService.addBook(book, bookImage);
+    @RequestMapping(value = ADD_BOOK_URN, method = RequestMethod.POST,
+            consumes = {"multipart/form-data"})
+    public ResponseEntity<Void> insertBook(@RequestPart @Valid Book book,
+                                           @RequestPart @Valid LocalizedBook localizedBook,
+                                           @RequestPart(required = false) MultipartFile bookImage,
+                                           @RequestPart String languageName) {
+//        bookService.addBook(book, localizedBook, bookImage, languageName);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(UPDATE_BOOK_INFO_URN)
-    public ResponseEntity<Boolean> changeBookInfo(Book book, MultipartFile newBookImage) {
-        Boolean isBookUpdated = bookService.updateBookInfo(book, newBookImage);
+    public ResponseEntity<Boolean> changeBookInfo(Book book, MultipartFile newBookImage, LocalizedBook localizedBook) {
+        Boolean isBookUpdated = bookService.updateBookInfo(book, localizedBook, newBookImage);
         return ResponseEntity.ok(isBookUpdated);
     }
 
@@ -53,10 +66,28 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
+    @RequestMapping(value = "/addLocalizationToBook", method = RequestMethod.POST,
+            consumes = {"multipart/form-data"})
+    public ResponseEntity<Void> addLocalization(@RequestPart @Valid LocalizedBook localizedBook,
+                                                @RequestPart(required = false) MultipartFile localizedImage) {
+        String language = LocaleContextHolder.getLocale()
+                .getLanguage();
+        bookService.addLocalizationToExistingBook(localizedBook, localizedImage, language);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(FIND_BOOK_DETAILS)
     public ResponseEntity<Book> displayBookDetails(String title) {
         Book foundBookByTitle = bookService.findBookDetailsByTitle(title);
         return ResponseEntity.ok(foundBookByTitle);
+    }
+
+    @GetMapping("/findLocalizedBookByTitleAndLanguage")
+    public ResponseEntity<LocalizedBook> displayLocalizedBookByTitleAndLanguage(String title) {
+        String currentLanguage = LocaleContextHolder
+                .getLocale()
+                .getLanguage();
+        return ResponseEntity.ok(bookService.findLocalizedBookDetailsByTitleAndLanguage(title, currentLanguage));
     }
 
     @GetMapping(FIND_BOOKS_BY_KEYWORD)
@@ -74,7 +105,7 @@ public class BookController {
     @GetMapping(FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN)
     public ResponseEntity<Page<Book>> displayBooksByGenreTitleAndPageNumber(String genreTitle, Integer page) {
         Page<Book> booksByGenreTitleAndPage =
-                bookService.findBooksByGenreTitleAndPageNumber(genreTitle, page);
+                bookService.findBooksByLocalizedGenreTitleAndPageNumber(genreTitle, page);
         return ResponseEntity.ok(booksByGenreTitleAndPage);
     }
 
@@ -91,10 +122,13 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15)
-    public ResponseEntity<List<Book>> displayBooksWithHighScoreLimit15(Double score) {
-        List<Book> booksWithHighScoreLimit15 =
-                bookService.findTop15BooksHavingAverageScoreGreaterThan(score);
-        return ResponseEntity.ok(booksWithHighScoreLimit15);
+    public ResponseEntity<List<LocalizedBook>> displayBooksWithHighScoreLimit15(Double score) {
+        String languageName = LocaleContextHolder
+                .getLocale()
+                .getLanguage();
+        List<LocalizedBook> localizedBooksHavingAverageScoreGreaterThan =
+                bookService.findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(languageName, score);
+        return ResponseEntity.ok(localizedBooksHavingAverageScoreGreaterThan);
     }
 
     @GetMapping(FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN)
@@ -102,6 +136,17 @@ public class BookController {
         Page<Book> booksWithAvgScoreGreaterThan =
                 bookService.findBooksByPageHavingAverageScoreGreaterThan(score, pageNumber);
         return ResponseEntity.ok(booksWithAvgScoreGreaterThan);
+    }
+
+    @GetMapping("/displayAllLocalizedBooksByLanguageAndPageNumber")
+    public ResponseEntity<Page<LocalizedBook>> displayAllLocalizedBooksByLanguageAndPageNumber(String languageName, int pageNumber) {
+        String currentLanguage = LocaleContextHolder
+                .getLocale()
+                .getLanguage();
+        if (Objects.equals(languageName, EMPTY_STRING) || Objects.equals(languageName, NULL_STRING)) {
+            return ResponseEntity.ok(bookService.findAllLocalizedBooksByLanguageAndPageNumber(currentLanguage, pageNumber));
+        }
+        return ResponseEntity.ok(bookService.findAllLocalizedBooksByLanguageAndPageNumber(languageName, pageNumber));
     }
 
     @GetMapping(FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS)
@@ -123,5 +168,10 @@ public class BookController {
         Integer amountOfBooksWithHighScore =
                 bookService.findNumberOfBooksWithAverageScoreGreaterThan(score);
         return ResponseEntity.ok(amountOfBooksWithHighScore);
+    }
+
+    @GetMapping("/getBookByLocalizedBookTitle")
+    public ResponseEntity<Book> displayBookByLocalizedBookTitle(String title) {
+        return ResponseEntity.ok(bookService.findBookByLocalizedBookTitle(title));
     }
 }

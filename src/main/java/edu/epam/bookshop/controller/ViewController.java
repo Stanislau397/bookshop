@@ -107,6 +107,12 @@ public class ViewController {
         return editBookView;
     }
 
+    @GetMapping("/admin/cabinet/translate_book")
+    public ModelAndView openTranslateBookPage(ModelAndView translateBookView) {
+        translateBookView.setViewName("admin/translate_book.html");
+        return translateBookView;
+    }
+
     @GetMapping(ALL_GENRES_URN)
     public ModelAndView openAllGenresPage(ModelAndView allGenresView) {
         allGenresView.setViewName(ALL_GENRES_HTML);

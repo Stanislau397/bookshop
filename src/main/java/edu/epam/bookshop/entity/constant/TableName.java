@@ -25,4 +25,10 @@ public class TableName {
 
     public static final String BOOK_SHELVE = "book_shelve";
     public static final String SHELVE_BOOKS = "shelve_books";
+
+    public static final String LANGUAGES = "languages";
+
+    public static final String LOCALIZED_GENRES = "localized_genres";
+
+    public static final String LOCALIZED_BOOKS = "localized_books";
 }

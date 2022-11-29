@@ -75,11 +75,11 @@ function getAuthorsForBookByBookId(book_id, counter) {
     })
 }
 
-function getAllGenres() {
+function getLocalizedGenres() {
     $.ajax({
-        url: '/findAllGenres',
-        success: function (allGenres) {
-            displayAllGenresInDiv(allGenres);
+        url: '/findLocalizedGenres',
+        success: function (localizedGenres) {
+            displayAllGenresInDiv(localizedGenres);
         }
     })
 }
@@ -145,9 +145,9 @@ function displayAllGenresInDiv(genres) {
     }
 }
 
-function addGenresToGenresDiv(genres, genres_div) {
-    for (let genre of genres) {
-        let genreTitle = genre.title;
+function addGenresToGenresDiv(localizedGenres, genres_div) {
+    for (let localizedGenre of localizedGenres) {
+        let genreTitle = localizedGenre.title;
         genres_div.innerHTML +=
             '<div class="genre-title">' +
             '<button class="genre-title-btn" ' +

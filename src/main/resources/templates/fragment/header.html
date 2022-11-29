@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" th:src="@{/js/fragment/header.js}"></script>
     <script type="text/javascript" th:src="@{/js/post/book_shelve.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/locale_service.js}"></script>
     <script type="text/javascript" th:src="@{/js/shelve_button.js}"></script>
 </head>
 <body>
@@ -76,7 +77,7 @@
                        th:href="@{/bookshop/login}"></a>
                 </li>
 
-                <li class="nav-item locale" sec:authorize="isAnonymous()">
+                <li class="nav-item locale">
                     <div class="dropdown">
                         <button class="btn dropdown-toggle drop-down-btn shadow-none locale-btn"
                                 style="font-size: 20px; font-weight: 600"
@@ -91,14 +92,14 @@
                                         src="../static/images/Flag_of_Russia.png"
                                         class="flag-image"
                                         th:src="@{/images/Flag_of_russia.png}">
-                                <a th:href="@{'?locale=ru'}" th:text="#{russian}"></a>
+                                <button onclick="window.location = changeLocale(this.value)" value="ru" th:text="#{russian}"></button>
                             </li>
                             <li class="dropdown-item">
                                 <img
                                         src="../static/images/Flag_of_Russia.png"
                                         class="flag-image"
                                         th:src="@{/images/flag_of_uk.png}">
-                                <a th:href="@{'?locale=en'}" th:text="#{english}"></a>
+                                <button onclick="window.location = changeLocale(this.value)" value="en" th:text="#{english}"></button>
                             </li>
                         </ul>
                     </div>

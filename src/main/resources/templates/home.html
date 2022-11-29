@@ -5,6 +5,7 @@
     <title>Home</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
     <script type="text/javascript" th:src="@{/js/general/home.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/book_service.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/header"></div>
@@ -90,7 +91,7 @@
             <path d="M15.61 7.41L14.2 6l-6 6 6 6 1.41-1.41L11.03 12l4.58-4.59z"/>
         </svg>
     </button>
-    <button id="next_item_for_high_score_books">
+    <button id="next_item_for_high_score_books" onclick="get()">
         <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', function () {
     let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
-    getBookByTitle(bookTitleFromParameter);
+    displayBookDetailsForEditByBookTitle(bookTitleFromParameter);
     getAllAuthors();
     getAllPublishers();
     getAllGenres();
@@ -14,6 +14,7 @@ function editBook() {
     let date = new Date(Date.UTC(year.value, month.value, day.value))
         .toISOString().slice(0, 10);
     let bookToUpdate = new FormData();
+    bookToUpdate.append('localizedBookId', $('#localized_book_id').val());
     bookToUpdate.append('bookId', $('#book_id').val());
     bookToUpdate.append('title', $('#book_title').val());
     bookToUpdate.append('publishDate', date);
@@ -29,6 +30,7 @@ function editBook() {
         url: '/updateBookInfo',
         cache: false,
         processData: false,
+        dataType : false,
         contentType: false,
         data: bookToUpdate,
         success: function (isBookUpdated) {
@@ -36,9 +38,9 @@ function editBook() {
             let queryParams = new URLSearchParams(window.location.search);
             queryParams.set('title', book_title_input);
             history.replaceState(null, null, "?" + queryParams.toString());
-            let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
-            getBookByTitle(bookTitleFromParameter);
+            displayBookDetailsForEditByBookTitle(book_title_input)
             displaySuccessMessage();
+            console.log(isBookUpdated)
         },
         error: function (errorMessage) {
             console.log(errorMessage.responseText);
@@ -172,20 +174,12 @@ function removeGenreFromBook() {
     })
 }
 
-function getBookByTitle(bookTitle) {
-    $.ajax({
-        url: '/findBookDetails',
-        data: {title: bookTitle},
-        success: function (bookDetails) {
-            setBookInputFields(bookDetails);
-            getAuthorsForBookByBookId(bookDetails.bookId);
-            getPublishersForBook(bookDetails.bookId);
-            getGenresForBook(bookDetails.bookId);
-        },
-        error: function (exception) {
-            console.log(exception);
-        }
-    })
+function displayBookDetailsForEditByBookTitle(book_title) {
+    let localized_book_details = getLocalizedBookByTitle(book_title);
+    setBookInputFields(localized_book_details);
+    getAuthorsForBookByBookId(localized_book_details.book.bookId);
+    getGenresForBook(localized_book_details.book.bookId);
+    getPublishersForBook(localized_book_details.book.bookId);
 }
 
 function getAuthorsForBookByBookId(book_id) {
@@ -369,34 +363,37 @@ function setGenreIdInput(genreId) {
     genre_id_input.value = genreId;
 }
 
-function setBookInputFields(book) {
+function setBookInputFields(localized_book) {
     let book_id_input = document.getElementById('book_id');
-    book_id_input.value = book.bookId;
+    book_id_input.value = localized_book.book.bookId;
+
+    let localized_book_id_input = document.getElementById('localized_book_id');
+    localized_book_id_input.value = localized_book.localizedBookId;
 
     let book_image = document.getElementById('book_image');
-    book_image.src = book.imagePath;
+    book_image.src = localized_book.imagePath;
 
     let book_title_input = document.getElementById('book_title');
-    book_title_input.value = book.title;
+    book_title_input.value = localized_book.title;
 
     let book_price_input = document.getElementById('book_price');
-    book_price_input.value = book.price;
+    book_price_input.value = localized_book.book.price;
 
     let book_isbn_input = document.getElementById('book_isbn');
-    book_isbn_input.value = book.isbn;
+    book_isbn_input.value = localized_book.book.isbn;
 
     let book_pages_input = document.getElementById('book_pages');
-    book_pages_input.value = book.pages;
+    book_pages_input.value = localized_book.book.pages;
 
     let book_description_input = document.getElementById('book_description');
-    book_description_input.value = book.description;
+    book_description_input.value = localized_book.description;
 
     let old_image_input = document.getElementById('old_image_path');
-    old_image_input.value = book.imagePath;
+    old_image_input.value = localized_book.imagePath;
 
-    setBookCoverTypeSelect(book);
+    setBookCoverTypeSelect(localized_book.book);
 
-    let date = book.publishDate;
+    let date = localized_book.book.publishDate;
     let dateArray = date.split('-');
 
     let yearSelect = addYearsToBookOption();

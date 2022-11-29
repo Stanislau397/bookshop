@@ -52,4 +52,13 @@ public class TableColumn {
     public static final String SHELVE_ID = "shelve_id";
     public static final String SHELVE_ID_FK = "shelve_id_fk";
     public static final String SHELVE_BOOK_ID = "shelve_book_id";
+
+    public static final String LANGUAGE_ID = "LANGUAGE_ID";
+    public static final String LANGUAGE_ID_FK = "LANGUAGE_ID_FK";
+    public static final String SHORT_NAME = "short_name";
+    public static final String FULL_NAME = "full_name";
+
+    public static final String LOCALIZED_GENRE_ID = "localized_genre_id";
+
+    public static final String LOCALIZED_BOOK_ID = "localized_book_id";
 }
