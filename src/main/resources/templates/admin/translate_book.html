@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Translate Book</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/edit.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
+    <script src="https://unpkg.com/xregexp/xregexp-all.js"></script>
+    <script type="text/javascript" th:src="@{/js/admin/translate_book.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/book_service.js}"></script>
+    <script type="text/javascript" th:src="@{/js/validation/book_validation.js}"></script>
+    <script type="text/javascript" th:src="@{/js/validation/image_validation.js}"></script>
+</head>
+<body>
+<div th:replace="fragment/side_bar"></div>
+
+<div class="modal fade"
+     id="errorModal"
+     tabindex="-1"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div id="error_message"></div>
+                <button type="button"
+                        class="btn-close"
+
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="edit-container">
+    <div class="body">
+        <input type="hidden" id="hard_cover" th:value="#{hard}">
+        <input type="hidden" id="soft_cover" th:value="#{soft}">
+        <input type="hidden" id="book_id" value="">
+        <input type="hidden" id="old_image_path" value="">
+        <div class="image-container">
+            <label for="file-input">
+                <img class="image" id="book_image"
+                     src="http://localhost:8090/image/book/default.png"/>
+            </label>
+            <input id="file-input"
+                   onchange="document.getElementById('book_image').src = window.URL.createObjectURL(this.files[0]);
+                   isImageValid();"
+                   type="file"/>
+            <div class="alert alert-danger image-alert" role="alert" id="image_alert" th:text="#{image_is_not_valid}"></div>
+        </div>
+        <div class="info-container">
+
+            <div class="form-group mt-1">
+                <label for="book_title" th:text="#{name}"></label>
+                <input type="text"
+                       class="form-control shadow-none"
+                       id="book_title"
+                       onkeyup="isBookTitleValid(this.value)"/>
+            </div>
+            <div class="alert alert-danger book-title-alert"
+                 role="alert"
+                 id="book_title_alert"
+                 th:text="#{book_title_is_invalid}"></div>
+            <div class="form-group mt-1">
+                <label for="book_description" th:text="#{description}"></label>
+                <textarea class="form-control shadow-none mt-1"
+                          id="book_description"
+                          onkeyup="isBookDescriptionValid(this.value)"
+                          style="height: 285px"
+                          rows="8"></textarea>
+            </div>
+            <div class="alert alert-danger book-description-alert"
+                 role="alert"
+                 id="book_description_alert"
+                 th:text="#{book_description_is_invalid}"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <button type="button"
+                class="btn btn-primary edit-btn shadow-none"
+                onclick="translate_book()"
+
+                th:text="#{change}"></button>
+    </div>
+</div>
+</body>
+</html>

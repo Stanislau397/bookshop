@@ -78,6 +78,20 @@
     float: right;
 }
 
+.image-alert {
+    margin-left: 11%;
+    display: none;
+}
+
+.book-title-alert {
+    display: none;
+}
+
+.book-description-alert {
+    display: none;
+    width: 748px;
+}
+
 .footer {
     margin-top: 1%;
 }

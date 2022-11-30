@@ -34,6 +34,7 @@ import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOK_DETAILS;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_EXISTING_YEARS_IN_BOOKS_URN;
 import static edu.epam.bookshop.constant.PostMappingURN.ADD_BOOK_TO_AUTHOR_URN;
 import static edu.epam.bookshop.constant.PostMappingURN.ADD_BOOK_URN;
+import static edu.epam.bookshop.constant.PostMappingURN.ADD_LOCALIZATION_TO_BOOK_URN;
 import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_BOOK_INFO_URN;
 
 @AllArgsConstructor
@@ -66,7 +67,7 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/addLocalizationToBook", method = RequestMethod.POST,
+    @RequestMapping(value = ADD_LOCALIZATION_TO_BOOK_URN, method = RequestMethod.POST,
             consumes = {"multipart/form-data"})
     public ResponseEntity<Void> addLocalization(@RequestPart @Valid LocalizedBook localizedBook,
                                                 @RequestPart(required = false) MultipartFile localizedImage) {
