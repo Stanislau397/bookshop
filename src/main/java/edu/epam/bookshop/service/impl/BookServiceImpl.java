@@ -297,7 +297,7 @@ public class BookServiceImpl implements BookService {
                         .limit(SIX)
                         .collect(Collectors.toList());
         if (localizedBooksByKeywordAndLanguageId.isEmpty()) {
-            return Collections.emptyList();
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
         return localizedBooksByKeywordAndLanguageId;
     }
