@@ -14,7 +14,7 @@ public class BookPagesValidator implements ConstraintValidator<ValidateBookPages
 
     @Override
     public boolean isValid(Integer pages, ConstraintValidatorContext constraintValidatorContext) {
-        return nonNull(pages) && pages > MIN_AMOUNT_OF_PAGES
-                && pages < MAX_AMOUNT_OF_PAGES;
+        return nonNull(pages) && pages >= MIN_AMOUNT_OF_PAGES
+                && pages <= MAX_AMOUNT_OF_PAGES;
     }
 }

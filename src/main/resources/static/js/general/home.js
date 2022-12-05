@@ -113,7 +113,7 @@ function displayHighScoreBooks(highScoreBooks) {
         let book_related_to_localized_book = getBookByLocalizedBookTitle(book.title);
         let author = getAuthorByBookId(book_related_to_localized_book.bookId);
         let averageScore = getAverageBookScoreByBookId(book_related_to_localized_book.bookId);
-        let bookHref = 'http://localhost:8070/bookshop/book?title=' + book.title.replace(/ /g, "_");
+        let bookHref = 'http://localhost:8070/bookshop/book?id=' + book.book.bookId;
         let authorHref = '';
         let firstName = '';
         let lastName = '';

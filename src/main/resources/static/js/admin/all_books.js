@@ -1,7 +1,8 @@
 window.addEventListener('DOMContentLoaded', function () {
     let page_number = new URLSearchParams(window.location.search).get('page');
     let language_name = new URLSearchParams(window.location.search).get('lang');
-    displayLocalizedBooks(language_name, page_number)
+    displayLocalizedBooks(language_name, page_number);
+    displayLanguagesInSelect();
     addDaysToOption();
     addMonthToOption();
     addYearsToOption();
@@ -65,28 +66,35 @@ function createBook() {
 function addBook() {
     let created_book = createBook();
     let created_localized_book = createLocalizedBook();
+    let language_name = document.getElementById('language').value;
     let formData = new FormData();
-    formData.append("localizedImage", $('#file-input')[0].files[0]);
+    formData.append("bookImage", $('#file-input')[0].files[0]);
     formData.append('localizedBook', new Blob([JSON.stringify(created_localized_book)], {
         type: "application/json"
     }));
     formData.append('book', new Blob([JSON.stringify(created_book)], {
         type: "application/json"
     }));
-    formData.append('languageName', "en");
-    $.ajax({
-        method: 'POST',
-        url: '/addBook',
-        contentType: false,
-        processData: false,
-        data: formData,
-        success: function (asd) {
-
-        },
-        error: function (exception) {
-            console.log(exception.responseText)
-        }
-    })
+    formData.append('languageName', language_name);
+    if (isBookDataValid(created_localized_book.title, created_localized_book.description, created_book.isbn,
+            created_book.price, created_book.coverType, created_book.pages)
+        && isDateValid(created_book.publishDate)
+        && isImageValid(created_localized_book.imagePath)) {
+        $.ajax({
+            method: 'POST',
+            url: '/addBook',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function () {
+                hideAddBookModal();
+                displaySuccessModal(created_localized_book.title);
+            },
+            error: function (exception) {
+                displayErrorMessage(exception.responseText);
+            }
+        })
+    }
 }
 
 function getBooksByPage(pageNumber) {
@@ -105,13 +113,11 @@ function getBooksByPage(pageNumber) {
     })
 }
 
-function getBooksByKeyWord() {
-    let keywordInput = document.getElementById('keyword');
-    let page = new URLSearchParams(window.location.search).get('page');
-    if (keywordInput.value !== '') {
+function getBooksByKeyWord(key_word) {
+    if (key_word !== '') {
         $.ajax({
-            url: '/findBooksByKeyword',
-            data: {keyWord: keywordInput.value},
+            url: '/displayLocalizedBooksByKeyword',
+            data: {keyword: key_word},
             success: function (booksByKeyWord) {
                 hideErrorMessageForSearchInput();
                 buildTableBodyForBooks(booksByKeyWord);
@@ -121,7 +127,9 @@ function getBooksByKeyWord() {
             }
         });
     } else {
-        getBooksByPage(page);
+        let page_number = new URLSearchParams(window.location.search).get('page');
+        let language_name = new URLSearchParams(window.location.search).get('lang');
+        displayLocalizedBooks(language_name, page_number);
     }
 }
 
@@ -146,25 +154,25 @@ function buildTableBodyForBooks(localizedBooks) {
     let booksHtml = '';
     let language_name_from_url = new URLSearchParams(window.location.search).get('lang');
     let counter = 0;
-    for (let book of localizedBooks) {
+    for (let localized_book of localizedBooks) {
         counter = counter + 1;
-        let book_language = getLanguageByLocalizedBookTitle(book.title);
+        let book_language = getLanguageByLocalizedBookTitle(localized_book.title);
         booksHtml += '<tr>' +
             '<td>' + counter + '</td>' +
             '<td>' +
             '<div class="d-flex align-items-center">' +
-            '<img class="img-thumbnail" style="width: 50px" src=' + book.imagePath + '>' +
+            '<img class="img-thumbnail" style="width: 50px" src=' + localized_book.imagePath + '>' +
             '</div>' + '</td>' +
-            '<td style="width: 680px">' + book.title + '</td>' +
+            '<td style="width: 680px">' + localized_book.title + '</td>' +
             '<td>';
 
         if (language_name_from_url !== book_language.name) {
-            let translate_book_url = '/admin/cabinet/translate_book?title=' + book.title;
+            let translate_book_url = '/admin/cabinet/translate_book?id=' + localized_book.book.bookId;
             booksHtml += '<a type="button" ' +
                 'class="btn btn-secondary role-btn" ' +
                 'href="' + translate_book_url + '">' + add_localization_btn + '</a>'
         } else {
-            let edit_book_url = '/admin/cabinet/edit_book?title=' + book.title;
+            let edit_book_url = '/admin/cabinet/edit_book?id=' + localized_book.book.bookId;
             booksHtml += '<a type="button" ' +
                 'class="btn btn-secondary role-btn" ' +
                 'href="' + edit_book_url + '">' + editBtn + '</a>'
@@ -224,4 +232,37 @@ function buildPaginationForBooksTable(pages) {
                 '</li>';
         }
     }
+}
+
+function displayLanguagesInSelect() {
+    let languages = findAllLanguages();
+    let languages_select = document.getElementById('language');
+    languages_select.innerHTML = '';
+    for (let language of languages) {
+        let language_name = language.name;
+        languages_select.innerHTML +=
+            '<option value="' + language_name + '">' + language_name + '</option>';
+    }
+}
+
+function displaySuccessModal(book_title) {
+    let success_message_h5 = document.getElementById('success_message');
+    let success_message_input_value = document.getElementById('add_book_success_message').value;
+    success_message_h5.innerText = success_message_input_value.replace('%s', book_title);
+    $('#successModal').modal('show');
+}
+
+function hideAddBookModal() {
+    $('#addBookModal').modal('hide');
+}
+
+function showErrorModal() {
+    $('#errorModal').modal('show');
+}
+
+function displayErrorMessage(exception) {
+    let errorMessageDiv = document.getElementById('error_message');
+    let jsonResponse = JSON.parse(exception);
+    errorMessageDiv.innerText = jsonResponse['message'];
+    showErrorModal();
 }

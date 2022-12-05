@@ -4,10 +4,8 @@ window.addEventListener('DOMContentLoaded', function () {
 
 });
 
-function isImageValid() {
-    let file_input = document.getElementById('file-input');
-    let image_name = file_input.files[0].name;
-    if (!image_regex.test(image_name)) {
+function isImageValid(image) {
+    if (!image_regex.test(image)) {
         displayInvalidImageAlertDiv();
         return false;
     }

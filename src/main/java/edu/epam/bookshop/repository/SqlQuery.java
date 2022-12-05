@@ -135,14 +135,14 @@ public class SqlQuery {
                     "AND l = :language";
 
     //book
-    public static final String UPDATE_BOOK_INFO_BY_ID =
+    public static final String UPDATE_BOOK_INFO =
             "UPDATE Book b " +
-                    "SET b.price = :price, " +
-                    "b.pages = :pages, " +
-                    "b.isbn = :isbn, " +
-                    "b.coverType = :coverType, " +
-                    "b.publishDate = :publishDate " +
-                    "WHERE b.bookId = :bookId";
+                    "SET b.price = :#{#updatedBook.price}, " +
+                    "b.pages = :#{#updatedBook.pages}, " +
+                    "b.isbn = :#{#updatedBook.isbn}, " +
+                    "b.coverType = :#{#updatedBook.coverType}, " +
+                    "b.publishDate = :#{#updatedBook.publishDate} " +
+                    "WHERE b.bookId = :#{#updatedBook.bookId}";
     public static final String SELECT_BOOKS_BY_KEYWORD =
             "SELECT b FROM Book b " +
                     "WHERE b.title LIKE %:keyWord%";
@@ -180,7 +180,15 @@ public class SqlQuery {
                     "AND lb1.language.languageId = :languageId " +
                     "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
                     "AND lb2.language.languageId = 1 " +
-                    "WHERE lb1.title = :title OR lb2.title = :title";
+                    "WHERE b.bookId = :bookId";
+    public static final String SELECT_LOCALIZED_BOOKS_BY_KEYWORD_AND_LANGUAGE_ID =
+            "SELECT COALESCE(lb1, lb2) " +
+                    "FROM Book b " +
+                    "LEFT JOIN LocalizedBook lb1 ON lb1.book.bookId = b.bookId " +
+                    "AND lb1.language.languageId = :languageId " +
+                    "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
+                    "AND lb2.language.languageId = 1 " +
+                    "WHERE lb1.title LIKE %:keyword% OR lb2.title LIKE %:keyword%";
     public static final String SELECT_ALL_LOCALIZED_BOOKS_BY_LANGUAGE_ID_AND_PAGE =
             "SELECT COALESCE(lb1, lb2) " +
                     "FROM Book b " +
@@ -188,10 +196,12 @@ public class SqlQuery {
                     "AND lb1.language.languageId = :languageId " +
                     "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
                     "AND lb2.language.languageId = 1";
-    public static final String UPDATE_LOCALIZED_BOOK_INFO_BY_LOCALIZED_BOOK_ID =
+    public static final String UPDATE_LOCALIZED_BOOK_INFO =
             "UPDATE LocalizedBook lb " +
-                    "SET lb.title = :updatedTitle, lb.imagePath = :updatedImagePath, lb.description = :updatedDescription " +
-                    "WHERE lb.localizedBookId = :localizedBookId";
+                    "SET lb.title = :#{#updatedLocalizedBook.title}, " +
+                    "lb.imagePath = :#{#updatedLocalizedBook.imagePath}, " +
+                    "lb.description = :#{#updatedLocalizedBook.description} " +
+                    "WHERE lb.localizedBookId = :#{#updatedLocalizedBook.localizedBookId}";
     public static final String SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN =
             "SELECT COALESCE(lb1, lb2) " +
                     "FROM Book b " +

@@ -7,6 +7,7 @@ import edu.epam.bookshop.annotation.ValidateBookTitle;
 import edu.epam.bookshop.annotation.ValidateImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,6 +41,7 @@ import static edu.epam.bookshop.entity.constant.TableName.LOCALIZED_BOOKS;
 @NoArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "localizedBookId")
@@ -70,23 +72,4 @@ public class LocalizedBook {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = BOOK_ID_FK, referencedColumnName = BOOK_ID)
     private Book book;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        LocalizedBook that = (LocalizedBook) o;
-
-        if (!Objects.equals(localizedBookId, that.localizedBookId))
-            return false;
-        return Objects.equals(title, that.title);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = localizedBookId != null ? localizedBookId.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        return result;
-    }
 }

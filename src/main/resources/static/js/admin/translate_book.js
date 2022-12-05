@@ -1,11 +1,11 @@
 window.addEventListener('DOMContentLoaded', function () {
-    let title = new URLSearchParams(window.location.search).get('title');
-    displayBookDetailsInEnglishByTitle(title);
+    let book_id = new URLSearchParams(window.location.search).get('id');
+    displayLocalizedBookDetails(book_id);
+    displayLanguagesInSelect();
 });
 
-function displayBookDetailsInEnglishByTitle(book_title) {
-    let book_in_english = getBookByLocalizedBookTitle(book_title);
-    console.log(book_in_english)
+function displayLocalizedBookDetails(book_id) {
+    let book_in_english = getLocalizedBookByBookId(book_id);
 
     let image = document.getElementById('book_image');
     image.src = book_in_english.imagePath;
@@ -19,6 +19,7 @@ function displayBookDetailsInEnglishByTitle(book_title) {
     let book_description_input = document.getElementById('book_description');
     book_description_input.value = book_in_english.description;
 }
+
 
 function createLocalizedBook() {
     let title_from_url = new URLSearchParams(window.location.search).get('title');
@@ -43,10 +44,12 @@ function createLocalizedBook() {
 function translate_book() {
     let formData = new FormData();
     let localized_book = createLocalizedBook();
+    let language_name = document.getElementById('language').value;
     formData.append("localizedImage", $('#file-input')[0].files[0]);
     formData.append('localizedBook', new Blob([JSON.stringify(localized_book)], {
         type: "application/json"
     }));
+    formData.append('languageName', language_name);
     if (isBookTitleValid(localized_book.title)
         && isBookDescriptionValid(localized_book.description)
         && isImageValid(localized_book.imagePath)) {
@@ -76,5 +79,16 @@ function displayErrorMessage(exception) {
 
 function showErrorModal() {
     $('#errorModal').modal('show');
+}
+
+function displayLanguagesInSelect() {
+    let languages = findAllLanguages();
+    let languages_select = document.getElementById('language');
+    languages_select.innerHTML = '';
+    for (let language of languages) {
+        let language_name = language.name;
+        languages_select.innerHTML +=
+            '<option value="' + language_name + '">' + language_name + '</option>';
+    }
 }
 

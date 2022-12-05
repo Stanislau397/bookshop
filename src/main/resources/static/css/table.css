@@ -45,7 +45,7 @@
 }
 
 .languages {
-    margin-left:2%;
+    margin-left: 2%;
     margin-top: 1%;
     height: 30px;
 }
@@ -62,5 +62,22 @@
     margin-left: 3px;
     cursor: pointer;
     border-right: 1px solid silver;
+}
+
+.image-alert {
+    display: none;
+    width: 250px;
+    margin-top: 5px;
+}
+
+.book-title-alert,
+.book-description-alert,
+.book-isbn-alert,
+.book-pages-alert,
+.book-price-alert,
+.book-cover-types-alert,
+.book-date-alert {
+    display: none;
+    margin-top: 2px;
 }
 

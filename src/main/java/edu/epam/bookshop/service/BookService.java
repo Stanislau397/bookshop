@@ -4,6 +4,7 @@ import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
 import edu.epam.bookshop.entity.BookStatus;
+import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Language;
 import edu.epam.bookshop.entity.LocalizedBook;
@@ -25,19 +26,23 @@ public interface BookService {
 
     boolean bookExistsById(Long bookId);
 
+    boolean localizedBookExistsById(Long localizedBookId);
+
     Book findBookDetailsByTitle(String bookTitle);
 
     Book findBookByLocalizedBookTitle(String title);
 
     Book findBookById(Long bookId);
 
-    LocalizedBook findLocalizedBookDetailsByTitleAndLanguage(String title, String languageName);
+    LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName);
 
     Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, int pageNumber);
 
     List<Book> findBooksByKeyWord(String keyWord);
 
     List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score);
+
+    List<LocalizedBook> findLocalizedBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName);
 
     Page<Book> findBooksByKeyWordAndPageNumber(String keyWord, Integer pageNumber);
 
@@ -142,4 +147,6 @@ public interface BookService {
     List<ShelveBook> findShelveBooks(Long shelveId, BookStatus bookStatus);
 
     Language findLanguageByName(String name);
+
+    List<CoverType> findAllCoverTypes();
 }

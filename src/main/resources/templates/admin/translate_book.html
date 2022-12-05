@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/xregexp/xregexp-all.js"></script>
     <script type="text/javascript" th:src="@{/js/admin/translate_book.js}"></script>
     <script type="text/javascript" th:src="@{/js/service/book_service.js}"></script>
+    <script type="text/javascript" th:src="@{/js/service/language_service.js}"></script>
     <script type="text/javascript" th:src="@{/js/validation/book_validation.js}"></script>
     <script type="text/javascript" th:src="@{/js/validation/image_validation.js}"></script>
 </head>
@@ -45,11 +46,19 @@
             </label>
             <input id="file-input"
                    onchange="document.getElementById('book_image').src = window.URL.createObjectURL(this.files[0]);
-                   isImageValid();"
+                   isImageValid(document.getElementById('file-input').files[0].name);"
                    type="file"/>
             <div class="alert alert-danger image-alert" role="alert" id="image_alert" th:text="#{image_is_not_valid}"></div>
         </div>
         <div class="info-container">
+
+            <div class="form-group mt-1">
+                <label for="language" th:text="#{localization_language}"></label>
+                <select class="form-select shadow-none"
+                        id="language">
+
+                </select>
+            </div>
 
             <div class="form-group mt-1">
                 <label for="book_title" th:text="#{name}"></label>
@@ -67,7 +76,7 @@
                 <textarea class="form-control shadow-none mt-1"
                           id="book_description"
                           onkeyup="isBookDescriptionValid(this.value)"
-                          style="height: 285px"
+                          style="height: 220px"
                           rows="8"></textarea>
             </div>
             <div class="alert alert-danger book-description-alert"

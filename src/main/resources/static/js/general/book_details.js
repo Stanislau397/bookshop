@@ -3,10 +3,9 @@ let userInfo;
 let book;
 
 window.addEventListener('DOMContentLoaded', function () {
-    let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
-    let title = bookTitleFromParameter.replace(/_/g, ' ');
+    let book_id_from_parameter = new URLSearchParams(window.location.search).get('id');
     userInfo = getUserByUserName();
-    localized_book = getLocalizedBookByTitle(decodeURI(title));
+    localized_book = getLocalizedBookByBookId(book_id_from_parameter);
     book = getBookByLocalizedBookTitle(localized_book.title);
     displayBookDetailsByLocalizedBookAndBook(localized_book, book);
     getBookReviews(book.bookId, 1);
@@ -57,7 +56,7 @@ function getAuthorsByBookId(id) {
     $.ajax({
         url: '/findAuthorsByBookId',
         data: {bookId: id},
-        async : false,
+        async: false,
         success: function (found_authors) {
             authors = found_authors;
             return authors;

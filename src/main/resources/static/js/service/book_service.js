@@ -111,12 +111,12 @@ function getBookByLocalizedBookTitle(book_title) {
     return book;
 }
 
-function getLocalizedBookByTitle(book_title) {
+function getLocalizedBookByBookId(book_id) {
     let localized_book_details = '';
     $.ajax({
-        url: '/findLocalizedBookByTitleAndLanguage',
+        url: '/findLocalizedBookByBookIdAndLanguage',
         data: {
-            title: book_title
+            bookId: book_id
         },
         async: false,
         success: function (foundLocalizedBookDetails) {
@@ -125,4 +125,17 @@ function getLocalizedBookByTitle(book_title) {
         }
     })
     return localized_book_details;
+}
+
+function getAllCoverTypes() {
+    let all_cover_types = '';
+    $.ajax({
+        url: '/findAllCoverTypes',
+        async: false,
+        success: function (found_cover_types) {
+            all_cover_types = found_cover_types;
+            return all_cover_types;
+        }
+    })
+    return all_cover_types;
 }

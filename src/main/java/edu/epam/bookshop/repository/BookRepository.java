@@ -1,7 +1,6 @@
 package edu.epam.bookshop.repository;
 
 import edu.epam.bookshop.entity.Book;
-import edu.epam.bookshop.entity.CoverType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,8 +8,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,15 +21,14 @@ import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_BOOKS_BY_AV
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOK_BY_LOCALIZED_BOOK_TITLE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_EXISTING_YEARS_FOR_BOOKS;
-import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_INFO_BY_ID;
+import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_INFO;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = UPDATE_BOOK_INFO_BY_ID)
-    void updateInfoById(BigDecimal price, Integer pages, String isbn,
-                        CoverType coverType, LocalDate publishDate, Long bookId);
+    @Query(value = UPDATE_BOOK_INFO)
+    void updateBookInfoById(Book updatedBook);
 
     @Query(value = CHECK_IF_BOOK_EXISTS_FOR_AUTHOR,
             nativeQuery = true)

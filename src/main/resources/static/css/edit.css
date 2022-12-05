@@ -45,7 +45,7 @@
 }
 
 .image {
-    object-fit: cover;
+    object-fit: fill;
     border: 1px solid silver;
     border-radius: 5px;
     width: 250px;
@@ -78,19 +78,6 @@
     float: right;
 }
 
-.image-alert {
-    margin-left: 11%;
-    display: none;
-}
-
-.book-title-alert {
-    display: none;
-}
-
-.book-description-alert {
-    display: none;
-    width: 748px;
-}
 
 .footer {
     margin-top: 1%;

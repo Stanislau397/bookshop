@@ -40,7 +40,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHORS_BY_GIVEN_BOOK_ID_NOT_FOUND;
@@ -56,6 +59,7 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_TITLE_
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_NOT_FOUND_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.IMAGE_IS_NOT_VALID_MSG;
+import static edu.epam.bookshop.constant.ExceptionMessage.LOCALIZED_BOOK_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.NOTHING_WAS_FOUND_MSG;
 
 import static edu.epam.bookshop.constant.ExceptionMessage.FIRST_NAME_IS_NOT_VALID_MSG;
@@ -120,20 +124,14 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public void addBook(Book book, LocalizedBook localizedBook, MultipartFile bookImage, String languageName) { //todo test
+    public void addBook(Book bookFromRequest, LocalizedBook localizedBook, MultipartFile bookImage, String languageName) { //todo test
         Language givenLanguage = languageService.findLanguageByName(languageName);
-        Book bookToSave = Book.builder()
-                .coverType(book.getCoverType())
-                .isbn(book.getIsbn())
-                .pages(book.getPages())
-                .price(book.getPrice())
-                .build();
-        Book savedBook = bookRepository.save(bookToSave);
         String imagePathForBook = DEFAULT_BOOK_IMAGE_PATH;
         if (nonNull(bookImage)) {
             imagePathForBook = BOOK_LOCALHOST_PATH
                     .concat(ImageUploaderUtil.save(bookImage, BOOK_DIRECTORY_PATH));
         }
+        Book savedBook = bookRepository.save(bookFromRequest);
         LocalizedBook localizedBookToSave = LocalizedBook.builder()
                 .title(localizedBook.getTitle())
                 .description(localizedBook.getDescription())
@@ -165,31 +163,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public boolean updateBookInfo(Book book, LocalizedBook localizedBook, MultipartFile newBookImage) { //todo test
+    public boolean updateBookInfo(Book updatedBook, LocalizedBook updatedLocalizedBook, MultipartFile updatedImage) { //todo test
         boolean isBookUpdated = false;
-        long localizedBookId = localizedBook.getLocalizedBookId();
-        long bookId = book.getBookId();
-        String updatedTitle = localizedBook.getTitle();
-        String updatedDescription = localizedBook.getDescription();
-        String updatedImagePath = localizedBook.getImagePath();
-        String updatedIsbn = book.getIsbn();
-        int updatedPages = book.getPages();
-        LocalDate updatePublishDate = book.getPublishDate();
-        BigDecimal updatedPrice = book.getPrice();
-        CoverType updatedCoverType = book.getCoverType();
-
-        if (bookValidator.isBookDataValid(updatedTitle, updatedPrice, updatedDescription, updatedPages, updatedIsbn)) {
-            if (imageValidator.isImageNotNull(newBookImage)
-                    && imageValidator.isImageValid(newBookImage.getOriginalFilename())) {
-                updatedImagePath = BOOK_LOCALHOST_PATH
-                        .concat(ImageUploaderUtil
-                                .save(newBookImage, BOOK_DIRECTORY_PATH));
-            }
+        if (nonNull(updatedImage)) {
+            String imagePathForBook = BOOK_LOCALHOST_PATH
+                    .concat(ImageUploaderUtil.save(updatedImage, BOOK_DIRECTORY_PATH));
+            updatedLocalizedBook.setImagePath(imagePathForBook);
+        }
+        if (bookExistsById(updatedBook.getBookId())
+                && localizedBookExistsById(updatedLocalizedBook.getLocalizedBookId())) {
+            bookRepository.updateBookInfoById(updatedBook);
+            localizedBookRepository.updateLocalizedBookInfo(updatedLocalizedBook);
             isBookUpdated = true;
         }
-
-        bookRepository.updateInfoById(updatedPrice, updatedPages, updatedIsbn, updatedCoverType, updatePublishDate, bookId);
-        localizedBookRepository.updateByLocalizedBookId(updatedTitle, updatedImagePath, updatedDescription, localizedBookId);
         return isBookUpdated;
     }
 
@@ -198,11 +184,19 @@ public class BookServiceImpl implements BookService {
         boolean bookExists = bookRepository.existsById(bookId);
         if (!bookExists) {
             log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
-            throw new EntityNotFoundException(
-                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
-            );
+            throw new EntityNotFoundException(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
         }
         return bookExists;
+    }
+
+    @Override
+    public boolean localizedBookExistsById(Long localizedBookId) {
+        boolean localizedBookExists = localizedBookRepository.existsById(localizedBookId);
+        if (!localizedBookExists) {
+            log.info(String.format(LOCALIZED_BOOK_WITH_GIVEN_ID_NOT_FOUND, localizedBookId));
+            throw new EntityNotFoundException(String.format(LOCALIZED_BOOK_WITH_GIVEN_ID_NOT_FOUND, localizedBookId));
+        }
+        return localizedBookExists;
     }
 
     @Override
@@ -234,15 +228,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public LocalizedBook findLocalizedBookDetailsByTitleAndLanguage(String title, String languageName) {
+    public LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName) {
         Language language = languageService.findLanguageByName(languageName);
         long languageId = language.getLanguageId();
         LocalizedBook localizedBookDetails = localizedBookRepository
-                .selectLocalizedBookByBookIdAndLanguageId(title, languageId)
+                .selectLocalizedBookByBookIdAndLanguageId(bookId, languageId)
                 .orElseThrow(() -> {
-                    log.info(String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, title, languageName));
+                    log.info(String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName));
                     throw new EntityNotFoundException(
-                            String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, title, languageName)
+                            String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName)
                     );
                 });
         return localizedBookDetails;
@@ -292,6 +286,20 @@ public class BookServiceImpl implements BookService {
             );
         }
         return localizedBooksWithHighScore;
+    }
+
+    @Override
+    public List<LocalizedBook> findLocalizedBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName) {
+        Language selectedLanguage = languageService.findLanguageByName(languageName);
+        List<LocalizedBook> localizedBooksByKeywordAndLanguageId =
+                localizedBookRepository.selectLocalizedBooksByKeywordAndLanguageId(keyword, selectedLanguage.getLanguageId())
+                        .stream()
+                        .limit(SIX)
+                        .collect(Collectors.toList());
+        if (localizedBooksByKeywordAndLanguageId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return localizedBooksByKeywordAndLanguageId;
     }
 
     @Override
@@ -1035,5 +1043,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public Language findLanguageByName(String name) {
         return null;
+    }
+
+    @Override
+    public List<CoverType> findAllCoverTypes() {
+        List<CoverType> allCoverTypes = Arrays.asList(CoverType.values());
+        if (allCoverTypes.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return allCoverTypes;
     }
 }

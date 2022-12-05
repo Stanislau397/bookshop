@@ -1,51 +1,84 @@
 window.addEventListener('DOMContentLoaded', function () {
-    let bookTitleFromParameter = new URLSearchParams(window.location.search).get('title');
-    displayBookDetailsForEditByBookTitle(bookTitleFromParameter);
+    let book_id_from_parameter = new URLSearchParams(window.location.search).get('id');
+    displayBookDetailsForEditByBookTitle(book_id_from_parameter);
     getAllAuthors();
     getAllPublishers();
     getAllGenres();
 });
 
+function createUpdatedLocalizedBook() {
+    let localized_title = document.getElementById('book_title').value;
+    let localized_description = document.getElementById('book_description').value;
+    let localized_book_id = document.getElementById('localized_book_id').value;
 
-function editBook() {
+    let image_path = document.getElementById('book_image').src;
+    let file_input = document.getElementById('file-input');
+    if (file_input.files.length !== 0) {
+        image_path = file_input.files[0].name;
+    }
+    return {
+        "localizedBookId": localized_book_id,
+        "title": localized_title,
+        "description": localized_description,
+        "imagePath": image_path
+    };
+}
+
+function createUpdatedBook() {
     let day = document.getElementById('day');
     let month = document.getElementById('month');
     let year = document.getElementById('year');
     let date = new Date(Date.UTC(year.value, month.value, day.value))
         .toISOString().slice(0, 10);
-    let bookToUpdate = new FormData();
-    bookToUpdate.append('localizedBookId', $('#localized_book_id').val());
-    bookToUpdate.append('bookId', $('#book_id').val());
-    bookToUpdate.append('title', $('#book_title').val());
-    bookToUpdate.append('publishDate', date);
-    bookToUpdate.append('description', $('#book_description').val());
-    bookToUpdate.append('price', $('#book_price').val());
-    bookToUpdate.append('pages', $('#book_pages').val());
-    bookToUpdate.append('isbn', $('#book_isbn').val());
-    bookToUpdate.append('coverType', $('#book_cover_type').val());
-    bookToUpdate.append('newBookImage', $('#file-input')[0].files[0]);
-    bookToUpdate.append('imagePath', $('#old_image_path').val());
-    $.ajax({
-        method: 'POST',
-        url: '/updateBookInfo',
-        cache: false,
-        processData: false,
-        dataType : false,
-        contentType: false,
-        data: bookToUpdate,
-        success: function (isBookUpdated) {
-            let book_title_input = document.getElementById('book_title').value;
-            let queryParams = new URLSearchParams(window.location.search);
-            queryParams.set('title', book_title_input);
-            history.replaceState(null, null, "?" + queryParams.toString());
-            displayBookDetailsForEditByBookTitle(book_title_input)
-            displaySuccessMessage();
-            console.log(isBookUpdated)
-        },
-        error: function (errorMessage) {
-            console.log(errorMessage.responseText);
-        }
-    })
+    let book_price = document.getElementById('book_price').value;
+    let book_pages = document.getElementById('book_pages').value;
+    let book_isbn = document.getElementById('book_isbn').value;
+    let book_cover_type = document.getElementById('book_cover_type').value;
+    let book_id = document.getElementById('book_id').value;
+
+    return {
+        "bookId": book_id,
+        "publishDate": date,
+        "price": book_price,
+        "pages": book_pages,
+        "isbn": book_isbn,
+        "coverType": book_cover_type
+    }
+}
+
+
+function editBook() {
+    let updated_book = createUpdatedBook();
+    let updated_localized_book = createUpdatedLocalizedBook();
+    console.log(updated_localized_book.localizedBookId)
+    let formData = new FormData();
+    formData.append("imageFromRequest", $('#file-input')[0].files[0]);
+    formData.append('localizedBookFromRequest', new Blob([JSON.stringify(updated_localized_book)], {
+        type: "application/json"
+    }));
+    formData.append('bookFromRequest', new Blob([JSON.stringify(updated_book)], {
+        type: "application/json"
+    }));
+    if (isBookDataValid(updated_localized_book.title, updated_localized_book.description, updated_book.isbn,
+            updated_book.price, updated_book.coverType, updated_book.pages)
+        && isDateValid(updated_book.publishDate)
+        && isImageValid(updated_localized_book.imagePath)) {
+        $.ajax({
+            method: 'POST',
+            url: '/updateBookInfo',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (bookUpdated) {
+                if (bookUpdated) {
+                    displaySuccessMessage();
+                }
+            },
+            error: function (exception) {
+                displayErrorMessageInModal(exception.responseText);
+            }
+        })
+    }
 }
 
 function addAuthorToBook() {
@@ -174,8 +207,8 @@ function removeGenreFromBook() {
     })
 }
 
-function displayBookDetailsForEditByBookTitle(book_title) {
-    let localized_book_details = getLocalizedBookByTitle(book_title);
+function displayBookDetailsForEditByBookTitle(book_id) {
+    let localized_book_details = getLocalizedBookByBookId(book_id);
     setBookInputFields(localized_book_details);
     getAuthorsForBookByBookId(localized_book_details.book.bookId);
     getGenresForBook(localized_book_details.book.bookId);

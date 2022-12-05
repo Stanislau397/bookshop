@@ -5,14 +5,52 @@
     <title th:text="#{books}"></title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/add_book.css}"/>
+    <script src="https://unpkg.com/xregexp/xregexp-all.js"></script>
     <script type="text/javascript" th:src="@{/js/admin/all_books.js}"></script>
     <script type="text/javascript" th:src="@{/js/service/book_service.js}"></script>
     <script type="text/javascript" th:src="@{/js/service/language_service.js}"></script>
+    <script type="text/javascript" th:src="@{/js/validation/book_validation.js}"></script>
+    <script type="text/javascript" th:src="@{/js/validation/image_validation.js}"></script>
+    <script type="text/javascript" th:src="@{/js/validation/date_validation.js}"></script>
 </head>
 <body>
 <div th:replace="fragment/side_bar"></div>
 
 <input type="hidden" id="add_localization_properties" th:value="#{add_localization}">
+
+<div class="modal fade"
+     id="successModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="hidden" id="add_book_success_message" th:value="#{book_has_been_added}">
+                <h5 class="modal-title" id="success_message"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="errorModal"
+     tabindex="-1"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div id="error_message"></div>
+                <button type="button"
+                        class="btn-close"
+
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade"
      id="addBookModal"
@@ -32,30 +70,68 @@
                              src="http://localhost:8090/image/book/default.png"/>
                     </label>
                     <input id="file-input"
-                           onchange="document.getElementById('book_image').src = window.URL.createObjectURL(this.files[0])"
+                           onchange="
+                           document.getElementById('book_image').src = window.URL.createObjectURL(this.files[0]);
+                           isImageValid(document.getElementById('file-input').files[0].name);"
                            type="file"/>
+                    <div class="alert alert-danger image-alert" role="alert" id="image_alert"
+                         th:text="#{image_is_not_valid}"></div>
                 </div>
                 <div class="info-container">
 
                     <div class="form-group mt-1">
-                        <label for="book_title" th:text="#{name}"></label>
-                        <input type="text" class="form-control shadow-none" id="book_title">
+                        <label for="language" th:text="#{language}"></label>
+                        <select class="form-select shadow-none"
+                                id="language">
+
+                        </select>
                     </div>
+
+                    <div class="form-group mt-1">
+                        <label for="book_title" th:text="#{name}"></label>
+                        <input type="text"
+                               class="form-control shadow-none"
+                               onkeyup="isBookTitleValid(this.value)"
+                               id="book_title">
+                    </div>
+                    <div class="alert alert-danger book-title-alert"
+                         role="alert"
+                         id="book_title_alert"
+                         th:text="#{book_title_is_invalid}"></div>
 
                     <div class="form-group mt-1">
                         <label for="book_price" th:text="#{price}"></label>
-                        <input type="text" class="form-control shadow-none" id="book_price">
+                        <input type="text"
+                               class="form-control shadow-none"
+                               onchange="isPriceValid(this.value)"
+                               id="book_price">
                     </div>
+                    <div class="alert alert-danger book-price-alert"
+                         role="alert"
+                         id="book_price_alert"
+                         th:text="#{book_price_is_invalid}"></div>
 
                     <div class="form-group mt-1">
                         <label for="book_isbn" th:text="#{isbn}"></label>
-                        <input type="text" class="form-control shadow-none" id="book_isbn">
+                        <input type="text" class="form-control shadow-none"
+                               onchange="isIsbnValid(this.value)"
+                               id="book_isbn">
                     </div>
+                    <div class="alert alert-danger book-isbn-alert"
+                         role="alert"
+                         id="book_isbn_alert"
+                         th:text="#{bool_isbn_is_invalid}"></div>
 
                     <div class="form-group mt-1">
                         <label for="book_pages" th:text="#{pages}"></label>
-                        <input type="text" class="form-control shadow-none" id="book_pages">
+                        <input type="text" class="form-control shadow-none"
+                               onkeyup="isAmountOfPagesValid(this.value)"
+                               id="book_pages">
                     </div>
+                    <div class="alert alert-danger book-pages-alert"
+                         role="alert"
+                         id="book_pages_alert"
+                         th:text="#{book_pages_is_invalid}"></div>
 
                     <div class="form-group mt-1">
                         <label for="book_cover_type"
@@ -63,12 +139,17 @@
                                class="col-sm-2 col-form-label"
                                th:text="#{cover_type}"></label>
                         <select class="form-select  shadow-none"
+                                onchange="isCoverTypesContains(this.value)"
                                 aria-label="Default select example"
                                 id="book_cover_type">
                             <option value="HARDCOVER" selected th:text="#{hard}"></option>
                             <option value="SOFTCOVER" th:text="#{soft}"></option>
                         </select>
                     </div>
+                    <div class="alert alert-danger book-cover-types-alert"
+                         role="alert"
+                         id="book_cover_types_alert"
+                         th:text="#{book_cover_type_not_found}"></div>
 
                     <label for="year"
                            style="width: 200px"
@@ -94,11 +175,21 @@
                             <option selected th:text="#{year}"></option>
                         </select>
                     </div>
+                    <div class="alert alert-danger book-date-alert"
+                         role="alert"
+                         id="book_date_alert"
+                         th:text="#{book_description_is_invalid}"></div>
 
                     <div class="form-group mt-1">
                         <label for="book_description" th:text="#{description}"></label>
-                        <textarea class="form-control shadow-none mt-1" id="book_description" rows="3"></textarea>
+                        <textarea class="form-control shadow-none mt-1"
+                                  onchange="isBookDescriptionValid(this.value)"
+                                  id="book_description" rows="5"></textarea>
                     </div>
+                    <div class="alert alert-danger book-description-alert"
+                         role="alert"
+                         id="book_description_alert"
+                         th:text="#{book_description_is_invalid}"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -119,7 +210,7 @@
                class="form-control rounded shadow-none users-search"
                th:placeholder="#{search}" aria-label="Search"
                aria-describedby="search-addon"
-               onkeyup="getBooksByKeyWord()"/>
+               onkeyup="getBooksByKeyWord(this.value)"/>
     </div>
 
     <table class="table users-table align-middle mb-0 bg-white w-90">

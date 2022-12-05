@@ -2,6 +2,7 @@ package edu.epam.bookshop.controller;
 
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookStatus;
+import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.LocalizedBook;
 import edu.epam.bookshop.entity.ShelveBook;
 import edu.epam.bookshop.service.BookService;
@@ -51,13 +52,15 @@ public class BookController {
                                            @RequestPart @Valid LocalizedBook localizedBook,
                                            @RequestPart(required = false) MultipartFile bookImage,
                                            @RequestPart String languageName) {
-//        bookService.addBook(book, localizedBook, bookImage, languageName);
+        bookService.addBook(book, localizedBook, bookImage, languageName);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(UPDATE_BOOK_INFO_URN)
-    public ResponseEntity<Boolean> changeBookInfo(Book book, MultipartFile newBookImage, LocalizedBook localizedBook) {
-        Boolean isBookUpdated = bookService.updateBookInfo(book, localizedBook, newBookImage);
+    public ResponseEntity<Boolean> changeBookInfo(@RequestPart @Valid Book bookFromRequest,
+                                                  @RequestPart @Valid LocalizedBook localizedBookFromRequest,
+                                                  @RequestPart(required = false) MultipartFile imageFromRequest) {
+        Boolean isBookUpdated = bookService.updateBookInfo(bookFromRequest, localizedBookFromRequest, imageFromRequest);
         return ResponseEntity.ok(isBookUpdated);
     }
 
@@ -70,10 +73,9 @@ public class BookController {
     @RequestMapping(value = ADD_LOCALIZATION_TO_BOOK_URN, method = RequestMethod.POST,
             consumes = {"multipart/form-data"})
     public ResponseEntity<Void> addLocalization(@RequestPart @Valid LocalizedBook localizedBook,
-                                                @RequestPart(required = false) MultipartFile localizedImage) {
-        String language = LocaleContextHolder.getLocale()
-                .getLanguage();
-        bookService.addLocalizationToExistingBook(localizedBook, localizedImage, language);
+                                                @RequestPart(required = false) MultipartFile localizedImage,
+                                                @RequestPart String languageName) {
+        bookService.addLocalizationToExistingBook(localizedBook, localizedImage, languageName);
         return ResponseEntity.ok().build();
     }
 
@@ -83,12 +85,12 @@ public class BookController {
         return ResponseEntity.ok(foundBookByTitle);
     }
 
-    @GetMapping("/findLocalizedBookByTitleAndLanguage")
-    public ResponseEntity<LocalizedBook> displayLocalizedBookByTitleAndLanguage(String title) {
+    @GetMapping("/findLocalizedBookByBookIdAndLanguage")
+    public ResponseEntity<LocalizedBook> displayLocalizedBookByBookIdAndLanguage(Long bookId) {
         String currentLanguage = LocaleContextHolder
                 .getLocale()
                 .getLanguage();
-        return ResponseEntity.ok(bookService.findLocalizedBookDetailsByTitleAndLanguage(title, currentLanguage));
+        return ResponseEntity.ok(bookService.findLocalizedBookDetailsByBookIdAndLanguage(bookId, currentLanguage));
     }
 
     @GetMapping(FIND_BOOKS_BY_KEYWORD)
@@ -150,6 +152,13 @@ public class BookController {
         return ResponseEntity.ok(bookService.findAllLocalizedBooksByLanguageAndPageNumber(languageName, pageNumber));
     }
 
+    @GetMapping("/displayLocalizedBooksByKeyword")
+    public ResponseEntity<List<LocalizedBook>> displayLocalizedBooksByKeyword(String keyword) {
+        String currentLanguage = LocaleContextHolder.getLocale()
+                .getLanguage();
+        return ResponseEntity.ok(bookService.findLocalizedBooksByKeywordAndLanguageNameLimit6(keyword, currentLanguage));
+    }
+
     @GetMapping(FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS)
     public ResponseEntity<List<ShelveBook>> displayBooksByShelveIdAndStatus(Long shelveId, String bookStatus,
                                                                             Integer pageNumber) {
@@ -174,5 +183,10 @@ public class BookController {
     @GetMapping("/getBookByLocalizedBookTitle")
     public ResponseEntity<Book> displayBookByLocalizedBookTitle(String title) {
         return ResponseEntity.ok(bookService.findBookByLocalizedBookTitle(title));
+    }
+
+    @GetMapping("/findAllCoverTypes")
+    public ResponseEntity<List<CoverType>> displayAllCoverTypes() {
+        return ResponseEntity.ok(bookService.findAllCoverTypes());
     }
 }
