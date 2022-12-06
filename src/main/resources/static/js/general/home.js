@@ -109,16 +109,15 @@ function displayHighScoreBooks(highScoreBooks) {
     highScoreBooksContent.innerHTML = '';
     let add_btn = document.getElementById('add').value;
     let counter = 0;
-    for (let book of highScoreBooks) {
-        let book_related_to_localized_book = getBookByLocalizedBookTitle(book.title);
-        let author = getAuthorByBookId(book_related_to_localized_book.bookId);
-        let averageScore = getAverageBookScoreByBookId(book_related_to_localized_book.bookId);
-        let bookHref = 'http://localhost:8070/bookshop/book?id=' + book.book.bookId;
+    for (let localized_high_score_book of highScoreBooks) {
+        let author = localized_high_score_book.book.authors;
+        let averageScore = getAverageBookScoreByBookId(localized_high_score_book.book.bookId);
+        let bookHref = 'http://localhost:8070/bookshop/book?id=' + localized_high_score_book.book.bookId;
         let authorHref = '';
         let firstName = '';
         let lastName = '';
         counter = counter + 1;
-        if (author !== '') {
+        if (author.length > 0) {
             firstName = author[0].firstName;
             lastName = author[0].lastName;
             authorHref = 'http://localhost:8070/bookshop/author?authorId=' + author[0].authorId;
@@ -128,17 +127,17 @@ function displayHighScoreBooks(highScoreBooks) {
             '<div class="item">' +
             '<div class="image-container">' +
             '<a href="' + bookHref + '" class="image-href">' + '<div class="book-score">' + averageScore + '</div>' +
-            '<img class="book-image" src="' + book.imagePath + '">' + '</a>' + '</div>' +
+            '<img class="book-image" src="' + localized_high_score_book.imagePath + '">' + '</a>' + '</div>' +
             '<div class="book-info-container">' + '<div class="book-title-container">' +
-            '<a id="book_title" href="' + bookHref + '">' + book.title + '</a>' + '</div>' +
+            '<a id="book_title" href="' + bookHref + '">' + localized_high_score_book.title + '</a>' + '</div>' +
             '<div class="author-container">' +
             '<a id="book_author" href="' + authorHref + '">' + firstName + ' ' + lastName + '</a>' + '</div>' +
-            '<div class="price">' + book_related_to_localized_book.price + '</div>' + '</div>' +
+            '<div class="price">' + localized_high_score_book.book.price + '</div>' + '</div>' +
             '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';
         let button_container_div = document.getElementById('button_container' + counter);
         if (user != null) {
             let shelveId = user.bookShelve.bookShelveId;
-            displayButton(book.bookId, shelveId, book.title, button_container_div)
+            displayButton(localized_high_score_book.book.bookId, shelveId, localized_high_score_book.title, button_container_div)
         } else {
             button_container_div.innerHTML =
                 '<button type="button" ' +

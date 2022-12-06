@@ -1,8 +1,7 @@
 package edu.epam.bookshop.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.epam.bookshop.annotation.ValidateBookIsbn;
 import edu.epam.bookshop.annotation.ValidateBookPages;
 import edu.epam.bookshop.annotation.ValidateBookPrice;
@@ -19,6 +18,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,8 +31,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-
-import static edu.epam.bookshop.entity.constant.PropertyId.BOOK_ID_PROPERTY;
 
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID;
@@ -61,9 +59,7 @@ import static edu.epam.bookshop.entity.constant.TableName.PUBLISHER_BOOKS;
 @Setter
 @Getter
 @EqualsAndHashCode
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = BOOK_ID_PROPERTY)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Book {
 
     @Id
@@ -117,14 +113,15 @@ public class Book {
     @JoinTable(name = PUBLISHER_BOOKS,
             joinColumns = @JoinColumn(name = BOOK_ID_FK),
             inverseJoinColumns = @JoinColumn(name = PUBLISHER_ID_FK))
-    @JsonIgnore
+    @JsonIgnoreProperties("publishedBooks")
     private Set<Publisher> publishers;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     @JoinTable(name = AUTHOR_BOOKS,
             joinColumns = @JoinColumn(name = BOOK_ID_FK),
             inverseJoinColumns = @JoinColumn(name = AUTHOR_ID_FK))
-    @JsonIgnore
+    @JsonIgnoreProperties("books")
     private Set<Author> authors;
 
     @OneToMany(mappedBy = "reviewedBook")

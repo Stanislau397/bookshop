@@ -1,6 +1,8 @@
 package edu.epam.bookshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +15,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,8 +22,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
-
-import static edu.epam.bookshop.entity.constant.PropertyId.AUTHOR_ID_PROPERTY;
 
 import static edu.epam.bookshop.entity.constant.TableColumn.AUTHOR_ID;
 import static edu.epam.bookshop.entity.constant.TableColumn.IMAGE_PATH;
@@ -41,9 +40,7 @@ import static edu.epam.bookshop.entity.constant.TableName.AUTHORS;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = AUTHOR_ID_PROPERTY)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Author {
 
     @Id
@@ -70,7 +67,7 @@ public class Author {
     @ManyToMany(
             mappedBy = "authors",
             targetEntity = Book.class,
-            cascade = CascadeType.MERGE,
-            fetch = FetchType.LAZY)
+            cascade = CascadeType.MERGE)
+    @JsonIgnoreProperties("authors")
     private List<Book> books;
 }

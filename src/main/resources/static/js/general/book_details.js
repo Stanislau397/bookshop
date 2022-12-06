@@ -1,54 +1,32 @@
 let localized_book;
 let userInfo;
-let book;
 
 window.addEventListener('DOMContentLoaded', function () {
     let book_id_from_parameter = new URLSearchParams(window.location.search).get('id');
     userInfo = getUserByUserName();
     localized_book = getLocalizedBookByBookId(book_id_from_parameter);
-    book = getBookByLocalizedBookTitle(localized_book.title);
-    displayBookDetailsByLocalizedBookAndBook(localized_book, book);
-    getBookReviews(book.bookId, 1);
-    getAverageBookReviewScoreByBookId(book.bookId);
+    console.log(localized_book)
+    displayBookDetailsByLocalizedBookAndBook(localized_book, localized_book.book);
+    getBookReviews(localized_book.book.bookId, 1);
+    getAverageBookReviewScoreByBookId(localized_book.book.bookId);
     addBookShelveBtn();
-    checkIfUserReviewedBook(userInfo.userId, book.bookId);
+    checkIfUserReviewedBook(userInfo.userId, localized_book.book.bookId);
 });
 
 function displayBookDetailsByLocalizedBookAndBook(localized_book, book) {
-    let authors = getAuthorsByBookId(book.bookId);
+    var startTime = performance.now()
+    let authors = localized_book.book.authors;
+    let publishers = localized_book.book.publishers;
     setAuthors(authors)
     setBookTitle(localized_book);
     setBookImage(localized_book);
     setH1Title(localized_book);
-    getPublishersByBookId(book.bookId);
-    getGenresByBookId(book.bookId);
+    setBookPublishers(publishers)
+    getGenresByBookId(localized_book.book.bookId);
     setBookDescription(localized_book);
-    setProductDetails(book);
-}
-
-function getBookDetailsByTitle(bookTitle) {
-    let bookDetails = null;
-    $.ajax({
-        url: '/findBookDetails',
-        async: false,
-        data: {title: bookTitle},
-        success: function (bookInfo) {
-            bookDetails = bookInfo;
-            setBookTitle(bookInfo);
-            setBookImage(bookInfo);
-            setH1Title(bookInfo);
-            getAuthorsByBookId(bookInfo.bookId);
-            getPublishersByBookId(bookInfo.bookId);
-            getGenresByBookId(bookInfo.bookId);
-            setBookDescription(bookInfo);
-            setProductDetails(bookInfo);
-            return bookDetails;
-        },
-        error: function (exception) {
-
-        }
-    })
-    return bookDetails;
+    setProductDetails(localized_book.book);
+    var endTime = performance.now()
+    console.log(endTime - startTime)
 }
 
 function getAuthorsByBookId(id) {
@@ -66,19 +44,6 @@ function getAuthorsByBookId(id) {
         }
     })
     return authors;
-}
-
-function getPublishersByBookId(id) {
-    $.ajax({
-        url: '/findPublishersByBookId',
-        data: {bookId: id},
-        success: function (publishers) {
-            setBookPublishers(publishers);
-        },
-        error: function (exception) {
-            console.log(exception.responseText);
-        }
-    })
 }
 
 function getGenresByBookId(id) {
@@ -106,7 +71,7 @@ function getUserByUserName() {
                 data: {username: user_name_h2.innerText},
                 success: function (user) {
                     userToReturn = user;
-                    checkIfUserReviewedBook(user.userId, book.bookId);
+                    checkIfUserReviewedBook(user.userId, localized_book.book.bookId);
                     setUserImageInReview(user);
 
                     return userToReturn;
@@ -401,7 +366,6 @@ function displayBookReviews(bookReviews) {
         let publishDate = review.publishDate;
         let reversedDate = publishDate.split('-').reverse().join('-');
         counter = counter + 1;
-        console.log(review.bookReviewId)
         book_reviews_container.innerHTML +=
             '<div class="review-container bg-light">' +
             '<div class="review-head">' +
@@ -487,7 +451,7 @@ function addBookShelveBtn() {
     let add_btn = document.getElementById('add').value;
     if (userInfo != null) {
         let shelveId = userInfo.bookShelve.bookShelveId;
-        displayButton(book.bookId, shelveId, book.title, button_container)
+        displayButton(localized_book.book.bookId, shelveId, localized_book.book.title, button_container)
     } else {
         button_container.innerHTML =
             '<button type="button" ' +

@@ -243,7 +243,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, int pageNumber) {
+    public Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, Integer pageNumber) {
         Pageable pageWithLocalizedBooks = PageRequest.of(pageNumber - 1, SIX);
         Language selectedLanguage = languageService.findLanguageByName(languageName);
         long languageId = selectedLanguage.getLanguageId();
@@ -281,9 +281,7 @@ public class BookServiceImpl implements BookService {
                 .limit(FIFTEEN)
                 .toList();
         if (localizedBooksWithHighScore.isEmpty()) {
-            throw new NothingFoundException(
-                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score)
-            );
+            throw new NothingFoundException(String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score));
         }
         return localizedBooksWithHighScore;
     }

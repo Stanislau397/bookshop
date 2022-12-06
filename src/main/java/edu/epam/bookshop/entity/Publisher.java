@@ -1,6 +1,7 @@
 package edu.epam.bookshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,11 +34,9 @@ import static edu.epam.bookshop.entity.constant.TableColumn.IMAGE_PATH;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = PUBLISHER_ID_PROPERTY)
 @Table(name = PUBLISHERS)
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Publisher {
 
     @Id
@@ -63,5 +62,6 @@ public class Publisher {
             targetEntity = Book.class,
             cascade = CascadeType.MERGE
     )
+    @JsonIgnoreProperties("publishers")
     private List<Book> publishedBooks;
 }

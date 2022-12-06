@@ -36,7 +36,7 @@ public interface BookService {
 
     LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName);
 
-    Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, int pageNumber);
+    Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, Integer pageNumber);
 
     List<Book> findBooksByKeyWord(String keyWord);
 
