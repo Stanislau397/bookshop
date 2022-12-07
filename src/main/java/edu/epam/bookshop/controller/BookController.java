@@ -92,9 +92,10 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOKS_BY_YEAR_AND_PAGE_URN)
-    public ResponseEntity<Page<Book>> displayBooksByYearAndPageNumber(Integer year, Integer page) {
-        Page<Book> booksByYearAndPage = bookService.findBooksByYearAndPageNumber(year, page);
-        return ResponseEntity.ok(booksByYearAndPage);
+    public ResponseEntity<Page<LocalizedBook>> displayBooksByYearAndPageNumber(Integer year, Integer page) {
+        String languageName = LocaleContextHolder.getLocale()
+                .getLanguage();
+        return ResponseEntity.ok(bookService.findLocalizedBooksByYearAndPageNumberAndLanguage(year, page, languageName));
     }
 
     @GetMapping(FIND_BOOKS_BY_KEYWORD_AND_PAGE)
@@ -106,8 +107,7 @@ public class BookController {
 
     @GetMapping(FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15)
     public ResponseEntity<List<LocalizedBook>> displayBooksWithHighScoreLimit15(Double score) {
-        String languageName = LocaleContextHolder
-                .getLocale()
+        String languageName = LocaleContextHolder.getLocale()
                 .getLanguage();
         List<LocalizedBook> localizedBooksHavingAverageScoreGreaterThan =
                 bookService.findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(languageName, score);

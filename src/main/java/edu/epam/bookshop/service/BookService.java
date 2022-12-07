@@ -40,7 +40,7 @@ public interface BookService {
 
     Page<LocalizedBook> findLocalizedBooksByKeywordAndPageNumberAndLanguage(String keyWord, Integer pageNumber, String languageName);
 
-    Page<Book> findBooksByYearAndPageNumber(Integer year, Integer pageNumber);
+    Page<LocalizedBook> findLocalizedBooksByYearAndPageNumberAndLanguage(Integer year, Integer pageNumber, String languageName);
 
     Page<Book> findBooksByLocalizedGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
 

@@ -212,6 +212,28 @@ public class SqlQuery {
                     "JOIN b.bookReviews br " +
                     "GROUP BY b.bookId " +
                     "HAVING AVG(br.score) > :score ORDER BY AVG(br.score) DESC";
+    public static final String SELECT_LOCALIZED_BOOKS_BY_YEAR =
+            "SELECT COALESCE(lb1, lb2) " +
+                    "FROM Book b " +
+                    "LEFT JOIN LocalizedBook lb1 ON lb1.book.bookId = b.bookId " +
+                    "AND lb1.language.languageId = :languageId " +
+                    "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
+                    "AND lb2.language.languageId = 1 " +
+                    "WHERE YEAR(b.publishDate) = :bookYear";
+    public static final String SOME =
+            "SELECT new edu.epam.bookshop.entity.LocalizedBook(" +
+                    "COALESCE(lb1.localizedBookId, lb2.localizedBookId), " +
+                    "COALESCE(lb1.title, lb2.title), " +
+                    "COALESCE(lb1.description, lb2.description), " +
+                    "COALESCE(lb1.imagePath, lb2.imagePath), " +
+                    "COALESCE(lb1.language, lb2.language), " +
+                    "COALESCE(lb1.book, lb2.book)) " +
+                    "FROM Book b " +
+                    "LEFT JOIN LocalizedBook lb1 ON lb1.book.bookId = b.bookId " +
+                    "AND lb1.language.languageId = :languageId " +
+                    "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
+                    "AND lb2.language.languageId = 1 " +
+                    "WHERE b.bookId = :bookId";
 
     //book review
     public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK =

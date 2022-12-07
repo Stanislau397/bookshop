@@ -14,7 +14,6 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 
 function displayBookDetailsByLocalizedBookAndBook(localized_book, book) {
-    var startTime = performance.now()
     let authors = localized_book.book.authors;
     let publishers = localized_book.book.publishers;
     setAuthors(authors)
@@ -22,9 +21,10 @@ function displayBookDetailsByLocalizedBookAndBook(localized_book, book) {
     setBookImage(localized_book);
     setH1Title(localized_book);
     setBookPublishers(publishers)
-    getGenresByBookId(localized_book.book.bookId);
     setBookDescription(localized_book);
     setProductDetails(localized_book.book);
+    var startTime = performance.now()
+    setBookGenres(localized_book.book.genres)
     var endTime = performance.now()
     console.log(endTime - startTime)
 }
@@ -332,18 +332,16 @@ function setBookPublishers(publishers) {
 
 function setBookGenres(genres) {
     let book_genres_li = document.getElementById('book_genres');
+    let counter = 0;
     if (genres.length !== 0) {
-        for (let i = 0; i < genres.length; i++) {
-            if (i !== genres.length - 1) {
-                book_genres_li.innerHTML +=
-                    '<a class="book-genre" ' +
-                    'href="booksByGenre?genreTitle=' + genres[i].title + '&page=1">' + genres[i].title +
-                    ', ' + '</a>'
-            } else {
-                book_genres_li.innerHTML +=
-                    '<a class="book-genre" ' +
-                    'href="booksByGenre?genreTitle=' + genres[i].title + '&page=1">' + genres[i].title +
-                    '</a>'
+        for (let genre of genres) {
+            for (let localizedGenre of genre.localizedGenres) {
+                if (localizedGenre.language.name === localized_book.language.name) {
+                    book_genres_li.innerHTML +=
+                        '<a class="book-genre" ' +
+                        'href="booksByGenre?genreTitle=' + localizedGenre.title + '&page=1">' + localizedGenre.title +
+                        ', ' + '</a>'
+                }
             }
         }
     } else {

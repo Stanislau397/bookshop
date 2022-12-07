@@ -1,6 +1,7 @@
 package edu.epam.bookshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import edu.epam.bookshop.annotation.ValidateBookDescription;
 import edu.epam.bookshop.annotation.ValidateBookTitle;
@@ -42,9 +43,7 @@ import static edu.epam.bookshop.entity.constant.TableName.LOCALIZED_BOOKS;
 @Setter
 @Getter
 @EqualsAndHashCode
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "localizedBookId")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LocalizedBook {
 
     @Id
@@ -71,5 +70,6 @@ public class LocalizedBook {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = BOOK_ID_FK, referencedColumnName = BOOK_ID)
+    @JsonIgnoreProperties("localizedBooks")
     private Book book;
 }

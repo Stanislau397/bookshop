@@ -1,5 +1,6 @@
 package edu.epam.bookshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -27,6 +28,7 @@ import static edu.epam.bookshop.entity.constant.TableName.LANGUAGES;
 @Getter
 @Setter
 @EqualsAndHashCode
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Language {
 
     @Id

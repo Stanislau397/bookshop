@@ -1,6 +1,7 @@
 package edu.epam.bookshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,9 +37,7 @@ import static edu.epam.bookshop.entity.constant.TableName.GENRES;
 @Builder
 @Setter
 @Getter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = GENRE_ID_PROPERTY)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Genre {
 
     @Id
@@ -58,11 +57,13 @@ public class Genre {
             targetEntity = Book.class,
             cascade = CascadeType.MERGE
     )
+    @JsonIgnoreProperties("genres")
     private List<Book> books;
 
     @OneToMany(cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JoinColumn(name = "genre_id_fk", referencedColumnName = "genre_id")
+    @JsonIgnoreProperties("genre")
     private List<LocalizedGenre> localizedGenres;
 
 }

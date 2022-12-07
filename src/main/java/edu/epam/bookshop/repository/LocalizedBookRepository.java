@@ -15,7 +15,9 @@ import java.util.Optional;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_ALL_LOCALIZED_BOOKS_BY_LANGUAGE_ID_AND_PAGE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_BOOKS_BY_KEYWORD_AND_LANGUAGE_ID;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_BOOKS_BY_YEAR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_BOOK_BY_BOOK_ID_AND_LANGUAGE_ID;
+import static edu.epam.bookshop.repository.SqlQuery.SOME;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_LOCALIZED_BOOK_INFO;
 
 @Repository
@@ -36,8 +38,14 @@ public interface LocalizedBookRepository extends JpaRepository<LocalizedBook, Lo
     List<LocalizedBook> selectByKeywordAndLanguageId(String keyword, Long languageId);
 
     @Query(SELECT_LOCALIZED_BOOKS_BY_KEYWORD_AND_LANGUAGE_ID)
-    Page<LocalizedBook> selectByKeywordAndLanguageIdAndPage(String keyword, Long languageId, Pageable pageWithLocalizedBooks);
+    Page<LocalizedBook> selectByKeywordAndLanguageIdAndPage(String keyword, Long languageId, Pageable pageWithLocalizedBooksByYear);
 
-    @Query(value = SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN)
+    @Query(SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN)
     List<LocalizedBook> selectByLanguageIdAvgScoreGreaterThan(Long languageId, Double score);
+
+    @Query(SELECT_LOCALIZED_BOOKS_BY_YEAR)
+    Page<LocalizedBook> selectByYearAndLanguageIdAndPage(Integer bookYear, Long languageId, Pageable pageWithLocalizedBooksByYear);
+
+    @Query(SOME)
+    List<LocalizedBook> some();
 }

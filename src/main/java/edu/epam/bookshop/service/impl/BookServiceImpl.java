@@ -254,7 +254,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<LocalizedBook> findLocalizedBooksByKeywordAndPageNumberAndLanguage(String keyWord, Integer pageNumber, String languageName) { // todo test
+    public Page<LocalizedBook> findLocalizedBooksByKeywordAndPageNumberAndLanguage(String keyWord, Integer pageNumber,
+                                                                                   String languageName) { // todo test
         Language selectedLanguage = languageService.findLanguageByName(languageName);
         Long languageId = selectedLanguage.getLanguageId();
         Pageable pageWithLocalizedBooksByKeyword = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
@@ -267,16 +268,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findBooksByYearAndPageNumber(Integer year, Integer pageNumber) { //todo test
-        Pageable pageWithBooksByYear = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
-        Page<Book> booksByYear = bookRepository.selectBooksByYearAndPage(year, pageWithBooksByYear);
-        if (booksByYear.isEmpty()) {
-            log.info(String.format(BOOKS_BY_GIVEN_YEAR_NOT_FOUND, year));
-            throw new NothingFoundException(
-                    String.format(BOOKS_BY_GIVEN_YEAR_NOT_FOUND, year)
-            );
+    public Page<LocalizedBook> findLocalizedBooksByYearAndPageNumberAndLanguage(Integer year, Integer pageNumber,
+                                                                                String languageName) { //todo test
+        Language selectedLanguage = languageService.findLanguageByName(languageName);
+        Long languageId = selectedLanguage.getLanguageId();
+        Pageable pageWithLocalizedBooksByYear = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
+        Page<LocalizedBook> localizedBooksByYear =
+                localizedBookRepository.selectByYearAndLanguageIdAndPage(year, languageId, pageWithLocalizedBooksByYear);
+        if (localizedBooksByYear.isEmpty()) {
+            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
-        return booksByYear;
+        return localizedBooksByYear;
     }
 
     @Override

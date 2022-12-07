@@ -100,13 +100,14 @@ public class Book {
             orphanRemoval = true)
     @JoinColumn(name = BOOK_ID_FK,
             referencedColumnName = BOOK_ID)
+    @JsonIgnoreProperties("book")
     private List<LocalizedBook> localizedBooks;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = BOOK_GENRES,
             joinColumns = @JoinColumn(name = BOOK_ID_FK),
             inverseJoinColumns = @JoinColumn(name = GENRE_ID_FK))
-    @JsonIgnore
+    @JsonIgnoreProperties("books")
     private Set<Genre> genres;
 
     @ManyToMany(cascade = CascadeType.MERGE)

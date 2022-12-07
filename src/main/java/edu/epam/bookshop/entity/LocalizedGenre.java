@@ -41,9 +41,7 @@ import static edu.epam.bookshop.entity.constant.TableName.LOCALIZED_GENRES;
 @Getter
 @Setter
 @EqualsAndHashCode
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = LOCALIZED_GENRE_ID_PROPERTY)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LocalizedGenre {
 
     @Id
@@ -60,6 +58,7 @@ public class LocalizedGenre {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = GENRE_ID_FK, referencedColumnName = GENRE_ID,
             nullable = false)
+    @JsonIgnoreProperties("localizedGenres")
     private Genre genre;
 
     @ManyToOne(cascade = CascadeType.ALL)
