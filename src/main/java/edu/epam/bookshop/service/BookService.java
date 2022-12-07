@@ -28,25 +28,17 @@ public interface BookService {
 
     boolean localizedBookExistsById(Long localizedBookId);
 
-    Book findBookDetailsByTitle(String bookTitle);
-
-    Book findBookByLocalizedBookTitle(String title);
-
     Book findBookById(Long bookId);
 
     LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName);
 
     Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, Integer pageNumber);
 
-    List<Book> findBooksByKeyWord(String keyWord);
-
     List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score);
 
     List<LocalizedBook> findLocalizedBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName);
 
-    Page<Book> findBooksByKeyWordAndPageNumber(String keyWord, Integer pageNumber);
-
-    Page<Book> findBooksByPage(Integer page);
+    Page<LocalizedBook> findLocalizedBooksByKeywordAndPageNumberAndLanguage(String keyWord, Integer pageNumber, String languageName);
 
     Page<Book> findBooksByYearAndPageNumber(Integer year, Integer pageNumber);
 

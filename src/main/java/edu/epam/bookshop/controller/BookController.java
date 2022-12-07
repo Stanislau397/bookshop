@@ -24,14 +24,11 @@ import java.util.Objects;
 
 import static edu.epam.bookshop.constant.GetMappingURN.COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN;
-import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_KEYWORD_AND_PAGE;
-import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_PAGE;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_YEAR_AND_PAGE_URN;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15;
-import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOK_DETAILS;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_EXISTING_YEARS_IN_BOOKS_URN;
 import static edu.epam.bookshop.constant.PostMappingURN.ADD_BOOK_TO_AUTHOR_URN;
 import static edu.epam.bookshop.constant.PostMappingURN.ADD_BOOK_URN;
@@ -79,30 +76,12 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(FIND_BOOK_DETAILS)
-    public ResponseEntity<Book> displayBookDetails(String title) {
-        Book foundBookByTitle = bookService.findBookDetailsByTitle(title);
-        return ResponseEntity.ok(foundBookByTitle);
-    }
-
     @GetMapping("/findLocalizedBookByBookIdAndLanguage")
     public ResponseEntity<LocalizedBook> displayLocalizedBookByBookIdAndLanguage(Long bookId) {
         String currentLanguage = LocaleContextHolder
                 .getLocale()
                 .getLanguage();
         return ResponseEntity.ok(bookService.findLocalizedBookDetailsByBookIdAndLanguage(bookId, currentLanguage));
-    }
-
-    @GetMapping(FIND_BOOKS_BY_KEYWORD)
-    public ResponseEntity<List<Book>> displayBooksByKeyword(String keyWord) {
-        List<Book> booksByKeyWord = bookService.findBooksByKeyWord(keyWord);
-        return ResponseEntity.ok(booksByKeyWord);
-    }
-
-    @GetMapping(FIND_BOOKS_BY_PAGE)
-    public ResponseEntity<Page<Book>> displayBooksByPage(Integer page) {
-        Page<Book> booksByPage = bookService.findBooksByPage(page);
-        return ResponseEntity.ok(booksByPage);
     }
 
     @GetMapping(FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN)
@@ -119,8 +98,9 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOKS_BY_KEYWORD_AND_PAGE)
-    public ResponseEntity<Page<Book>> displayBooksByKeyWordAndPage(String keyWord, Integer page) {
-        Page<Book> booksByKeyWordAndPage = bookService.findBooksByKeyWordAndPageNumber(keyWord, page);
+    public ResponseEntity<Page<LocalizedBook>> displayBooksByKeyWordAndPage(String keyWord, Integer page, String languageName) {
+        Page<LocalizedBook> booksByKeyWordAndPage =
+                bookService.findLocalizedBooksByKeywordAndPageNumberAndLanguage(keyWord, page, languageName);
         return ResponseEntity.ok(booksByKeyWordAndPage);
     }
 
@@ -178,11 +158,6 @@ public class BookController {
         Integer amountOfBooksWithHighScore =
                 bookService.findNumberOfBooksWithAverageScoreGreaterThan(score);
         return ResponseEntity.ok(amountOfBooksWithHighScore);
-    }
-
-    @GetMapping("/getBookByLocalizedBookTitle")
-    public ResponseEntity<Book> displayBookByLocalizedBookTitle(String title) {
-        return ResponseEntity.ok(bookService.findBookByLocalizedBookTitle(title));
     }
 
     @GetMapping("/findAllCoverTypes")

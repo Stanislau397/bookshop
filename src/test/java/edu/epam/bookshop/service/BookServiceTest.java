@@ -33,7 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +53,6 @@ class BookServiceTest {
     @Mock
     private PublisherRepository publisherRepository;
 
-    @Mock
-    private BookValidator bookValidator;
 
     @Mock
     private AuthorValidator authorValidator;
@@ -68,9 +65,6 @@ class BookServiceTest {
 
     @Mock
     private PublisherValidator publisherValidator;
-
-    @Mock
-    private LanguageValidator languageValidator;
 
     @Mock
     private BookRepository bookRepository;
@@ -108,12 +102,9 @@ class BookServiceTest {
                 shelveRepository,
                 localizedBookRepository,
                 languageService,
-                bookValidator,
-                genreValidator,
                 publisherValidator,
                 authorValidator,
-                imageValidator,
-                languageValidator);
+                imageValidator);
     }
 
 //    @Test
@@ -331,36 +322,6 @@ class BookServiceTest {
         assertThatThrownBy(() -> bookService.addAuthorToBook(bookId, authorId))
                 .isInstanceOf(EntityAlreadyExistsException.class)
                 .hasMessageContaining(AUTHOR_ALREADY_EXISTS_IN_GIVEN_BOOK);
-    }
-
-    @Test
-    void willFindBookDetails() {
-        //given
-        String bookTitle = "Harry";
-        Book book = Book.builder()
-                .title(bookTitle)
-                .build();
-        //when
-        when(bookRepository.findByTitle(bookTitle))
-                .thenReturn(Optional.of(book));
-        Book expectedBook = bookService.findBookDetailsByTitle(bookTitle);
-        //then
-        assertThat(book).isEqualTo(expectedBook);
-    }
-
-    @Test
-    void findBookDetailsWillThrowExceptionWhenNothingFound() {
-        //given
-        String bookTitle = "Harry";
-        //when
-        when(bookRepository.findByTitle(bookTitle))
-                .thenReturn(Optional.empty());
-        //then
-        assertThatThrownBy(() -> bookService.findBookDetailsByTitle(bookTitle))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining(
-                        String.format(BOOK_WITH_GIVEN_TITLE_NOT_FOUND, bookTitle)
-                );
     }
 
     @Test

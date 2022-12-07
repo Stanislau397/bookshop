@@ -1,6 +1,7 @@
 package edu.epam.bookshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +19,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import java.util.List;
 
 import static edu.epam.bookshop.entity.constant.PropertyId.LOCALIZED_GENRE_ID_PROPERTY;
 import static edu.epam.bookshop.entity.constant.TableColumn.GENRE_ID;

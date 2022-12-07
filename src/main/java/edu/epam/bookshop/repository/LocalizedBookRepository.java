@@ -27,13 +27,16 @@ public interface LocalizedBookRepository extends JpaRepository<LocalizedBook, Lo
     void updateLocalizedBookInfo(LocalizedBook updatedLocalizedBook);
 
     @Query(SELECT_LOCALIZED_BOOK_BY_BOOK_ID_AND_LANGUAGE_ID)
-    Optional<LocalizedBook> selectLocalizedBookByBookIdAndLanguageId(Long bookId, Long languageId);
+    Optional<LocalizedBook> selectByBookIdAndLanguageId(Long bookId, Long languageId);
 
     @Query(SELECT_ALL_LOCALIZED_BOOKS_BY_LANGUAGE_ID_AND_PAGE)
-    Page<LocalizedBook> selectAllLocalizedBooksByLanguageIdAndPage(Long languageId, Pageable pageable);
+    Page<LocalizedBook> selectAllByLanguageIdAndPage(Long languageId, Pageable pageable);
 
     @Query(SELECT_LOCALIZED_BOOKS_BY_KEYWORD_AND_LANGUAGE_ID)
-    List<LocalizedBook> selectLocalizedBooksByKeywordAndLanguageId(String keyword, Long languageId);
+    List<LocalizedBook> selectByKeywordAndLanguageId(String keyword, Long languageId);
+
+    @Query(SELECT_LOCALIZED_BOOKS_BY_KEYWORD_AND_LANGUAGE_ID)
+    Page<LocalizedBook> selectByKeywordAndLanguageIdAndPage(String keyword, Long languageId, Pageable pageWithLocalizedBooks);
 
     @Query(value = SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN)
     List<LocalizedBook> selectByLanguageIdAvgScoreGreaterThan(Long languageId, Double score);

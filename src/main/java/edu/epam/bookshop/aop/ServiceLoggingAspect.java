@@ -1,5 +1,6 @@
 package edu.epam.bookshop.aop;
 
+import edu.epam.bookshop.exception.EntityNotFoundException;
 import edu.epam.bookshop.exception.NothingFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -45,6 +46,16 @@ public class ServiceLoggingAspect {
         String methodName = serviceJoinPoint.getSignature()
                 .getName();
         String nothingFoundExceptionMessage = nothingFoundException.getMessage();
+        log.info(SERVICE_METHOD_THREW_EXCEPTION, methodName, nothingFoundExceptionMessage);
+    }
+
+    @AfterThrowing(value = "anyServiceMethod()",
+            throwing = "entityNotFoundException")
+    public void afterThrowingEntityNotFoundException(JoinPoint serviceJoinPoint,
+                                                     EntityNotFoundException entityNotFoundException) {
+        String methodName = serviceJoinPoint.getSignature()
+                .getName();
+        String nothingFoundExceptionMessage = entityNotFoundException.getMessage();
         log.info(SERVICE_METHOD_THREW_EXCEPTION, methodName, nothingFoundExceptionMessage);
     }
 }

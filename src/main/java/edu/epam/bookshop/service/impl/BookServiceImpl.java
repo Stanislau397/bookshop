@@ -49,13 +49,11 @@ import static edu.epam.bookshop.constant.ExceptionMessage.AUTHOR_ALREADY_EXISTS_
 import static edu.epam.bookshop.constant.ExceptionMessage.AUTHORS_BY_GIVEN_BOOK_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_BY_GIVEN_YEAR_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND;
-import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_NOT_FOUND_ON_SHELVE;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
-import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_TITLE_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_NOT_FOUND_FOR_GIVEN_BOOK;
 import static edu.epam.bookshop.constant.ExceptionMessage.IMAGE_IS_NOT_VALID_MSG;
@@ -115,12 +113,9 @@ public class BookServiceImpl implements BookService {
     private final LocalizedBookRepository localizedBookRepository;
     private LanguageService languageService;
 
-    private BookValidator bookValidator;
-    private GenreValidator genreValidator;
     private PublisherValidator publisherValidator;
     private AuthorValidator authorValidator;
     private ImageValidator imageValidator;
-    private LanguageValidator languageValidator;
 
 
     @Override
@@ -181,64 +176,38 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean bookExistsById(Long bookId) {
-        boolean bookExists = bookRepository.existsById(bookId);
-        if (!bookExists) {
-            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
-            throw new EntityNotFoundException(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
+        if (!bookRepository.existsById(bookId)) {
+            throw new EntityNotFoundException(
+                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
         }
-        return bookExists;
+        return true;
     }
 
     @Override
     public boolean localizedBookExistsById(Long localizedBookId) {
-        boolean localizedBookExists = localizedBookRepository.existsById(localizedBookId);
-        if (!localizedBookExists) {
-            log.info(String.format(LOCALIZED_BOOK_WITH_GIVEN_ID_NOT_FOUND, localizedBookId));
-            throw new EntityNotFoundException(String.format(LOCALIZED_BOOK_WITH_GIVEN_ID_NOT_FOUND, localizedBookId));
+        if (!localizedBookRepository.existsById(localizedBookId)) {
+            throw new EntityNotFoundException(
+                    String.format(LOCALIZED_BOOK_WITH_GIVEN_ID_NOT_FOUND, localizedBookId));
         }
-        return localizedBookExists;
-    }
-
-    @Override
-    public Book findBookDetailsByTitle(String bookTitle) {
-        return bookRepository.findByTitle(bookTitle)
-                .orElseThrow(() -> {
-                    log.info(BOOK_WITH_GIVEN_TITLE_NOT_FOUND, bookTitle);
-                    return new EntityNotFoundException(
-                            String.format(BOOK_WITH_GIVEN_TITLE_NOT_FOUND, bookTitle)
-                    );
-                });
-    }
-
-    @Override
-    public Book findBookByLocalizedBookTitle(String title) {
-        return bookRepository.selectBookByLocalizedBookTitle(title)
-                .orElseThrow();
+        return true;
     }
 
     @Override
     public Book findBookById(Long bookId) {
         return bookRepository.findById(bookId)
-                .orElseThrow(() -> {
-                    log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
-                    throw new EntityNotFoundException(
-                            String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
-                    );
-                });
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
+                ));
     }
 
     @Override
     public LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName) {
         Language language = languageService.findLanguageByName(languageName);
-        long languageId = language.getLanguageId();
         LocalizedBook localizedBookDetails = localizedBookRepository
-                .selectLocalizedBookByBookIdAndLanguageId(bookId, languageId)
-                .orElseThrow(() -> {
-                    log.info(String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName));
-                    throw new EntityNotFoundException(
-                            String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName)
-                    );
-                });
+                .selectByBookIdAndLanguageId(bookId, language.getLanguageId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName)
+                ));
         return localizedBookDetails;
     }
 
@@ -246,37 +215,20 @@ public class BookServiceImpl implements BookService {
     public Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, Integer pageNumber) {
         Pageable pageWithLocalizedBooks = PageRequest.of(pageNumber - 1, SIX);
         Language selectedLanguage = languageService.findLanguageByName(languageName);
-        long languageId = selectedLanguage.getLanguageId();
         Page<LocalizedBook> localizedBooksByPage =
-                localizedBookRepository.selectAllLocalizedBooksByLanguageIdAndPage(languageId, pageWithLocalizedBooks);
+                localizedBookRepository.selectAllByLanguageIdAndPage(selectedLanguage.getLanguageId(), pageWithLocalizedBooks);
         if (localizedBooksByPage.isEmpty()) {
-            log.info(NOTHING_WAS_FOUND_MSG);
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
         return localizedBooksByPage;
     }
 
     @Override
-    public List<Book> findBooksByKeyWord(String keyWord) {
-        List<Book> booksByKeyWord = bookRepository.findAll()
-                .stream()
-                .filter(o -> o.getTitle().toLowerCase().contains(keyWord.toLowerCase()))
-                .limit(ELEMENTS_PER_PAGE)
-                .toList();
-        if (booksByKeyWord.isEmpty()) {
-            log.info(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord);
-            throw new NothingFoundException(
-                    String.format(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord)
-            );
-        }
-        return booksByKeyWord;
-    }
-
-    @Override
     public List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score) {//todo test
         Language language = languageService.findLanguageByName(languageName);
+        Long languageId = language.getLanguageId();
         List<LocalizedBook> localizedBooksWithHighScore = localizedBookRepository
-                .selectByLanguageIdAvgScoreGreaterThan(language.getLanguageId(), score)
+                .selectByLanguageIdAvgScoreGreaterThan(languageId, score)
                 .stream()
                 .limit(FIFTEEN)
                 .toList();
@@ -289,11 +241,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<LocalizedBook> findLocalizedBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName) {
         Language selectedLanguage = languageService.findLanguageByName(languageName);
-        List<LocalizedBook> localizedBooksByKeywordAndLanguageId =
-                localizedBookRepository.selectLocalizedBooksByKeywordAndLanguageId(keyword, selectedLanguage.getLanguageId())
-                        .stream()
-                        .limit(SIX)
-                        .collect(Collectors.toList());
+        Long languageId = selectedLanguage.getLanguageId();
+        List<LocalizedBook> localizedBooksByKeywordAndLanguageId = localizedBookRepository
+                .selectByKeywordAndLanguageId(keyword, languageId)
+                .stream()
+                .limit(SIX)
+                .collect(Collectors.toList());
         if (localizedBooksByKeywordAndLanguageId.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
@@ -301,28 +254,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findBooksByKeyWordAndPageNumber(String keyWord, Integer pageNumber) { // todo test
-        Pageable pageWithBooksByKeyWord = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
-        Page<Book> booksByKeyWordAndPage =
-                bookRepository.selectBooksByKeyWordAndPage(keyWord, pageWithBooksByKeyWord);
-        if (booksByKeyWordAndPage.isEmpty()) {
-            log.info(String.format(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord));
-            throw new NothingFoundException(
-                    String.format(BOOKS_WITH_GIVEN_KEYWORD_NOT_FOUND, keyWord)
-            );
-        }
-        return booksByKeyWordAndPage;
-    }
-
-    @Override
-    public Page<Book> findBooksByPage(Integer page) {
-        Pageable pageWithBooks = PageRequest.of(page - 1, BOOKS_PER_PAGE);
-        Page<Book> booksByPage = bookRepository.findAll(pageWithBooks);
-        if (booksByPage.isEmpty()) {
-            log.info(NOTHING_WAS_FOUND_MSG);
+    public Page<LocalizedBook> findLocalizedBooksByKeywordAndPageNumberAndLanguage(String keyWord, Integer pageNumber, String languageName) { // todo test
+        Language selectedLanguage = languageService.findLanguageByName(languageName);
+        Long languageId = selectedLanguage.getLanguageId();
+        Pageable pageWithLocalizedBooksByKeyword = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
+        Page<LocalizedBook> localizedBooksByKeyWordAndPage = localizedBookRepository
+                .selectByKeywordAndLanguageIdAndPage(keyWord, languageId, pageWithLocalizedBooksByKeyword);
+        if (localizedBooksByKeyWordAndPage.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
-        return booksByPage;
+        return localizedBooksByKeyWordAndPage;
     }
 
     @Override
