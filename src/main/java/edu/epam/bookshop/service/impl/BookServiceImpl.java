@@ -1,5 +1,7 @@
 package edu.epam.bookshop.service.impl;
 
+import edu.epam.bookshop.dto.BookDto;
+import edu.epam.bookshop.dto.mapper.BookMapper;
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
@@ -23,9 +25,11 @@ import edu.epam.bookshop.repository.BookReviewRepository;
 import edu.epam.bookshop.repository.BookShelveRepository;
 import edu.epam.bookshop.repository.GenreRepository;
 import edu.epam.bookshop.repository.LocalizedBookRepository;
+import edu.epam.bookshop.repository.LocalizedGenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.repository.UserRepository;
 import edu.epam.bookshop.service.BookService;
+import edu.epam.bookshop.service.GenreService;
 import edu.epam.bookshop.service.LanguageService;
 import edu.epam.bookshop.util.ImageUploaderUtil;
 import edu.epam.bookshop.validator.*;
@@ -40,6 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -112,6 +117,8 @@ public class BookServiceImpl implements BookService {
     private final BookShelveRepository shelveRepository;
     private final LocalizedBookRepository localizedBookRepository;
     private LanguageService languageService;
+    private final LocalizedGenreRepository localizedGenreRepository;
+    private BookMapper bookMapper;
 
     private PublisherValidator publisherValidator;
     private AuthorValidator authorValidator;
@@ -202,13 +209,39 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName) {
+        long start = System.currentTimeMillis();
         Language language = languageService.findLanguageByName(languageName);
         LocalizedBook localizedBookDetails = localizedBookRepository
                 .selectByBookIdAndLanguageId(bookId, language.getLanguageId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName)
                 ));
+        Book book = localizedBookDetails.getBook();
+        setGenresByLanguageAndBook(language, book);
+        List<LocalizedGenre> localizedGenres = Collections.emptyList();
+        book.getGenres().forEach(genre -> {
+            localizedGenres.add(genre.getLocalizedGenres().get(0));
+        });
+        long finish = System.currentTimeMillis();
+        System.out.println(finish - start);
         return localizedBookDetails;
+    }
+
+    @Override
+    public BookDto findBookDetailsByBookIdAndLanguage(Long bookId, String languageName) {
+        long start = System.currentTimeMillis();
+        Language language = languageService.findLanguageByName(languageName);
+        LocalizedBook localizedBookDetails = localizedBookRepository
+                .selectByBookIdAndLanguageId(bookId, language.getLanguageId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName)
+                ));
+        Book book = localizedBookDetails.getBook();
+        setGenresByLanguageAndBook(language, book);
+        book.setLocalizedBooks(List.of(localizedBookDetails));
+        long finish = System.currentTimeMillis();
+        System.out.println(finish - start);
+        return bookMapper.toDto(book);
     }
 
     @Override
@@ -226,9 +259,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score) {//todo test
         Language language = languageService.findLanguageByName(languageName);
-        Long languageId = language.getLanguageId();
         List<LocalizedBook> localizedBooksWithHighScore = localizedBookRepository
-                .selectByLanguageIdAvgScoreGreaterThan(languageId, score)
+                .selectByLanguageIdAvgScoreGreaterThan(language.getLanguageId(), score)
                 .stream()
                 .limit(FIFTEEN)
                 .toList();
@@ -348,6 +380,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public void setGenresByLanguageAndBook(Language givenLanguage, Book givenBook) {
+        List<Genre> genres = givenBook.getGenres();
+        genres.forEach(genre -> {
+            LocalizedGenre localizedGenre = localizedGenreRepository
+                    .selectByGenreIdAndLanguageId(genre.getGenreId(), givenLanguage.getLanguageId())
+                    .orElseThrow();
+            genre.setLocalizedGenres(List.of(localizedGenre));
+        });
+    }
+
+    @Override
     public void addGenre(Genre genre) {
 //        String genreTitle = genre.getTitle();
 //        if (!genreValidator.isTitleValid(genreTitle)) {
@@ -371,42 +414,24 @@ public class BookServiceImpl implements BookService {
                     e.setGenre(genre);
                     return e;
                 });
-        genre.setLocalizedGenres(localizedGenres);
         genreRepository.save(genre);
     }
 
     @Override
     public void addGenreToBook(Long genreId, Long bookId) {
-        if (!genreRepository.existsById(genreId)) {
-            log.info(String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId));
-            throw new EntityNotFoundException(
-                    String.format(GENRE_WITH_GIVEN_ID_NOT_FOUND, genreId)
-            );
-        }
-        if (!bookRepository.existsById(bookId)) {
-            log.info(String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId));
-            throw new EntityNotFoundException(
-                    String.format(BOOK_WITH_GIVEN_ID_NOT_FOUND, bookId)
-            );
-        }
-        if (genreRepository.genreExistsForBook(genreId, bookId)) {
-            log.info(GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK);
-            throw new EntityAlreadyExistsException(
-                    GENRE_ALREADY_EXISTS_FOR_GIVEN_BOOK
-            );
-        }
-        genreRepository.insertGenreToBookByGenreIdAndBookId(genreId, bookId);
+//
+
     }
 
     @Override
     public void removeGenreFromBook(Long genreId, Long bookId) {
-        if (!genreRepository.genreExistsForBook(genreId, bookId)) {
-            log.info(String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId));
-            throw new EntityNotFoundException(
-                    String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId)
-            );
-        }
-        genreRepository.deleteGenreFromBookByGenreIdAndBookId(genreId, bookId);
+//        if (!genreRepository.genreExistsForBook(genreId, bookId)) {
+//            log.info(String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId));
+//            throw new EntityNotFoundException(
+//                    String.format(GENRE_NOT_FOUND_FOR_GIVEN_BOOK, genreId, bookId)
+//            );
+//        }
+//        genreRepository.deleteGenreFromBookByGenreIdAndBookId(genreId, bookId);
     }
 
     @Override
@@ -657,9 +682,7 @@ public class BookServiceImpl implements BookService {
         List<Publisher> publishersByBookId = publisherRepository.findByBookId(bookId);
         if (publishersByBookId.isEmpty()) {
             log.info(String.format(PUBLISHERS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId));
-            throw new NothingFoundException(
-                    String.format(PUBLISHERS_BY_GIVEN_BOOK_ID_NOT_FOUND, bookId)
-            );
+            return Collections.emptyList();
         }
         return publishersByBookId;
     }

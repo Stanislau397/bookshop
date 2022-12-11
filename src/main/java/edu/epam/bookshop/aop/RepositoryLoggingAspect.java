@@ -16,20 +16,20 @@ import static edu.epam.bookshop.aop.LogMessage.REPOSITORY_METHOD_FINISHED_EXECUT
 @Slf4j
 public class RepositoryLoggingAspect {
 
-    @Pointcut("within(edu.epam.bookshop.repository..*)")
-    public void anyRepositoryMethod() {}
-
-    @Before("anyRepositoryMethod()")
-    public void beforeAnyRepositoryMethod(JoinPoint repositoryJoinPoint) {
-        String repositoryMethodName = repositoryJoinPoint.getSignature()
-                .getName();
-        log.info(REPOSITORY_METHOD_EXECUTION, repositoryMethodName);
-    }
-
-    @After("anyRepositoryMethod()")
-    public void afterAnyRepositoryMethod(JoinPoint repositoryJoinPoint) {
-        String repositoryMethodName = repositoryJoinPoint.getSignature()
-                .getName();
-        log.info(REPOSITORY_METHOD_FINISHED_EXECUTION, repositoryMethodName);
-    }
+//    @Pointcut("within(edu.epam.bookshop.repository..*)")
+//    public void anyRepositoryMethod() {}
+//
+//    @Before("anyRepositoryMethod()")
+//    public void beforeAnyRepositoryMethod(JoinPoint repositoryJoinPoint) {
+//        String repositoryMethodName = repositoryJoinPoint.getSignature()
+//                .getName();
+//        log.info(REPOSITORY_METHOD_EXECUTION, repositoryMethodName);
+//    }
+//
+//    @After("anyRepositoryMethod()")
+//    public void afterAnyRepositoryMethod(JoinPoint repositoryJoinPoint) {
+//        String repositoryMethodName = repositoryJoinPoint.getSignature()
+//                .getName();
+//        log.info(REPOSITORY_METHOD_FINISHED_EXECUTION, repositoryMethodName);
+//    }
 }

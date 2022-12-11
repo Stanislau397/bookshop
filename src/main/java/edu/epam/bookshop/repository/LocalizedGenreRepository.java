@@ -9,11 +9,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_LOCALIZED_GENRE_EXISTS_BY_TITLE_AND_LANGUAGE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_GENRES_BY_BOOK_ID_AND_LOCALE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_GENRES_BY_KEYWORD_AND_LANGUAGE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_GENRES_BY_LANGUAGE;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_GENRE_BY_GENRE_ID_AND_LANGUAGE_ID;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_LOCALIZED_GENRE_BY_GENRE_ID_AND_LANGUAGE;
 
 @Repository
@@ -30,9 +32,12 @@ public interface LocalizedGenreRepository extends JpaRepository<LocalizedGenre, 
     @Query(SELECT_LOCALIZED_GENRES_BY_KEYWORD_AND_LANGUAGE)
     List<LocalizedGenre> selectByKeywordAndLanguageName(String keyword, String languageName);
 
-    @Query(value = SELECT_LOCALIZED_GENRES_BY_LANGUAGE)
+    @Query(SELECT_LOCALIZED_GENRES_BY_LANGUAGE)
     List<LocalizedGenre> selectLocalizedGenresByLanguage(String language);
 
-    @Query(value = SELECT_LOCALIZED_GENRES_BY_BOOK_ID_AND_LOCALE)
+    @Query(SELECT_LOCALIZED_GENRES_BY_BOOK_ID_AND_LOCALE)
     List<LocalizedGenre> selectLocalizedGenresByBookIdAndLocale(Long bookId, Long languageId);
+
+    @Query(SELECT_LOCALIZED_GENRE_BY_GENRE_ID_AND_LANGUAGE_ID)
+    Optional<LocalizedGenre> selectByGenreIdAndLanguageId(Long genreId, Long languageId);
 }

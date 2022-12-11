@@ -30,7 +30,6 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID;
@@ -108,14 +107,14 @@ public class Book {
             joinColumns = @JoinColumn(name = BOOK_ID_FK),
             inverseJoinColumns = @JoinColumn(name = GENRE_ID_FK))
     @JsonIgnoreProperties("books")
-    private Set<Genre> genres;
+    private List<Genre> genres;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = PUBLISHER_BOOKS,
             joinColumns = @JoinColumn(name = BOOK_ID_FK),
             inverseJoinColumns = @JoinColumn(name = PUBLISHER_ID_FK))
     @JsonIgnoreProperties("publishedBooks")
-    private Set<Publisher> publishers;
+    private List<Publisher> publishers;
 
     @ManyToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
@@ -123,7 +122,7 @@ public class Book {
             joinColumns = @JoinColumn(name = BOOK_ID_FK),
             inverseJoinColumns = @JoinColumn(name = AUTHOR_ID_FK))
     @JsonIgnoreProperties("books")
-    private Set<Author> authors;
+    private List<Author> authors;
 
     @OneToMany(mappedBy = "reviewedBook")
     @JsonIgnore

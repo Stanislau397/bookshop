@@ -1,8 +1,6 @@
 package edu.epam.bookshop.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import edu.epam.bookshop.annotation.ValidateBookDescription;
 import edu.epam.bookshop.annotation.ValidateBookTitle;
 import edu.epam.bookshop.annotation.ValidateImage;
@@ -16,14 +14,13 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import java.util.Objects;
 
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID;
 import static edu.epam.bookshop.entity.constant.TableColumn.BOOK_ID_FK;
@@ -68,7 +65,7 @@ public class LocalizedBook {
     @JoinColumn(name = LANGUAGE_ID_FK, referencedColumnName = LANGUAGE_ID)
     private Language language;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = BOOK_ID_FK, referencedColumnName = BOOK_ID)
     @JsonIgnoreProperties("localizedBooks")
     private Book book;

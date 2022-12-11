@@ -1,10 +1,12 @@
 package edu.epam.bookshop.controller;
 
+import edu.epam.bookshop.dto.BookDto;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.LocalizedBook;
 import edu.epam.bookshop.entity.ShelveBook;
+import edu.epam.bookshop.repository.BookRepository;
 import edu.epam.bookshop.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -77,11 +79,11 @@ public class BookController {
     }
 
     @GetMapping("/findLocalizedBookByBookIdAndLanguage")
-    public ResponseEntity<LocalizedBook> displayLocalizedBookByBookIdAndLanguage(Long bookId) {
+    public ResponseEntity<BookDto> displayLocalizedBookByBookIdAndLanguage(Long bookId) {
         String currentLanguage = LocaleContextHolder
                 .getLocale()
                 .getLanguage();
-        return ResponseEntity.ok(bookService.findLocalizedBookDetailsByBookIdAndLanguage(bookId, currentLanguage));
+        return ResponseEntity.ok(bookService.findBookDetailsByBookIdAndLanguage(bookId, currentLanguage));
     }
 
     @GetMapping(FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN)

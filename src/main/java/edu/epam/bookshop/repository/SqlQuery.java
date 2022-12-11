@@ -79,20 +79,6 @@ public class SqlQuery {
                     "WHERE b.bookId = :bookId";
 
     //genre
-    public static final String INSERT_GENRE_TO_BOOK =
-            "INSERT INTO book_genres (genre_id_fk, book_id_fk) " +
-                    "VALUES(?, ?)";
-    public static final String DELETE_GENRE_FROM_BOOK =
-            "DELETE FROM book_genres " +
-                    "WHERE genre_id_fk = (?) AND book_id_fk = (?)";
-    public static final String CHECK_IF_GENRE_EXISTS_FOR_BOOK =
-            "SELECT IF(COUNT(genre_id_fk) > 0, 'true', 'false') " +
-                    "FROM book_genres " +
-                    "WHERE genre_id_fk = (?) AND book_id_fk = (?)";
-    public static final String SELECT_GENRE_BY_BOOK_ID =
-            "SELECT g FROM Genre g " +
-                    "LEFT JOIN g.books b " +
-                    "WHERE b.bookId = :bookId";
     public static final String SELECT_LOCALIZED_GENRES_BY_BOOK_ID_AND_LOCALE =
             "SELECT COALESCE(lg1, lg2) FROM Genre g " +
                     "JOIN g.books b " +
@@ -102,11 +88,16 @@ public class SqlQuery {
                     "INNER JOIN LocalizedGenre lg2 ON lg2.genre.genreId = g.genreId " +
                     "AND lg2.language.languageId = 1 " +
                     "AND b.bookId = :bookId";
+    public static final String SELECT_LOCALIZED_GENRE_BY_GENRE_ID_AND_LANGUAGE_ID =
+            "SELECT DISTINCT COALESCE(lg1, lg2) FROM Genre g " +
+                    "LEFT JOIN LocalizedGenre lg1 ON lg1.genre.genreId = g.genreId " +
+                    "AND lg1.language.languageId = :languageId " +
+                    "AND g.genreId = :genreId " +
+                    "INNER JOIN LocalizedGenre lg2 ON lg2.genre.genreId = g.genreId " +
+                    "AND lg2.language.languageId = 1 " +
+                    "AND g.genreId = :genreId";
     public static final String SELECT_DISTINCT_GENRES_FOR_AUTHOR =
-            "SELECT DISTINCT g FROM Genre g " +
-                    "JOIN g.books b " +
-                    "JOIN b.authors a " +
-                    "WHERE a.authorId = :authorId";
+            "SELECT DISTINCT g FROM Genre g";
     public static final String SELECT_LOCALIZED_GENRES_BY_LANGUAGE =
             "SELECT lg FROM LocalizedGenre lg " +
                     "JOIN lg.language l " +
@@ -175,12 +166,12 @@ public class SqlQuery {
     //localized_book
     public static final String SELECT_LOCALIZED_BOOK_BY_BOOK_ID_AND_LANGUAGE_ID =
             "SELECT COALESCE(lb1, lb2) " +
-                    "FROM Book b " +
+                    "FROM Book b, Genre g " +
                     "LEFT JOIN LocalizedBook lb1 ON lb1.book.bookId = b.bookId " +
                     "AND lb1.language.languageId = :languageId " +
                     "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
                     "AND lb2.language.languageId = 1 " +
-                    "WHERE b.bookId = :bookId";
+                    "WHERE b.bookId = :bookId ";
     public static final String SELECT_LOCALIZED_BOOKS_BY_KEYWORD_AND_LANGUAGE_ID =
             "SELECT COALESCE(lb1, lb2) " +
                     "FROM Book b " +
@@ -220,20 +211,6 @@ public class SqlQuery {
                     "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
                     "AND lb2.language.languageId = 1 " +
                     "WHERE YEAR(b.publishDate) = :bookYear";
-    public static final String SOME =
-            "SELECT new edu.epam.bookshop.entity.LocalizedBook(" +
-                    "COALESCE(lb1.localizedBookId, lb2.localizedBookId), " +
-                    "COALESCE(lb1.title, lb2.title), " +
-                    "COALESCE(lb1.description, lb2.description), " +
-                    "COALESCE(lb1.imagePath, lb2.imagePath), " +
-                    "COALESCE(lb1.language, lb2.language), " +
-                    "COALESCE(lb1.book, lb2.book)) " +
-                    "FROM Book b " +
-                    "LEFT JOIN LocalizedBook lb1 ON lb1.book.bookId = b.bookId " +
-                    "AND lb1.language.languageId = :languageId " +
-                    "INNER JOIN LocalizedBook lb2 ON lb2.book.bookId = b.bookId " +
-                    "AND lb2.language.languageId = 1 " +
-                    "WHERE b.bookId = :bookId";
 
     //book review
     public static final String CHECK_IF_USER_REVIEWED_GIVEN_BOOK =

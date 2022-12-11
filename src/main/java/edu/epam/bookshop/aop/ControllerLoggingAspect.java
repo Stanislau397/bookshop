@@ -18,17 +18,17 @@ import static edu.epam.bookshop.aop.LogMessage.CONTROLLER_METHOD_EXECUTION;
 @AllArgsConstructor
 public class ControllerLoggingAspect {
 
-    @Pointcut("within(edu.epam.bookshop.controller..*)")
-    public void anyControllerMethod() {
-    }
-
-    @Before("anyControllerMethod()")
-    public void beforeAnyControllerMethod(JoinPoint joinPoint) {
-        log.info(CONTROLLER_METHOD_EXECUTION, joinPoint.getSignature().getName());
-    }
-
-    @After("anyControllerMethod()")
-    public void afterAnyControllerMethod(JoinPoint joinPoint) {
-        log.info(CONTROLLER_METHOD_FINISHED_EXECUTION, joinPoint.getSignature().getName());
-    }
+//    @Pointcut("within(edu.epam.bookshop.controller..*)")
+//    public void anyControllerMethod() {
+//    }
+//
+//    @Before("anyControllerMethod()")
+//    public void beforeAnyControllerMethod(JoinPoint joinPoint) {
+//        log.info(CONTROLLER_METHOD_EXECUTION, joinPoint.getSignature().getName());
+//    }
+//
+//    @After("anyControllerMethod()")
+//    public void afterAnyControllerMethod(JoinPoint joinPoint) {
+//        log.info(CONTROLLER_METHOD_FINISHED_EXECUTION, joinPoint.getSignature().getName());
+//    }
 }

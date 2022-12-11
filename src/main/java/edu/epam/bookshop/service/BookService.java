@@ -1,5 +1,6 @@
 package edu.epam.bookshop.service;
 
+import edu.epam.bookshop.dto.BookDto;
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
@@ -32,6 +33,8 @@ public interface BookService {
 
     LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName);
 
+    BookDto findBookDetailsByBookIdAndLanguage(Long bookId, String languageName);
+
     Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, Integer pageNumber);
 
     List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score);
@@ -49,6 +52,8 @@ public interface BookService {
     Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId, String bookStatus);
 
     Integer findNumberOfBooksWithAverageScoreGreaterThan(Double score);
+
+    void setGenresByLanguageAndBook(Language givenLanguage, Book givenBook);
 
     void addGenre(Genre genre);
 

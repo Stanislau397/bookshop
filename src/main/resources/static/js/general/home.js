@@ -1,4 +1,5 @@
 window.addEventListener('DOMContentLoaded', function () {
+    var startTime = performance.now()
     const gap = 16;
 
     let carousel = document.getElementById("high_score_books_carousel");
@@ -29,6 +30,8 @@ window.addEventListener('DOMContentLoaded', function () {
     window.addEventListener("resize", e => (width = carousel.offsetWidth));
     getBooksWithHighScoreLimit15();
     getAmountOfBooksWithHighScore();
+    var end = performance.now()
+    console.log(end - startTime)
 });
 
 function addBookToShelve(book_id) {
@@ -55,6 +58,7 @@ function getBooksWithHighScoreLimit15() {
         url: '/findBooksWithHighScoreLimit15',
         data: {score: book_score},
         success: function (booksWithHighScoreLimit15) {
+            console.log(booksWithHighScoreLimit15[0])
             displayHighScoreBooks(booksWithHighScoreLimit15);
         }
     })

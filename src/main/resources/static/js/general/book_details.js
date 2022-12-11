@@ -332,18 +332,23 @@ function setBookPublishers(publishers) {
 
 function setBookGenres(genres) {
     let book_genres_li = document.getElementById('book_genres');
-    let counter = 0;
     if (genres.length !== 0) {
-        for (let genre of genres) {
-            for (let localizedGenre of genre.localizedGenres) {
-                if (localizedGenre.language.name === localized_book.language.name) {
-                    book_genres_li.innerHTML +=
-                        '<a class="book-genre" ' +
-                        'href="booksByGenre?genreTitle=' + localizedGenre.title + '&page=1">' + localizedGenre.title +
-                        ', ' + '</a>'
-                }
+
+        for (let i = 0; i < genres.length; i++) {
+            let localized_genres = genres[i].localizedGenres;
+            let localized_title = localized_genres[0].title;
+            if (i !== genres.length - 1) {
+                book_genres_li.innerHTML +=
+                    '<a class="book-genre" ' +
+                    'href="booksByGenre?genreTitle=' + localized_title + '&page=1">' + localized_title +
+                    ', ' + '</a>'
+            } else {
+                book_genres_li.innerHTML +=
+                    '<a class="book-genre" ' +
+                    'href="booksByGenre?genreTitle=' + localized_title + '&page=1">' + localized_title + '</a>'
             }
         }
+
     } else {
         book_genres_li.innerText = '-';
     }
