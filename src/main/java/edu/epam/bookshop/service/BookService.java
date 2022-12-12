@@ -19,7 +19,7 @@ import java.util.List;
 
 public interface BookService {
 
-    void addBook(Book book, LocalizedBook localizedBook, MultipartFile bookImage, String languageName);
+    void addBook(BookDto bookDto, MultipartFile bookImage, String languageName);
 
     void addLocalizationToExistingBook(LocalizedBook existingLocalizedBook, MultipartFile localizedImage, String languageName);
 
@@ -37,7 +37,9 @@ public interface BookService {
 
     Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, Integer pageNumber);
 
-    List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score);
+    List<BookDto> findTop15BooksByLanguageAndAverageScoreGreaterThan(String languageName, Double score);
+
+    List<Book> findBooksByScoreGreaterThan(Double score);
 
     List<LocalizedBook> findLocalizedBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName);
 

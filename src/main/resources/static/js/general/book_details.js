@@ -6,27 +6,22 @@ window.addEventListener('DOMContentLoaded', function () {
     userInfo = getUserByUserName();
     localized_book = getLocalizedBookByBookId(book_id_from_parameter);
     console.log(localized_book)
-    displayBookDetailsByLocalizedBookAndBook(localized_book, localized_book.book);
-    getBookReviews(localized_book.book.bookId, 1);
-    getAverageBookReviewScoreByBookId(localized_book.book.bookId);
+    displayBookDetailsByLocalizedBookAndBook(localized_book);
+    getBookReviews(localized_book.bookId, 1);
+    getAverageBookReviewScoreByBookId(localized_book.bookId);
     addBookShelveBtn();
-    checkIfUserReviewedBook(userInfo.userId, localized_book.book.bookId);
+    checkIfUserReviewedBook(userInfo.userId, localized_book.bookId);
 });
 
-function displayBookDetailsByLocalizedBookAndBook(localized_book, book) {
-    let authors = localized_book.book.authors;
-    let publishers = localized_book.book.publishers;
-    setAuthors(authors)
-    setBookTitle(localized_book);
-    setBookImage(localized_book);
-    setH1Title(localized_book);
-    setBookPublishers(publishers)
-    setBookDescription(localized_book);
-    setProductDetails(localized_book.book);
-    var startTime = performance.now()
-    setBookGenres(localized_book.book.genres)
-    var endTime = performance.now()
-    console.log(endTime - startTime)
+function displayBookDetailsByLocalizedBookAndBook(book) {
+    setBookTitle(book.localizedBook);
+    setBookImage(book.localizedBook);
+    setH1Title(book.localizedBook);
+    setBookDescription(book.localizedBook);
+    setProductDetails(book);
+    setAuthors(book.authors)
+    setBookPublishers(book.publishers)
+    setBookGenres(book.localizedGenres)
 }
 
 function getAuthorsByBookId(id) {
@@ -333,10 +328,8 @@ function setBookPublishers(publishers) {
 function setBookGenres(genres) {
     let book_genres_li = document.getElementById('book_genres');
     if (genres.length !== 0) {
-
         for (let i = 0; i < genres.length; i++) {
-            let localized_genres = genres[i].localizedGenres;
-            let localized_title = localized_genres[0].title;
+            let localized_title = genres[i].title;
             if (i !== genres.length - 1) {
                 book_genres_li.innerHTML +=
                     '<a class="book-genre" ' +
@@ -348,7 +341,6 @@ function setBookGenres(genres) {
                     'href="booksByGenre?genreTitle=' + localized_title + '&page=1">' + localized_title + '</a>'
             }
         }
-
     } else {
         book_genres_li.innerText = '-';
     }

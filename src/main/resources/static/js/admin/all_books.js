@@ -44,6 +44,7 @@ function createLocalizedBook() {
 }
 
 function createBook() {
+    let localized_book = createLocalizedBook();
     let day = document.getElementById('day');
     let month = document.getElementById('month');
     let year = document.getElementById('year');
@@ -55,31 +56,28 @@ function createBook() {
     let book_cover_type = document.getElementById('book_cover_type').value;
 
     return {
+        "localizedBook": localized_book,
         "publishDate": date,
         "price": book_price,
         "pages": book_pages,
         "isbn": book_isbn,
-        "coverType": book_cover_type
+        "coverType": book_cover_type,
     }
 }
 
 function addBook() {
     let created_book = createBook();
-    let created_localized_book = createLocalizedBook();
     let language_name = document.getElementById('language').value;
     let formData = new FormData();
     formData.append("bookImage", $('#file-input')[0].files[0]);
-    formData.append('localizedBook', new Blob([JSON.stringify(created_localized_book)], {
-        type: "application/json"
-    }));
     formData.append('book', new Blob([JSON.stringify(created_book)], {
         type: "application/json"
     }));
     formData.append('languageName', language_name);
-    if (isBookDataValid(created_localized_book.title, created_localized_book.description, created_book.isbn,
+    if (isBookDataValid(created_book.localizedBook.title, created_book.localizedBook.description, created_book.isbn,
             created_book.price, created_book.coverType, created_book.pages)
         && isDateValid(created_book.publishDate)
-        && isImageValid(created_localized_book.imagePath)) {
+        && isImageValid(created_book.localizedBook.imagePath)) {
         $.ajax({
             method: 'POST',
             url: '/addBook',
@@ -88,7 +86,7 @@ function addBook() {
             data: formData,
             success: function () {
                 hideAddBookModal();
-                displaySuccessModal(created_localized_book.title);
+                displaySuccessModal(created_book.localizedBook.title);
             },
             error: function (exception) {
                 displayErrorMessage(exception.responseText);

@@ -8,10 +8,15 @@ import java.math.BigDecimal;
 
 import static java.util.Objects.nonNull;
 
-public class BookPriceValidator implements ConstraintValidator<ValidateBookPrice, BigDecimal> {
+public class BookPriceValidator implements ConstraintValidator<ValidateBookPrice, String> {
 
     @Override
-    public boolean isValid(BigDecimal bookPrice, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(String bookPriceAsString, ConstraintValidatorContext constraintValidatorContext) {
+        if (bookPriceAsString.isEmpty()) {
+            return false;
+        }
+        double bookPriceAsDouble = Double.parseDouble(bookPriceAsString);
+        BigDecimal bookPrice = BigDecimal.valueOf(bookPriceAsDouble);
         return nonNull(bookPrice) && bookPrice.signum() == 1;
     }
 }

@@ -210,9 +210,9 @@ function removeGenreFromBook() {
 function displayBookDetailsForEditByBookTitle(book_id) {
     let localized_book_details = getLocalizedBookByBookId(book_id);
     setBookInputFields(localized_book_details);
-    getAuthorsForBookByBookId(localized_book_details.book.bookId);
-    getGenresForBook(localized_book_details.book.bookId);
-    getPublishersForBook(localized_book_details.book.bookId);
+    getAuthorsForBookByBookId(localized_book_details.bookId);
+    getGenresForBook(localized_book_details.bookId);
+    getPublishersForBook(localized_book_details.bookId);
 }
 
 function getAuthorsForBookByBookId(book_id) {
@@ -398,7 +398,7 @@ function setGenreIdInput(genreId) {
 
 function setBookInputFields(localized_book) {
     let book_id_input = document.getElementById('book_id');
-    book_id_input.value = localized_book.book.bookId;
+    book_id_input.value = localized_book.bookId;
 
     let localized_book_id_input = document.getElementById('localized_book_id');
     localized_book_id_input.value = localized_book.localizedBookId;
@@ -410,13 +410,13 @@ function setBookInputFields(localized_book) {
     book_title_input.value = localized_book.title;
 
     let book_price_input = document.getElementById('book_price');
-    book_price_input.value = localized_book.book.price;
+    book_price_input.value = localized_book.price;
 
     let book_isbn_input = document.getElementById('book_isbn');
-    book_isbn_input.value = localized_book.book.isbn;
+    book_isbn_input.value = localized_book.isbn;
 
     let book_pages_input = document.getElementById('book_pages');
-    book_pages_input.value = localized_book.book.pages;
+    book_pages_input.value = localized_book.pages;
 
     let book_description_input = document.getElementById('book_description');
     book_description_input.value = localized_book.description;
@@ -426,7 +426,7 @@ function setBookInputFields(localized_book) {
 
     setBookCoverTypeSelect(localized_book.book);
 
-    let date = localized_book.book.publishDate;
+    let date = localized_book.publishDate;
     let dateArray = date.split('-');
 
     let yearSelect = addYearsToBookOption();

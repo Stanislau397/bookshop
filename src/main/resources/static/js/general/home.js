@@ -113,10 +113,10 @@ function displayHighScoreBooks(highScoreBooks) {
     highScoreBooksContent.innerHTML = '';
     let add_btn = document.getElementById('add').value;
     let counter = 0;
-    for (let localized_high_score_book of highScoreBooks) {
-        let author = localized_high_score_book.book.authors;
-        let averageScore = getAverageBookScoreByBookId(localized_high_score_book.book.bookId);
-        let bookHref = 'http://localhost:8070/bookshop/book?id=' + localized_high_score_book.book.bookId;
+    for (let high_score_book of highScoreBooks) {
+        let author = high_score_book.authors;
+        let averageScore = getAverageBookScoreByBookId(high_score_book.bookId);
+        let bookHref = 'http://localhost:8070/bookshop/book?id=' + high_score_book.bookId;
         let authorHref = '';
         let firstName = '';
         let lastName = '';
@@ -131,17 +131,17 @@ function displayHighScoreBooks(highScoreBooks) {
             '<div class="item">' +
             '<div class="image-container">' +
             '<a href="' + bookHref + '" class="image-href">' + '<div class="book-score">' + averageScore + '</div>' +
-            '<img class="book-image" src="' + localized_high_score_book.imagePath + '">' + '</a>' + '</div>' +
+            '<img class="book-image" src="' + high_score_book.localizedBook.imagePath + '">' + '</a>' + '</div>' +
             '<div class="book-info-container">' + '<div class="book-title-container">' +
-            '<a id="book_title" href="' + bookHref + '">' + localized_high_score_book.title + '</a>' + '</div>' +
+            '<a id="book_title" href="' + bookHref + '">' + high_score_book.localizedBook.title + '</a>' + '</div>' +
             '<div class="author-container">' +
             '<a id="book_author" href="' + authorHref + '">' + firstName + ' ' + lastName + '</a>' + '</div>' +
-            '<div class="price">' + localized_high_score_book.book.price + '</div>' + '</div>' +
+            '<div class="price">' + high_score_book.price + '</div>' + '</div>' +
             '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';
         let button_container_div = document.getElementById('button_container' + counter);
         if (user != null) {
             let shelveId = user.bookShelve.bookShelveId;
-            displayButton(localized_high_score_book.book.bookId, shelveId, localized_high_score_book.title, button_container_div)
+            displayButton(high_score_book.bookId, shelveId, high_score_book.title, button_container_div)
         } else {
             button_container_div.innerHTML =
                 '<button type="button" ' +

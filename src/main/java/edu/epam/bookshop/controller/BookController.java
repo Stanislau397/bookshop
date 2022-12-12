@@ -6,7 +6,6 @@ import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.LocalizedBook;
 import edu.epam.bookshop.entity.ShelveBook;
-import edu.epam.bookshop.repository.BookRepository;
 import edu.epam.bookshop.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -42,21 +41,19 @@ import static edu.epam.bookshop.constant.PostMappingURN.UPDATE_BOOK_INFO_URN;
 public class BookController {
 
     private static final String NULL_STRING = "null";
-    private static final String EMPTY_STRING = "";
     private final BookService bookService;
 
     @RequestMapping(value = ADD_BOOK_URN, method = RequestMethod.POST,
             consumes = {"multipart/form-data"})
-    public ResponseEntity<Void> insertBook(@RequestPart @Valid Book book,
-                                           @RequestPart @Valid LocalizedBook localizedBook,
+    public ResponseEntity<Void> insertBook(@RequestPart @Valid BookDto book,
                                            @RequestPart(required = false) MultipartFile bookImage,
                                            @RequestPart String languageName) {
-        bookService.addBook(book, localizedBook, bookImage, languageName);
+        bookService.addBook(book, bookImage, languageName);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(UPDATE_BOOK_INFO_URN)
-    public ResponseEntity<Boolean> changeBookInfo(@RequestPart @Valid Book bookFromRequest,
+    public ResponseEntity<Boolean> changeBookInfo(@RequestPart  Book bookFromRequest,
                                                   @RequestPart @Valid LocalizedBook localizedBookFromRequest,
                                                   @RequestPart(required = false) MultipartFile imageFromRequest) {
         Boolean isBookUpdated = bookService.updateBookInfo(bookFromRequest, localizedBookFromRequest, imageFromRequest);
@@ -108,12 +105,10 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOKS_WITH_HIGH_SCORE_LIMIT_15)
-    public ResponseEntity<List<LocalizedBook>> displayBooksWithHighScoreLimit15(Double score) {
+    public ResponseEntity<List<BookDto>> displayBooksWithHighScoreLimit15(Double score) {
         String languageName = LocaleContextHolder.getLocale()
                 .getLanguage();
-        List<LocalizedBook> localizedBooksHavingAverageScoreGreaterThan =
-                bookService.findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(languageName, score);
-        return ResponseEntity.ok(localizedBooksHavingAverageScoreGreaterThan);
+        return ResponseEntity.ok(bookService.findTop15BooksByLanguageAndAverageScoreGreaterThan(languageName, score));
     }
 
     @GetMapping(FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN)
@@ -128,7 +123,7 @@ public class BookController {
         String currentLanguage = LocaleContextHolder
                 .getLocale()
                 .getLanguage();
-        if (Objects.equals(languageName, EMPTY_STRING) || Objects.equals(languageName, NULL_STRING)) {
+        if (languageName.isEmpty() || Objects.equals(languageName, NULL_STRING)) {
             return ResponseEntity.ok(bookService.findAllLocalizedBooksByLanguageAndPageNumber(currentLanguage, pageNumber));
         }
         return ResponseEntity.ok(bookService.findAllLocalizedBooksByLanguageAndPageNumber(languageName, pageNumber));

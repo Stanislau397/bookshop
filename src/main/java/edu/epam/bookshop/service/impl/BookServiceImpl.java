@@ -29,7 +29,6 @@ import edu.epam.bookshop.repository.LocalizedGenreRepository;
 import edu.epam.bookshop.repository.PublisherRepository;
 import edu.epam.bookshop.repository.UserRepository;
 import edu.epam.bookshop.service.BookService;
-import edu.epam.bookshop.service.GenreService;
 import edu.epam.bookshop.service.LanguageService;
 import edu.epam.bookshop.util.ImageUploaderUtil;
 import edu.epam.bookshop.validator.*;
@@ -44,8 +43,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,17 +125,20 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public void addBook(Book bookFromRequest, LocalizedBook localizedBook, MultipartFile bookImage, String languageName) { //todo test
+    public void addBook(BookDto bookDto, MultipartFile bookImage, String languageName) { //todo test
         Language givenLanguage = languageService.findLanguageByName(languageName);
         String imagePathForBook = DEFAULT_BOOK_IMAGE_PATH;
         if (nonNull(bookImage)) {
             imagePathForBook = BOOK_LOCALHOST_PATH
                     .concat(ImageUploaderUtil.save(bookImage, BOOK_DIRECTORY_PATH));
         }
-        Book savedBook = bookRepository.save(bookFromRequest);
+        Book createBook = bookMapper.toBook(bookDto);
+        Book savedBook = bookRepository.save(createBook);
+        String title = bookDto.getLocalizedBook().getTitle();
+        String description = bookDto.getLocalizedBook().getDescription();
         LocalizedBook localizedBookToSave = LocalizedBook.builder()
-                .title(localizedBook.getTitle())
-                .description(localizedBook.getDescription())
+                .title(title)
+                .description(description)
                 .imagePath(imagePathForBook)
                 .book(savedBook)
                 .language(givenLanguage)
@@ -209,27 +211,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName) {
-        long start = System.currentTimeMillis();
-        Language language = languageService.findLanguageByName(languageName);
-        LocalizedBook localizedBookDetails = localizedBookRepository
-                .selectByBookIdAndLanguageId(bookId, language.getLanguageId())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName)
-                ));
-        Book book = localizedBookDetails.getBook();
-        setGenresByLanguageAndBook(language, book);
-        List<LocalizedGenre> localizedGenres = Collections.emptyList();
-        book.getGenres().forEach(genre -> {
-            localizedGenres.add(genre.getLocalizedGenres().get(0));
-        });
-        long finish = System.currentTimeMillis();
-        System.out.println(finish - start);
-        return localizedBookDetails;
-    }
-
-    @Override
-    public BookDto findBookDetailsByBookIdAndLanguage(Long bookId, String languageName) {
-        long start = System.currentTimeMillis();
         Language language = languageService.findLanguageByName(languageName);
         LocalizedBook localizedBookDetails = localizedBookRepository
                 .selectByBookIdAndLanguageId(bookId, language.getLanguageId())
@@ -239,8 +220,20 @@ public class BookServiceImpl implements BookService {
         Book book = localizedBookDetails.getBook();
         setGenresByLanguageAndBook(language, book);
         book.setLocalizedBooks(List.of(localizedBookDetails));
-        long finish = System.currentTimeMillis();
-        System.out.println(finish - start);
+        return localizedBookDetails;
+    }
+
+    @Override
+    public BookDto findBookDetailsByBookIdAndLanguage(Long bookId, String languageName) {
+        Language language = languageService.findLanguageByName(languageName);
+        LocalizedBook localizedBookDetails = localizedBookRepository
+                .selectByBookIdAndLanguageId(bookId, language.getLanguageId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE, bookId, languageName)
+                ));
+        Book book = localizedBookDetails.getBook();
+        setGenresByLanguageAndBook(language, book);
+        book.setLocalizedBooks(List.of(localizedBookDetails));
         return bookMapper.toDto(book);
     }
 
@@ -257,17 +250,31 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<LocalizedBook> findTop15LocalizedBooksByLanguageNameHavingAverageScoreGreaterThan(String languageName, Double score) {//todo test
+    public List<BookDto> findTop15BooksByLanguageAndAverageScoreGreaterThan(String languageName, Double score) {
         Language language = languageService.findLanguageByName(languageName);
-        List<LocalizedBook> localizedBooksWithHighScore = localizedBookRepository
-                .selectByLanguageIdAvgScoreGreaterThan(language.getLanguageId(), score)
+        List<Book> top15BooksWithScoreGreaterThan = findBooksByScoreGreaterThan(score)
                 .stream()
                 .limit(FIFTEEN)
                 .toList();
-        if (localizedBooksWithHighScore.isEmpty()) {
+        top15BooksWithScoreGreaterThan.forEach(book -> {
+            LocalizedBook localizedBookDetails =
+                    findLocalizedBookDetailsByBookIdAndLanguage(book.getBookId(), language.getName());
+            book.setLocalizedBooks(List.of(localizedBookDetails));
+        });
+        List<BookDto> books = top15BooksWithScoreGreaterThan
+                .stream()
+                .map(bookMapper::toDto)
+                .toList();
+        return books;
+    }
+
+    @Override
+    public List<Book> findBooksByScoreGreaterThan(Double score) {
+        List<Book> booksWithScoreGreaterThan = bookRepository.selectByScoreGreaterThan(score);
+        if (booksWithScoreGreaterThan.isEmpty()) {
             throw new NothingFoundException(String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score));
         }
-        return localizedBooksWithHighScore;
+        return booksWithScoreGreaterThan;
     }
 
     @Override

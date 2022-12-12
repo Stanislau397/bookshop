@@ -12,14 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_FOR_AUTHOR;
-import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_KEYWORD;
-import static edu.epam.bookshop.repository.SqlQuery.COUNT_BOOKS_BY_YEAR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_LOCALIZED_GENRE_TITLE;
-import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_KEYWORD;
-import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_YEAR;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_WITH_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN;
-import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOK_BY_LOCALIZED_BOOK_TITLE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_EXISTING_YEARS_FOR_BOOKS;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_INFO;
 
@@ -33,14 +29,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query(value = CHECK_IF_BOOK_EXISTS_FOR_AUTHOR,
             nativeQuery = true)
     Boolean bookExistsForAuthor(Long authorId, Long bookId);
-
-    @Query(value = SELECT_BOOKS_BY_KEYWORD,
-            countQuery = COUNT_BOOKS_BY_KEYWORD)
-    Page<Book> selectBooksByKeyWordAndPage(String keyWord, Pageable page);
-
-    @Query(value = SELECT_BOOKS_BY_YEAR,
-            countQuery = COUNT_BOOKS_BY_YEAR)
-    Page<Book> selectBooksByYearAndPage(Integer year, Pageable page);
 
     @Query(value = SELECT_BOOKS_BY_LOCALIZED_GENRE_TITLE)
     Page<Book> selectByLocalizedGenreTitleAndPage(String genreTitle, Pageable page);
@@ -58,8 +46,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             nativeQuery = true)
     Integer selectBooksCountHavingAverageScoreGreaterThan(Double score);
 
-    Optional<Book> findByTitle(String bookTitle);
-
-    @Query(SELECT_BOOK_BY_LOCALIZED_BOOK_TITLE)
-    Optional<Book> selectBookByLocalizedBookTitle(String title);
+    @Query(SELECT_BOOKS_WITH_SCORE_GREATER_THAN)
+    List<Book> selectByScoreGreaterThan(Double score);
 }

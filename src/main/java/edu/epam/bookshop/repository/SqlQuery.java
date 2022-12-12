@@ -162,6 +162,11 @@ public class SqlQuery {
             "SELECT b FROM Book b " +
                     "JOIN b.localizedBooks lb " +
                     "WHERE lb.title = :title";
+    public static final String SELECT_BOOKS_WITH_SCORE_GREATER_THAN =
+            "SELECT b FROM Book b " +
+                    "JOIN b.bookReviews br " +
+                    "GROUP BY b.bookId " +
+                    "HAVING AVG(br.score) > :score ORDER BY AVG(br.score) DESC";
 
     //localized_book
     public static final String SELECT_LOCALIZED_BOOK_BY_BOOK_ID_AND_LANGUAGE_ID =

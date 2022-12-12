@@ -2,9 +2,6 @@ package edu.epam.bookshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import edu.epam.bookshop.annotation.ValidateBookIsbn;
-import edu.epam.bookshop.annotation.ValidateBookPages;
-import edu.epam.bookshop.annotation.ValidateBookPrice;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -70,7 +67,6 @@ public class Book {
     private String title;
 
     @Column(name = PRICE)
-    @ValidateBookPrice
     private BigDecimal price;
 
     @Column(name = IMAGE_PATH)
@@ -81,14 +77,12 @@ public class Book {
     private LocalDate publishDate;
 
     @Column(name = ISBN)
-    @ValidateBookIsbn
     private String isbn;
 
     @Column(name = DESCRIPTION)
     private String description;
 
     @Column(name = PAGES)
-    @ValidateBookPages
     private Integer pages;
 
     @Column(name = COVER_TYPE)
