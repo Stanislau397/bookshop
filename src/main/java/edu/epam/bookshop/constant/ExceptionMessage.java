@@ -150,7 +150,7 @@ public class ExceptionMessage {
             .getString("books_by_given_year_not_found");
     public static final String BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("books_with_score_greater_than_not_found");
-    public static final String BOOK_DETAILS_NOT_FOUND_BY_TITLE_AND_LANGUAGE = ResourceBundle.getBundle(BUNDLE_NAME)
+    public static final String BOOK_DETAILS_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("localized_book_with_given_title_and_language_not_found");
     public static final String LOCALIZED_BOOK_WITH_GIVEN_ID_NOT_FOUND = ResourceBundle.getBundle(BUNDLE_NAME)
             .getString("localized_book_by_given_id_not_found");

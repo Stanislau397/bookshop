@@ -53,10 +53,9 @@ public class BookController {
     }
 
     @PostMapping(UPDATE_BOOK_INFO_URN)
-    public ResponseEntity<Boolean> changeBookInfo(@RequestPart  Book bookFromRequest,
-                                                  @RequestPart @Valid LocalizedBook localizedBookFromRequest,
+    public ResponseEntity<Boolean> changeBookInfo(@RequestPart @Valid BookDto bookFromRequestDto,
                                                   @RequestPart(required = false) MultipartFile imageFromRequest) {
-        Boolean isBookUpdated = bookService.updateBookInfo(bookFromRequest, localizedBookFromRequest, imageFromRequest);
+        Boolean isBookUpdated = bookService.updateBookInfo(bookFromRequestDto, imageFromRequest);
         return ResponseEntity.ok(isBookUpdated);
     }
 
@@ -68,10 +67,10 @@ public class BookController {
 
     @RequestMapping(value = ADD_LOCALIZATION_TO_BOOK_URN, method = RequestMethod.POST,
             consumes = {"multipart/form-data"})
-    public ResponseEntity<Void> addLocalization(@RequestPart @Valid LocalizedBook localizedBook,
+    public ResponseEntity<Void> addLocalization(@RequestPart @Valid BookDto bookToTranslate,
                                                 @RequestPart(required = false) MultipartFile localizedImage,
                                                 @RequestPart String languageName) {
-        bookService.addLocalizationToExistingBook(localizedBook, localizedImage, languageName);
+        bookService.addLocalizationToExistingBook(bookToTranslate, localizedImage, languageName);
         return ResponseEntity.ok().build();
     }
 

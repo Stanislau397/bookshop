@@ -6,11 +6,12 @@ import edu.epam.bookshop.annotation.ValidateBookPrice;
 import edu.epam.bookshop.annotation.ValidateDate;
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Publisher;
-import edu.epam.bookshop.validator.ValidateCoverType;
+import edu.epam.bookshop.annotation.ValidateCoverType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Setter
 @Getter
 public class BookDto {
 

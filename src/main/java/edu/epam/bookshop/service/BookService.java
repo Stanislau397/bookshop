@@ -1,6 +1,8 @@
 package edu.epam.bookshop.service;
 
 import edu.epam.bookshop.dto.BookDto;
+import edu.epam.bookshop.dto.LocalizedBookDto;
+import edu.epam.bookshop.dto.LocalizedGenreDto;
 import edu.epam.bookshop.entity.Author;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookReview;
@@ -21,9 +23,9 @@ public interface BookService {
 
     void addBook(BookDto bookDto, MultipartFile bookImage, String languageName);
 
-    void addLocalizationToExistingBook(LocalizedBook existingLocalizedBook, MultipartFile localizedImage, String languageName);
+    void addLocalizationToExistingBook(BookDto bookToTranslate, MultipartFile localizedImage, String languageName);
 
-    boolean updateBookInfo(Book book, LocalizedBook localizedBook, MultipartFile newBookImage);
+    boolean updateBookInfo(BookDto bookToUpdate, MultipartFile newBookImage);
 
     boolean bookExistsById(Long bookId);
 
@@ -31,7 +33,7 @@ public interface BookService {
 
     Book findBookById(Long bookId);
 
-    LocalizedBook findLocalizedBookDetailsByBookIdAndLanguage(Long bookId, String languageName);
+    LocalizedBookDto findLocalizedBookDtoByBookIdAndLanguageName(Long bookId, String languageName);
 
     BookDto findBookDetailsByBookIdAndLanguage(Long bookId, String languageName);
 
@@ -55,29 +57,25 @@ public interface BookService {
 
     Integer findNumberOfBooksWithAverageScoreGreaterThan(Double score);
 
-    void setGenresByLanguageAndBook(Language givenLanguage, Book givenBook);
+    void addGenreByTitleAndLanguage(String genreTitle, String language);
 
-    void addGenre(Genre genre);
+    void addLocalizationToExistingGenre(String localizedGenreTitle, Long genreId, String languageName);
 
-    void addGGG(List<LocalizedGenre> localizedGenres);
-
-    void addGenreToBook(Long genreId, Long bookId);
-
-    void removeGenreFromBook(Long genreId, Long bookId);
+    void updateLocalizedGenreByGenreIdAndLanguageName(String newGenreTitle, Long genreId, String languageName);
 
     void deleteGenreById(Long genreId);
 
-    void updateGenreTitles(Genre genre);
+    void deleteLocalizedGenreById(Long localizedGenreId);
 
-    boolean isGenreExistsByTitle(String genreTitle);
+    boolean localizedGenreExistsByTitleAndLanguage(String genreTitle, Language language);
 
-    Page<Genre> findGenresByPage(int page);
+    Genre findGenreByGenreId(Long genreId);
 
-    List<Genre> findGenresByKeyword(String keyWord);
+    Page<LocalizedGenre> findLocalizedGenresByLanguageNameAndPageNumber(String languageName, int pageNumber);
 
-    List<Genre> findDistinctGenresForAuthorByAuthorId(Long authorId);
+    List<LocalizedGenre> findLocalizedGenresByKeywordAndLanguageName(String keyword, String languageName);
 
-    List<Genre> findAllGenres();
+    List<LocalizedGenreDto> findLocalizedGenresByBookIdAndLanguage(Long bookId, String language);
 
     void addPublisher(Publisher publisher, MultipartFile image);
 

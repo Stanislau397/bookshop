@@ -35,6 +35,7 @@ function createUpdatedBook() {
     let book_isbn = document.getElementById('book_isbn').value;
     let book_cover_type = document.getElementById('book_cover_type').value;
     let book_id = document.getElementById('book_id').value;
+    let localized_book_dto = createUpdatedLocalizedBook();
 
     return {
         "bookId": book_id,
@@ -42,27 +43,29 @@ function createUpdatedBook() {
         "price": book_price,
         "pages": book_pages,
         "isbn": book_isbn,
-        "coverType": book_cover_type
+        "coverType": book_cover_type,
+        "localizedBook" : localized_book_dto
     }
 }
 
 
 function editBook() {
     let updated_book = createUpdatedBook();
-    let updated_localized_book = createUpdatedLocalizedBook();
-    console.log(updated_localized_book.localizedBookId)
     let formData = new FormData();
     formData.append("imageFromRequest", $('#file-input')[0].files[0]);
-    formData.append('localizedBookFromRequest', new Blob([JSON.stringify(updated_localized_book)], {
+    formData.append('bookFromRequestDto', new Blob([JSON.stringify(updated_book)], {
         type: "application/json"
     }));
-    formData.append('bookFromRequest', new Blob([JSON.stringify(updated_book)], {
-        type: "application/json"
-    }));
-    if (isBookDataValid(updated_localized_book.title, updated_localized_book.description, updated_book.isbn,
-            updated_book.price, updated_book.coverType, updated_book.pages)
-        && isDateValid(updated_book.publishDate)
-        && isImageValid(updated_localized_book.imagePath)) {
+    let title = updated_book.localizedBook.title
+    let description = updated_book.localizedBook.description;
+    let image_path = updated_book.localizedBook.imagePath;
+    let publish_date = updated_book.publishDate;
+    let isbn = updated_book.isbn;
+    let cover_type = updated_book.coverType;
+    let pages = updated_book.pages;
+    if (isBookDataValid(title, description, isbn, updated_book.price, cover_type, pages)
+        && isDateValid(publish_date)
+        && isImageValid(image_path)) {
         $.ajax({
             method: 'POST',
             url: '/updateBookInfo',
@@ -396,37 +399,37 @@ function setGenreIdInput(genreId) {
     genre_id_input.value = genreId;
 }
 
-function setBookInputFields(localized_book) {
+function setBookInputFields(book) {
     let book_id_input = document.getElementById('book_id');
-    book_id_input.value = localized_book.bookId;
+    book_id_input.value = book.bookId;
 
     let localized_book_id_input = document.getElementById('localized_book_id');
-    localized_book_id_input.value = localized_book.localizedBookId;
+    localized_book_id_input.value = book.localizedBook.localizedBookId;
 
     let book_image = document.getElementById('book_image');
-    book_image.src = localized_book.imagePath;
+    book_image.src = book.localizedBook.imagePath;
 
     let book_title_input = document.getElementById('book_title');
-    book_title_input.value = localized_book.title;
+    book_title_input.value = book.localizedBook.title;
 
     let book_price_input = document.getElementById('book_price');
-    book_price_input.value = localized_book.price;
+    book_price_input.value = book.price;
 
     let book_isbn_input = document.getElementById('book_isbn');
-    book_isbn_input.value = localized_book.isbn;
+    book_isbn_input.value = book.isbn;
 
     let book_pages_input = document.getElementById('book_pages');
-    book_pages_input.value = localized_book.pages;
+    book_pages_input.value = book.pages;
 
     let book_description_input = document.getElementById('book_description');
-    book_description_input.value = localized_book.description;
+    book_description_input.value = book.localizedBook.description;
 
     let old_image_input = document.getElementById('old_image_path');
-    old_image_input.value = localized_book.imagePath;
+    old_image_input.value = book.imagePath;
 
-    setBookCoverTypeSelect(localized_book.book);
+    setBookCoverTypeSelect(book);
 
-    let date = localized_book.publishDate;
+    let date = book.publishDate;
     let dateArray = date.split('-');
 
     let yearSelect = addYearsToBookOption();
