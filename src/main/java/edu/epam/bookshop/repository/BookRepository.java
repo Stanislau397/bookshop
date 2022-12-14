@@ -9,14 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_FOR_AUTHOR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_KEYWORD;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_GENRE_TITLE;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_YEAR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_WITH_SCORE_GREATER_THAN;
-import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN;
-import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_EXISTING_YEARS_FOR_BOOKS;
 import static edu.epam.bookshop.repository.SqlQuery.UPDATE_BOOK_INFO;
 
@@ -38,11 +38,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> selectByPageAndScoreGreaterThan(Pageable pageWithBooksByScore, Double score);
 
     @Query(SELECT_EXISTING_YEARS_FOR_BOOKS)
-    List<Integer> selectExistingYearsInBooksOrderedByYearAsc();
+    List<Integer> selectExistingYearsForBooksOrderedByYearAsc();
 
-    @Query(value = SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN,
-            nativeQuery = true)
-    Integer selectBooksCountHavingAverageScoreGreaterThan(Double score);
+    @Query(SELECT_COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN)
+    Optional<Integer> selectBooksCountHavingAverageScoreGreaterThan(Double score);
 
     @Query(SELECT_BOOKS_WITH_SCORE_GREATER_THAN)
     List<Book> selectByScoreGreaterThan(Double score);

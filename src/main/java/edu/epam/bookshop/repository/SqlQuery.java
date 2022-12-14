@@ -154,6 +154,11 @@ public class SqlQuery {
                     "JOIN b.bookReviews br " +
                     "GROUP BY b.bookId " +
                     "HAVING AVG(br.score) > :score ORDER BY AVG(br.score) DESC";
+    public static final String SELECT_COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN =
+            "SELECT COUNT(b) FROM Book b " +
+                    "JOIN b.bookReviews br " +
+                    "GROUP BY br.score " +
+                    "HAVING AVG(br.score) > :score";
 
     //localized_book
     public static final String SELECT_LOCALIZED_BOOK_BY_BOOK_ID_AND_LANGUAGE_ID =
@@ -229,12 +234,6 @@ public class SqlQuery {
             "SELECT AVG(br.score) FROM BookReview br " +
                     "LEFT JOIN br.reviewedBook rb " +
                     "WHERE rb.bookId = :bookId";
-    public static final String SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN =
-            "SELECT COUNT(*) AS counter " +
-                    "FROM (SELECT br.book_id_fk AS bookId " +
-                    "FROM book_reviews br " +
-                    "GROUP BY br.book_id_fk " +
-                    "HAVING AVG(br.score) > (?)) as averageScore";
     public static final String SELECT_BOOK_SCORE_FOR_USER =
             "SELECT br.score FROM BookReview br " +
                     "JOIN br.user u " +

@@ -382,13 +382,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Integer findNumberOfBooksWithAverageScoreGreaterThan(Double score) { //todo test
-        int numberOfBooks =
-                bookRepository.selectBooksCountHavingAverageScoreGreaterThan(score);
-        if (numberOfBooks == 0) {
-            throw new NothingFoundException(
-                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score));
-        }
-        return numberOfBooks;
+        return bookRepository.selectBooksCountHavingAverageScoreGreaterThan(score)
+                .orElseThrow(() -> new NothingFoundException(
+                        String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score)
+                ));
     }
 
     @Override
@@ -849,7 +846,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Integer> findExistingYearsInBooks() { //todo test
         List<Integer> existingYears =
-                bookRepository.selectExistingYearsInBooksOrderedByYearAsc();
+                bookRepository.selectExistingYearsForBooksOrderedByYearAsc();
         if (existingYears.isEmpty()) {
             log.info(NOTHING_WAS_FOUND_MSG);
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
