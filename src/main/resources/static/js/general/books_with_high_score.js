@@ -116,6 +116,7 @@ function displayBooksWithHighScore(booksWithHighScore) {
     let counter = 0;
     for (let book of booksWithHighScore) {
         counter = counter + 1;
+        let localized_book = book.localizedBook;
         let book_price = '$' + book.price;
         let book_href = 'http://localhost:8070/bookshop/book?title=' + book.title;
         let book_href_with_under_scores = book_href.replace(/ /g, "_")
@@ -123,10 +124,10 @@ function displayBooksWithHighScore(booksWithHighScore) {
             '<div class="book-container">' +
             '<div class="book-image-container">' +
             '<div class="book-score" id="book_score' + counter + '">' + '</div>' +
-            '<a href="' + book_href_with_under_scores + '">' + '<img class="book-image" src="' + book.imagePath + '"/>' + '</a>' +
+            '<a href="' + book_href_with_under_scores + '">' + '<img class="book-image" src="' + localized_book.imagePath + '"/>' + '</a>' +
             '</div>' +
             '<div class="book-info">' +
-            '<a class="book-title" href="' + book_href_with_under_scores + '">' + book.title + '</a>' +
+            '<a class="book-title" href="' + book_href_with_under_scores + '">' + localized_book.title + '</a>' +
             '<div class="book-author-name" id="author_name' + counter + '">' + '</div>' +
             '<p class="book-price">' + book_price + '</p>' + '</div>' +
             '<div class="button-container" id="button_container' + counter + '">' + '</div>' + '</div>';

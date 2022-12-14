@@ -31,13 +31,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             nativeQuery = true)
     Boolean bookExistsForAuthor(Long authorId, Long bookId);
 
-    @Query(value = SELECT_BOOKS_BY_GENRE_TITLE)
+    @Query(SELECT_BOOKS_BY_GENRE_TITLE)
     Page<Book> selectByGenreTitleAndPage(String genreTitle, Pageable pageWithBooksByGenreTitle);
 
-    @Query(value = SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN)
-    Page<Book> selectBooksByPageHavingAverageScoreGreaterThan(Double score, Pageable page);
+    @Query(SELECT_BOOKS_WITH_SCORE_GREATER_THAN)
+    Page<Book> selectByPageAndScoreGreaterThan(Pageable pageWithBooksByScore, Double score);
 
-    @Query(value = SELECT_EXISTING_YEARS_FOR_BOOKS)
+    @Query(SELECT_EXISTING_YEARS_FOR_BOOKS)
     List<Integer> selectExistingYearsInBooksOrderedByYearAsc();
 
     @Query(value = SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN,

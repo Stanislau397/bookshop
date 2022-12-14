@@ -365,7 +365,7 @@ public class BookServiceImpl implements BookService {
     public Page<BookDto> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber, String languageName) { //todo test
         Pageable pageWithBooks = PageRequest.of(pageNumber - 1, FIFTEEN);
         Page<BookDto> booksWithAvgScoreGreaterThan = bookRepository
-                .selectBooksByPageHavingAverageScoreGreaterThan(score, pageWithBooks)
+                .selectByPageAndScoreGreaterThan(pageWithBooks, score)
                 .map(bookMapper::toDto);
         if (booksWithAvgScoreGreaterThan.isEmpty()) {
             throw new NothingFoundException(
