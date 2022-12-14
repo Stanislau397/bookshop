@@ -114,7 +114,7 @@ function getBooksByPage(pageNumber) {
 function getBooksByKeyWord(key_word) {
     if (key_word !== '') {
         $.ajax({
-            url: '/displayLocalizedBooksByKeyword',
+            url: '/findBooksByKeyword',
             data: {keyword: key_word},
             success: function (booksByKeyWord) {
                 hideErrorMessageForSearchInput();
@@ -152,25 +152,25 @@ function buildTableBodyForBooks(localizedBooks) {
     let booksHtml = '';
     let language_name_from_url = new URLSearchParams(window.location.search).get('lang');
     let counter = 0;
-    for (let localized_book of localizedBooks) {
+    for (let book of localizedBooks) {
         counter = counter + 1;
-        let book_language = getLanguageByLocalizedBookTitle(localized_book.title);
+        let book_language = getLanguageByLocalizedBookTitle(book.localizedBook.title);
         booksHtml += '<tr>' +
             '<td>' + counter + '</td>' +
             '<td>' +
             '<div class="d-flex align-items-center">' +
-            '<img class="img-thumbnail" style="width: 50px" src=' + localized_book.imagePath + '>' +
+            '<img class="img-thumbnail" style="width: 50px" src=' + book.localizedBook.imagePath + '>' +
             '</div>' + '</td>' +
-            '<td style="width: 680px">' + localized_book.title + '</td>' +
+            '<td style="width: 680px">' + book.localizedBook.title + '</td>' +
             '<td>';
 
         if (language_name_from_url !== book_language.name) {
-            let translate_book_url = '/admin/cabinet/translate_book?id=' + localized_book.book.bookId;
+            let translate_book_url = '/admin/cabinet/translate_book?id=' + book.bookId;
             booksHtml += '<a type="button" ' +
                 'class="btn btn-secondary role-btn" ' +
                 'href="' + translate_book_url + '">' + add_localization_btn + '</a>'
         } else {
-            let edit_book_url = '/admin/cabinet/edit_book?id=' + localized_book.book.bookId;
+            let edit_book_url = '/admin/cabinet/edit_book?id=' + book.bookId;
             booksHtml += '<a type="button" ' +
                 'class="btn btn-secondary role-btn" ' +
                 'href="' + edit_book_url + '">' + editBtn + '</a>'

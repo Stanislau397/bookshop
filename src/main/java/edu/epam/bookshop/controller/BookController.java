@@ -4,7 +4,6 @@ import edu.epam.bookshop.dto.BookDto;
 import edu.epam.bookshop.entity.Book;
 import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.CoverType;
-import edu.epam.bookshop.entity.LocalizedBook;
 import edu.epam.bookshop.entity.ShelveBook;
 import edu.epam.bookshop.service.BookService;
 import lombok.AllArgsConstructor;
@@ -21,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 import static edu.epam.bookshop.constant.GetMappingURN.COUNT_BOOKS_WITH_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.constant.GetMappingURN.FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN;
@@ -83,23 +81,25 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOKS_BY_GENRE_TITLE_AND_PAGE_URN)
-    public ResponseEntity<Page<Book>> displayBooksByGenreTitleAndPageNumber(String genreTitle, Integer page) {
-        Page<Book> booksByGenreTitleAndPage =
-                bookService.findBooksByLocalizedGenreTitleAndPageNumber(genreTitle, page);
-        return ResponseEntity.ok(booksByGenreTitleAndPage);
+    public ResponseEntity<Page<BookDto>> displayBooksByGenreTitleAndPageNumber(String genreTitle, Integer page) {
+        String languageName = LocaleContextHolder.getLocale()
+                .getLanguage();
+        return ResponseEntity.ok(bookService.findBooksByGenreTitleAndPageNumberAndLanguageName(genreTitle, page, languageName));
     }
 
     @GetMapping(FIND_BOOKS_BY_YEAR_AND_PAGE_URN)
-    public ResponseEntity<Page<LocalizedBook>> displayBooksByYearAndPageNumber(Integer year, Integer page) {
+    public ResponseEntity<Page<BookDto>> displayBooksByYearAndPageNumber(Integer year, Integer page) {
         String languageName = LocaleContextHolder.getLocale()
                 .getLanguage();
-        return ResponseEntity.ok(bookService.findLocalizedBooksByYearAndPageNumberAndLanguage(year, page, languageName));
+        return ResponseEntity.ok(bookService.findBooksByYearAndPageNumberAndLanguageName(year, page, languageName));
     }
 
     @GetMapping(FIND_BOOKS_BY_KEYWORD_AND_PAGE)
-    public ResponseEntity<Page<LocalizedBook>> displayBooksByKeyWordAndPage(String keyWord, Integer page, String languageName) {
-        Page<LocalizedBook> booksByKeyWordAndPage =
-                bookService.findLocalizedBooksByKeywordAndPageNumberAndLanguage(keyWord, page, languageName);
+    public ResponseEntity<Page<BookDto>> displayBooksByKeyWordAndPage(String keyWord, Integer page) {
+        String languageName = LocaleContextHolder.getLocale()
+                .getLanguage();
+        Page<BookDto> booksByKeyWordAndPage =
+                bookService.findBooksByKeywordAndPageNumberAndLanguageName(keyWord, page, languageName);
         return ResponseEntity.ok(booksByKeyWordAndPage);
     }
 
@@ -111,28 +111,28 @@ public class BookController {
     }
 
     @GetMapping(FIND_BOOKS_BY_PAGE_HAVING_AVG_SCORE_GREATER_THAN)
-    public ResponseEntity<Page<Book>> displayBooksByPageHavingAvgScoreGreaterThan(Double score, Integer pageNumber) {
-        Page<Book> booksWithAvgScoreGreaterThan =
-                bookService.findBooksByPageHavingAverageScoreGreaterThan(score, pageNumber);
-        return ResponseEntity.ok(booksWithAvgScoreGreaterThan);
+    public ResponseEntity<Page<BookDto>> displayBooksByPageHavingAvgScoreGreaterThan(Double score, Integer pageNumber) {
+        String languageName = LocaleContextHolder.getLocale()
+                .getLanguage();
+        return ResponseEntity.ok(bookService.findBooksByPageHavingAverageScoreGreaterThan(score, pageNumber, languageName));
     }
 
     @GetMapping("/displayAllLocalizedBooksByLanguageAndPageNumber")
-    public ResponseEntity<Page<LocalizedBook>> displayAllLocalizedBooksByLanguageAndPageNumber(String languageName, int pageNumber) {
+    public ResponseEntity<Page<BookDto>> displayAllLocalizedBooksByLanguageAndPageNumber(String languageName, int pageNumber) {
         String currentLanguage = LocaleContextHolder
                 .getLocale()
                 .getLanguage();
-        if (languageName.isEmpty() || Objects.equals(languageName, NULL_STRING)) {
-            return ResponseEntity.ok(bookService.findAllLocalizedBooksByLanguageAndPageNumber(currentLanguage, pageNumber));
+        if (languageName.isEmpty() || languageName.equals(NULL_STRING)) {
+            return ResponseEntity.ok(bookService.findBooksByLanguageNameAndPage(currentLanguage, pageNumber));
         }
-        return ResponseEntity.ok(bookService.findAllLocalizedBooksByLanguageAndPageNumber(languageName, pageNumber));
+        return ResponseEntity.ok(bookService.findBooksByLanguageNameAndPage(languageName, pageNumber));
     }
 
-    @GetMapping("/displayLocalizedBooksByKeyword")
-    public ResponseEntity<List<LocalizedBook>> displayLocalizedBooksByKeyword(String keyword) {
-        String currentLanguage = LocaleContextHolder.getLocale()
+    @GetMapping("/findBooksByKeyword")
+    public ResponseEntity<List<BookDto>> displayLocalizedBooksByKeyword(String keyword) {
+        String languageName = LocaleContextHolder.getLocale()
                 .getLanguage();
-        return ResponseEntity.ok(bookService.findLocalizedBooksByKeywordAndLanguageNameLimit6(keyword, currentLanguage));
+        return ResponseEntity.ok(bookService.findBooksByKeywordAndLanguageNameLimit6(keyword, languageName));
     }
 
     @GetMapping(FIND_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS)

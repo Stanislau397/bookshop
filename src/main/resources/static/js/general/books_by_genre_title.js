@@ -95,16 +95,17 @@ function displayBooksByGenreTitle(booksByGenreTitle) {
     let counter = 0;
     for (let book of booksByGenreTitle) {
         counter = counter + 1;
+        let localized_book = book.localizedBook;
         let book_price = '$' + book.price;
-        let book_href = 'http://localhost:8070/bookshop/book?title=' + book.title;
+        let book_href = 'http://localhost:8070/bookshop/book?id=' + book.bookId;
         let book_href_with_under_scores = book_href.replace(/ /g, "_")
         books_by_genre_container.innerHTML +=
             '<div class="book-container">' +
             '<div class="book-image-container">' +
-            '<a href="' + book_href_with_under_scores + '">' + '<img class="book-image" src="' + book.imagePath + '"/>' + '</a>' +
+            '<a href="' + book_href_with_under_scores + '">' + '<img class="book-image" src="' + localized_book.imagePath + '"/>' + '</a>' +
             '</div>' +
             '<div class="book-info">' +
-            '<a class="book-title" href="' + book_href_with_under_scores + '">' + book.title + '</a>' +
+            '<a class="book-title" href="' + book_href_with_under_scores + '">' + localized_book.title + '</a>' +
             '<div class="book-author-name" id="author_name' + counter + '">' + '</div>' +
             '<p class="book-price">' + book_price + '</p>' +
             '</div>' +
@@ -113,7 +114,7 @@ function displayBooksByGenreTitle(booksByGenreTitle) {
         getAuthorsForBookByBookId(book.bookId, counter);
         if (userForBooksByGenre != null) {
             let shelveId = userForBooksByGenre.bookShelve.bookShelveId;
-            displayButton(book.bookId, shelveId, book.title, button_container_div)
+            displayButton(book.bookId, shelveId, localized_book.title, button_container_div)
         } else {
             button_container_div.innerHTML =
                 '<button type="button" ' +

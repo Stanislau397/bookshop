@@ -91,18 +91,19 @@ function displayBooksByYear(booksByYear) {
     }
     books_by_year_container.innerHTML = '';
     let counter = 0;
-    for (let localizedBook of booksByYear) {
+    for (let book of booksByYear) {
         counter = counter + 1;
-        let book_price = '$' + localizedBook.book.price;
-        let book_href = 'http://localhost:8070/bookshop/book?id=' + localizedBook.book.bookId;
+        let localized_book = book.localizedBook;
+        let book_price = '$' + book.price;
+        let book_href = 'http://localhost:8070/bookshop/book?id=' + book.bookId;
         let book_href_with_under_scores = book_href.replace(/ /g, "_")
         books_by_year_container.innerHTML +=
             '<div class="book-container">' +
             '<div class="book-image-container">' +
-            '<a href="' + book_href_with_under_scores + '">' + '<img class="book-image" src="' + localizedBook.imagePath + '"/>' + '</a>' +
+            '<a href="' + book_href_with_under_scores + '">' + '<img class="book-image" src="' + localized_book.imagePath + '"/>' + '</a>' +
             '</div>' +
             '<div class="book-info">' +
-            '<a class="book-title" href="' + book_href_with_under_scores + '">' + localizedBook.title + '</a>' +
+            '<a class="book-title" href="' + book_href_with_under_scores + '">' + localized_book.title + '</a>' +
             '<div class="book-author-name" id="author_name' + counter + '">' + '</div>' +
             '<p class="book-price">' + book_price + '</p>' +
             '</div>' +
@@ -110,7 +111,7 @@ function displayBooksByYear(booksByYear) {
         let button_container_div = document.getElementById('button_container' + counter);
         if (userForBooksByYear != null) {
             let shelveId = userForBooksByYear.bookShelve.bookShelveId;
-            displayButton(localizedBook.book.bookId, shelveId, localizedBook.title, button_container_div)
+            displayButton(book.bookId, shelveId, localized_book.title, button_container_div)
         } else {
             button_container_div.innerHTML =
                 '<button type="button" ' +
@@ -118,7 +119,6 @@ function displayBooksByYear(booksByYear) {
                 '<i class="fa fa-plus">' + '</i>' +
                 '<a href="http://localhost:8070/bookshop/login">' + add_btn + '</a>' + '</button>'
         }
-        setAuthorsInBookInfo(localizedBook.book.authors, counter);
     }
 }
 

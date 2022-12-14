@@ -61,7 +61,6 @@ import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DETAILS_NOT_FOUND
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_DOES_NOT_EXIST_FOR_AUTHOR;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_NOT_FOUND_ON_SHELVE;
 import static edu.epam.bookshop.constant.ExceptionMessage.BOOK_WITH_GIVEN_ID_NOT_FOUND;
-import static edu.epam.bookshop.constant.ExceptionMessage.GENRES_WITH_GIVEN_BOOK_ID_AND_LANGUAGE_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_WITH_GIVEN_ID_NOT_FOUND;
 import static edu.epam.bookshop.constant.ExceptionMessage.GENRE_WITH_GIVEN_TITLE_AND_LANGUAGE_EXISTS;
 import static edu.epam.bookshop.constant.ExceptionMessage.IMAGE_IS_NOT_VALID_MSG;
@@ -249,139 +248,136 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, Integer pageNumber) {
+    public Page<BookDto> findBooksByLanguageNameAndPage(String languageName, Integer pageNumber) {
         Pageable pageWithLocalizedBooks = PageRequest.of(pageNumber - 1, SIX);
-        Language selectedLanguage = languageService.findLanguageByName(languageName);
-        Page<LocalizedBook> localizedBooksByPage =
-                localizedBookRepository.selectAllByLanguageIdAndPage(selectedLanguage.getLanguageId(), pageWithLocalizedBooks);
-        if (localizedBooksByPage.isEmpty()) {
+        Page<BookDto> booksByPage = bookRepository
+                .findAll(pageWithLocalizedBooks)
+                .map(bookMapper::toDto);
+        if (booksByPage.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
-        return localizedBooksByPage;
+        booksByPage.forEach(bookDto -> {
+            Long bookId = bookDto.getBookId();
+            LocalizedBookDto localizedBookFields =
+                    findLocalizedBookDtoByBookIdAndLanguageName(bookId, languageName);
+            bookDto.setLocalizedBook(localizedBookFields);
+        });
+        return booksByPage;
     }
 
     @Override
     public List<BookDto> findTop15BooksByLanguageAndAverageScoreGreaterThan(String languageName, Double score) {
-        long start = System.currentTimeMillis();
         Language language = languageService.findLanguageByName(languageName);
-        List<BookDto> top15BooksWithScoreGreaterThan = findBooksByScoreGreaterThan(score)
+        List<BookDto> top15BooksWithScoreGreaterThan = bookRepository
+                .selectByScoreGreaterThan(score)
                 .stream()
                 .map(bookMapper::toDto)
                 .limit(FIFTEEN)
                 .toList();
+        if (top15BooksWithScoreGreaterThan.isEmpty()) {
+            throw new NothingFoundException(String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score));
+        }
         top15BooksWithScoreGreaterThan.forEach(book -> {
             LocalizedBookDto localizedBookDto =
                     findLocalizedBookDtoByBookIdAndLanguageName(book.getBookId(), language.getName());
             book.setLocalizedBook(localizedBookDto);
         });
-        long finish = System.currentTimeMillis();
-        System.out.println(finish - start);
         return top15BooksWithScoreGreaterThan;
     }
 
     @Override
-    public List<Book> findBooksByScoreGreaterThan(Double score) {
-        List<Book> booksWithScoreGreaterThan = bookRepository.selectByScoreGreaterThan(score);
-        if (booksWithScoreGreaterThan.isEmpty()) {
-            throw new NothingFoundException(String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score));
-        }
-        return booksWithScoreGreaterThan;
-    }
-
-    @Override
-    public List<LocalizedBook> findLocalizedBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName) {
-        Language selectedLanguage = languageService.findLanguageByName(languageName);
-        Long languageId = selectedLanguage.getLanguageId();
-        List<LocalizedBook> localizedBooksByKeywordAndLanguageId = localizedBookRepository
-                .selectByKeywordAndLanguageId(keyword, languageId)
+    public List<BookDto> findBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName) {
+        List<BookDto> booksByKeyword = bookRepository
+                .selectByKeyword(keyword)
                 .stream()
+                .map(bookMapper::toDto)
                 .limit(SIX)
-                .collect(Collectors.toList());
-        if (localizedBooksByKeywordAndLanguageId.isEmpty()) {
+                .toList();
+        if (booksByKeyword.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
-        return localizedBooksByKeywordAndLanguageId;
+        booksByKeyword.forEach(bookDto -> {
+            Long bookId = bookDto.getBookId();
+            LocalizedBookDto localizedBookDto =
+                    findLocalizedBookDtoByBookIdAndLanguageName(bookId, languageName);
+            bookDto.setLocalizedBook(localizedBookDto);
+        });
+        return booksByKeyword;
     }
 
     @Override
-    public Page<LocalizedBook> findLocalizedBooksByKeywordAndPageNumberAndLanguage(String keyWord, Integer pageNumber,
-                                                                                   String languageName) { // todo test
-        Language selectedLanguage = languageService.findLanguageByName(languageName);
-        Long languageId = selectedLanguage.getLanguageId();
-        Pageable pageWithLocalizedBooksByKeyword = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
-        Page<LocalizedBook> localizedBooksByKeyWordAndPage = localizedBookRepository
-                .selectByKeywordAndLanguageIdAndPage(keyWord, languageId, pageWithLocalizedBooksByKeyword);
-        if (localizedBooksByKeyWordAndPage.isEmpty()) {
+    public Page<BookDto> findBooksByKeywordAndPageNumberAndLanguageName(String keyWord, Integer pageNumber, String languageName) { // todo test
+        Pageable pageWithBooksByKeyword = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
+        Page<BookDto> booksByKeywordAndPageNumber = bookRepository
+                .selectByKeywordAndPage(keyWord, pageWithBooksByKeyword)
+                .map(bookMapper::toDto);
+        if (booksByKeywordAndPageNumber.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
-        return localizedBooksByKeyWordAndPage;
+        booksByKeywordAndPageNumber.forEach(bookDto -> {
+            Long bookId = bookDto.getBookId();
+            LocalizedBookDto localizedBookDto =
+                    findLocalizedBookDtoByBookIdAndLanguageName(bookId, languageName);
+            bookDto.setLocalizedBook(localizedBookDto);
+        });
+        return booksByKeywordAndPageNumber;
     }
 
     @Override
-    public Page<LocalizedBook> findLocalizedBooksByYearAndPageNumberAndLanguage(Integer year, Integer pageNumber,
-                                                                                String languageName) { //todo test
-        Language selectedLanguage = languageService.findLanguageByName(languageName);
-        Long languageId = selectedLanguage.getLanguageId();
-        Pageable pageWithLocalizedBooksByYear = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
-        Page<LocalizedBook> localizedBooksByYear =
-                localizedBookRepository.selectByYearAndLanguageIdAndPage(year, languageId, pageWithLocalizedBooksByYear);
-        if (localizedBooksByYear.isEmpty()) {
+    public Page<BookDto> findBooksByYearAndPageNumberAndLanguageName(Integer year, Integer pageNumber, String languageName) { //todo test
+        Pageable pageWithBooksByYear = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
+        Page<BookDto> booksByYearAndPage = bookRepository
+                .selectByYearAndPage(year, pageWithBooksByYear)
+                .map(bookMapper::toDto);
+        if (booksByYearAndPage.isEmpty()) {
             throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
         }
-        return localizedBooksByYear;
+        booksByYearAndPage.forEach(bookDto -> {
+            Long bookId = bookDto.getBookId();
+            LocalizedBookDto localizedBookDto =
+                    findLocalizedBookDtoByBookIdAndLanguageName(bookId, languageName);
+            bookDto.setLocalizedBook(localizedBookDto);
+        });
+        return booksByYearAndPage;
     }
 
     @Override
-    public Page<Book> findBooksByLocalizedGenreTitleAndPageNumber(String genreTitle, Integer pageNumber) { //todo test
+    public Page<BookDto> findBooksByGenreTitleAndPageNumberAndLanguageName(String genreTitle, Integer pageNumber,
+                                                                           String languageName) { //todo test
         Pageable pageWithBooksByGenreTitle = PageRequest.of(pageNumber - 1, BOOKS_PER_PAGE);
-        Page<Book> booksByGenreTitle =
-                bookRepository.selectByLocalizedGenreTitleAndPage(genreTitle, pageWithBooksByGenreTitle);
-        if (booksByGenreTitle.isEmpty()) {
-            log.info(String.format(BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND, genreTitle));
+        Page<BookDto> booksByGenreTitleAndPage = bookRepository
+                .selectByGenreTitleAndPage(genreTitle, pageWithBooksByGenreTitle)
+                .map(bookMapper::toDto);
+        if (booksByGenreTitleAndPage.isEmpty()) {
             throw new NothingFoundException(
-                    String.format(BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND, genreTitle)
-            );
+                    String.format(BOOKS_WITH_GIVEN_GENRE_TITLE_NOT_FOUND, genreTitle));
         }
-        return booksByGenreTitle;
+        booksByGenreTitleAndPage.forEach(bookDto -> {
+            Long bookId = bookDto.getBookId();
+            LocalizedBookDto localizedBookDto =
+                    findLocalizedBookDtoByBookIdAndLanguageName(bookId, languageName);
+            bookDto.setLocalizedBook(localizedBookDto);
+        });
+        return booksByGenreTitleAndPage;
     }
 
     @Override
-    public Page<Book> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber) { //todo test
+    public Page<BookDto> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber, String languageName) { //todo test
         Pageable pageWithBooks = PageRequest.of(pageNumber - 1, FIFTEEN);
-        Page<Book> booksWithAvgScoreGreaterThan =
-                bookRepository.selectBooksByPageHavingAverageScoreGreaterThan(score, pageWithBooks);
+        Page<BookDto> booksWithAvgScoreGreaterThan = bookRepository
+                .selectBooksByPageHavingAverageScoreGreaterThan(score, pageWithBooks)
+                .map(bookMapper::toDto);
         if (booksWithAvgScoreGreaterThan.isEmpty()) {
-            log.info(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score);
             throw new NothingFoundException(
-                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score)
-            );
+                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score));
         }
+        booksWithAvgScoreGreaterThan.forEach(bookDto -> {
+            Long bookId = bookDto.getBookId();
+            LocalizedBookDto localizedBookDto =
+                    findLocalizedBookDtoByBookIdAndLanguageName(bookId, languageName);
+            bookDto.setLocalizedBook(localizedBookDto);
+        });
         return booksWithAvgScoreGreaterThan;
-    }
-
-    @Override
-    public Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId,
-                                                              String status) { //todo test
-//        if (!shelveRepository.existsByShelveId(shelveId)) {
-//            log.info(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId);
-//            throw new EntityNotFoundException(
-//                    String.format(SHELVE_WITH_GIVEN_ID_NOT_FOUND, shelveId)
-//            );
-//        }
-//        if (!EnumUtils.isValidEnum(BookStatus.class, status)) {
-//            log.info(ENUM_NOT_FOUND_MSG, status);
-//            throw new EntityNotFoundException(String.format(ENUM_NOT_FOUND_MSG, status));
-//        }
-//        BookStatus bookStatus = BookStatus.valueOf(status);
-//        Pageable pageWithBooks = PageRequest.of(pageNumber - 1, TWENTY_FIVE);
-//        Page<Book> booksByShelveIdAndStatus =
-//                bookRepository.selectBooksByPageAndShelveIdAndBookStatus(shelveId, bookStatus, pageWithBooks);
-//        if (booksByShelveIdAndStatus.isEmpty()) {
-//            log.info(NOTHING_WAS_FOUND_MSG);
-//            throw new NothingFoundException(NOTHING_WAS_FOUND_MSG);
-//        }
-//        return booksByShelveIdAndStatus;
-        return null;
     }
 
     @Override
@@ -389,10 +385,8 @@ public class BookServiceImpl implements BookService {
         int numberOfBooks =
                 bookRepository.selectBooksCountHavingAverageScoreGreaterThan(score);
         if (numberOfBooks == 0) {
-            log.info(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score);
             throw new NothingFoundException(
-                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score)
-            );
+                    String.format(BOOKS_WITH_SCORE_GREATER_THAN_NOT_FOUND, score));
         }
         return numberOfBooks;
     }
@@ -528,10 +522,7 @@ public class BookServiceImpl implements BookService {
                     .toList();
         }
         if (localizedGenresByBookIdAndLanguage.isEmpty()) {
-            log.info(String.format(GENRES_WITH_GIVEN_BOOK_ID_AND_LANGUAGE_NOT_FOUND, bookId, language));
-            throw new NothingFoundException(
-                    String.format(GENRES_WITH_GIVEN_BOOK_ID_AND_LANGUAGE_NOT_FOUND, bookId, language)
-            );
+            return Collections.emptyList();
         }
         return localizedGenresByBookIdAndLanguage;
     }

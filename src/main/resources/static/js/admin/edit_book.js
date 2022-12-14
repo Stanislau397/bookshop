@@ -400,6 +400,7 @@ function setGenreIdInput(genreId) {
 }
 
 function setBookInputFields(book) {
+    console.log(book)
     let book_id_input = document.getElementById('book_id');
     book_id_input.value = book.bookId;
 

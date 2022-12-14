@@ -10,7 +10,6 @@ import edu.epam.bookshop.entity.BookStatus;
 import edu.epam.bookshop.entity.CoverType;
 import edu.epam.bookshop.entity.Genre;
 import edu.epam.bookshop.entity.Language;
-import edu.epam.bookshop.entity.LocalizedBook;
 import edu.epam.bookshop.entity.LocalizedGenre;
 import edu.epam.bookshop.entity.Publisher;
 import edu.epam.bookshop.entity.ShelveBook;
@@ -37,23 +36,19 @@ public interface BookService {
 
     BookDto findBookDetailsByBookIdAndLanguage(Long bookId, String languageName);
 
-    Page<LocalizedBook> findAllLocalizedBooksByLanguageAndPageNumber(String languageName, Integer pageNumber);
+    Page<BookDto> findBooksByLanguageNameAndPage(String languageName, Integer pageNumber);
 
     List<BookDto> findTop15BooksByLanguageAndAverageScoreGreaterThan(String languageName, Double score);
 
-    List<Book> findBooksByScoreGreaterThan(Double score);
+    List<BookDto> findBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName);
 
-    List<LocalizedBook> findLocalizedBooksByKeywordAndLanguageNameLimit6(String keyword, String languageName);
+    Page<BookDto> findBooksByKeywordAndPageNumberAndLanguageName(String keyWord, Integer pageNumber, String languageName);
 
-    Page<LocalizedBook> findLocalizedBooksByKeywordAndPageNumberAndLanguage(String keyWord, Integer pageNumber, String languageName);
+    Page<BookDto> findBooksByYearAndPageNumberAndLanguageName(Integer year, Integer pageNumber, String languageName);
 
-    Page<LocalizedBook> findLocalizedBooksByYearAndPageNumberAndLanguage(Integer year, Integer pageNumber, String languageName);
+    Page<BookDto> findBooksByGenreTitleAndPageNumberAndLanguageName(String genreTitle, Integer pageNumber, String languageName);
 
-    Page<Book> findBooksByLocalizedGenreTitleAndPageNumber(String genreTitle, Integer pageNumber);
-
-    Page<Book> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber);
-
-    Page<Book> findBooksByPageAndShelveIdAndBookStatus(Integer pageNumber, Long shelveId, String bookStatus);
+    Page<BookDto> findBooksByPageHavingAverageScoreGreaterThan(Double score, Integer pageNumber, String languageName);
 
     Integer findNumberOfBooksWithAverageScoreGreaterThan(Double score);
 

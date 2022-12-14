@@ -9,10 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 import static edu.epam.bookshop.repository.SqlQuery.CHECK_IF_BOOK_EXISTS_FOR_AUTHOR;
-import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_LOCALIZED_GENRE_TITLE;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_KEYWORD;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_GENRE_TITLE;
+import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_BY_YEAR;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_WITH_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN;
 import static edu.epam.bookshop.repository.SqlQuery.SELECT_BOOKS_COUNT_WITH_AVG_SCORE_GREATER_THAN;
@@ -30,11 +31,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             nativeQuery = true)
     Boolean bookExistsForAuthor(Long authorId, Long bookId);
 
-    @Query(value = SELECT_BOOKS_BY_LOCALIZED_GENRE_TITLE)
-    Page<Book> selectByLocalizedGenreTitleAndPage(String genreTitle, Pageable page);
-
-//    @Query(value = SELECT_BOOKS_BY_SHELVE_ID_AND_BOOK_STATUS)
-//    Page<Book> selectBooksByPageAndShelveIdAndBookStatus(Long shelveId, BookStatus bookStatus, Pageable page);
+    @Query(value = SELECT_BOOKS_BY_GENRE_TITLE)
+    Page<Book> selectByGenreTitleAndPage(String genreTitle, Pageable pageWithBooksByGenreTitle);
 
     @Query(value = SELECT_LOCALIZED_BOOKS_BY_AVG_SCORE_GREATER_THAN)
     Page<Book> selectBooksByPageHavingAverageScoreGreaterThan(Double score, Pageable page);
@@ -48,4 +46,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(SELECT_BOOKS_WITH_SCORE_GREATER_THAN)
     List<Book> selectByScoreGreaterThan(Double score);
+
+    @Query(SELECT_BOOKS_BY_KEYWORD)
+    List<Book> selectByKeyword(String keyword);
+
+    @Query(SELECT_BOOKS_BY_KEYWORD)
+    Page<Book> selectByKeywordAndPage(String keyword, Pageable pageWithBooksByKeyword);
+
+    @Query(SELECT_BOOKS_BY_YEAR)
+    Page<Book> selectByYearAndPage(Integer year, Pageable pageWithBooksByYear);
 }

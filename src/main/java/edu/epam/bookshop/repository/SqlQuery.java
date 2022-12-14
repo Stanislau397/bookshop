@@ -136,8 +136,9 @@ public class SqlQuery {
                     "WHERE b.bookId = :#{#updatedBook.bookId}";
     public static final String SELECT_BOOKS_BY_KEYWORD =
             "SELECT b FROM Book b " +
-                    "WHERE b.title LIKE %:keyWord%";
-    public static final String SELECT_BOOKS_BY_LOCALIZED_GENRE_TITLE =
+                    "JOIN b.localizedBooks lb " +
+                    "WHERE lb.title LIKE %:keyword%";
+    public static final String SELECT_BOOKS_BY_GENRE_TITLE =
             "SELECT b FROM Book b " +
                     "JOIN b.genres g " +
                     "JOIN g.localizedGenres lg " +
@@ -148,20 +149,6 @@ public class SqlQuery {
     public static final String SELECT_EXISTING_YEARS_FOR_BOOKS =
             "SELECT DISTINCT YEAR(b.publishDate) FROM Book b " +
                     "ORDER BY YEAR(b.publishDate) ASC";
-    public static final String COUNT_BOOKS_BY_KEYWORD =
-            "SELECT COUNT(b.bookId) FROM Book b " +
-                    "WHERE b.title LIKE %:keyWord%";
-    public static final String COUNT_BOOKS_BY_GENRE_TITLE =
-            "SELECT COUNT(g.title) FROM Book b " +
-                    "LEFT JOIN b.genres g " +
-                    "WHERE g.title = :genreTitle";
-    public static final String COUNT_BOOKS_BY_YEAR =
-            "SELECT COUNT(b.bookId) FROM Book b " +
-                    "WHERE YEAR(b.publishDate) = :year";
-    public static final String SELECT_BOOK_BY_LOCALIZED_BOOK_TITLE =
-            "SELECT b FROM Book b " +
-                    "JOIN b.localizedBooks lb " +
-                    "WHERE lb.title = :title";
     public static final String SELECT_BOOKS_WITH_SCORE_GREATER_THAN =
             "SELECT b FROM Book b " +
                     "JOIN b.bookReviews br " +

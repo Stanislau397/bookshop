@@ -12,7 +12,7 @@ function getBooksByKeyWord(key_word) {
     if (key_word !== '') {
         $.ajax({
             url: '/findBooksByKeyword',
-            data: {keyWord: key_word},
+            data: {keyword: key_word},
             success: function (booksByKeyWord) {
                 displaySearchResults(booksByKeyWord);
             },
@@ -65,16 +65,17 @@ function displaySearchResults(booksByKeyWord) {
     let search_result_container = document.getElementById('search_result');
     search_result_container.innerHTML = '';
     for (let book of booksByKeyWord) {
-        let book_href = 'http://localhost:8070/bookshop/book?title=' + book.title;
+        let book_href = 'http://localhost:8070/bookshop/book?id=' + book.bookId;
         let book_href_with_under_scores = book_href.replace(/ /g, "_")
         let publishDate = book.publishDate;
         let dateArray = publishDate.split('-');
         let year = dateArray[0];
+        let localized_book = book.localizedBook;
         search_result_container.innerHTML +=
             '<a class="book-container" href="' + book_href_with_under_scores + '">' +
-            '<div class="book-image">' + '<img class="found-image" src="' + book.imagePath + '">' + '</div>' +
+            '<div class="book-image">' + '<img class="found-image" src="' + localized_book.imagePath + '">' + '</div>' +
             '<div class="book-info">' +
-            '<div class="book-name">' + book.title + '</div>' +
+            '<div class="book-name">' + localized_book.title + '</div>' +
             '<div class="book-year">' + year + '</div>' + '</div>' + '</a>';
     }
 }
